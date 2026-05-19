@@ -1164,6 +1164,21 @@
 
           container.innerHTML = '';
 
+          // ── Data vintage note
+          const dataNoteEl = document.createElement('div');
+          dataNoteEl.className = 'data-note-banner';
+          dataNoteEl.innerHTML = `
+            <span class="data-note-icon">ⓘ</span>
+            <span><strong>Data note:</strong>
+              All fiscal indicators are drawn from the most recent complete cross-sectional release of
+              Statistik Austria's OGD municipal finance dataset (reference year <strong>2020</strong>).
+              Because a continuous annual panel is not yet publicly available at Gemeinde level,
+              the XGBoost distress classifier is trained and evaluated on the 2020 cross-section.
+              Incorporating a longitudinal panel as future releases become available is a planned
+              extension of this research.
+            </span>`;
+          container.appendChild(dataNoteEl);
+
           const rDown = !risk   || risk.error;
           const mDown = !ml     || ml.detail;
           if (rDown || mDown) {
