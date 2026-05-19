@@ -16,32 +16,26 @@
 
     <div id="app-shell">
 
-      <!-- ══ SIDEBAR ══ -->
-      <aside id="sidebar">
+      <main id="map-area">
+        <div id="map"></div>
 
-        <div id="sidebar-header">
-          <div id="sidebar-brand">
-            <span class="brand-mark">◈</span>
-            <div class="brand-text">
-              <span class="brand-title" data-i18n="app.title">AreaStat AT</span>
-              <span class="brand-sub" data-i18n="app.badge">PhD Research Proposal</span>
-            </div>
+        <!-- ══ FLOATING CONTROL CARD ══ -->
+        <div id="map-control-card">
+          <div class="mcc-header">
+            <span>◈ AreaStat AT</span>
+            <button id="lang-toggle" class="lang-btn">DE</button>
           </div>
-          <button id="lang-toggle" class="lang-btn">DE</button>
-        </div>
 
-        <div id="sidebar-body">
-
-          <div class="filter-group">
-            <div class="filter-label" data-i18n="card.ebene">Geographic Level</div>
-            <select id="zone-selector" class="filter-select">
+          <div class="mcc-section">
+            <div class="mcc-label" data-i18n="card.ebene">Geographic Level</div>
+            <select id="zone-selector" class="mcc-select">
               <option value="bezirk">Bezirk (District)</option>
               <option value="gemeinde" selected>Gemeinde (Municipality)</option>
             </select>
           </div>
 
-          <div class="filter-group">
-            <div class="filter-label" data-i18n="card.bundesland">Federal State</div>
+          <div class="mcc-section">
+            <div class="mcc-label" data-i18n="card.bundesland">Federal State</div>
             <div class="mcc-pills" id="bundesland-buttons">
               <div class="bl-option"><input type="checkbox" id="bl-bgld" value="Burgenland"><label for="bl-bgld">Bgld</label></div>
               <div class="bl-option"><input type="checkbox" id="bl-ktn" value="Kärnten"><label for="bl-ktn">Ktn</label></div>
@@ -55,8 +49,8 @@
             </div>
           </div>
 
-          <div class="filter-group">
-            <div class="filter-label">Map Colour</div>
+          <div class="mcc-section">
+            <div class="mcc-label">Map Colour</div>
             <div class="seg-switcher" id="seg-switcher">
               <button class="seg-btn" data-seg="urban_rural">Urban-Rural</button>
               <button class="seg-btn active" data-seg="settlement">Settlement</button>
@@ -64,29 +58,19 @@
             </div>
           </div>
 
-          <div id="map-legend" class="filter-group legend-group">
-            <div><span class="legend-swatch urban"></span> <span data-i18n="legend.urban">Urban</span></div>
-            <div><span class="legend-swatch mixed"></span> <span data-i18n="legend.inter">Intermediate</span></div>
-            <div><span class="legend-swatch rural"></span> <span data-i18n="legend.rural">Rural</span></div>
+          <div class="mcc-section mcc-controls">
+            <div id="selection-info" style="font-size:.72rem;color:var(--text-muted);width:100%;padding-bottom:.2rem;">0 zones selected</div>
+            <button id="clear-selection-btn" class="mcc-btn" data-i18n="card.clear">Clear</button>
+            <button id="resetZoomBtn" class="mcc-btn" data-i18n="card.reset">Reset</button>
           </div>
-
         </div>
 
-        <div id="sidebar-footer">
-          <div id="selection-info">0 zones selected</div>
-          <div class="sidebar-btn-row">
-            <button id="clear-selection-btn" class="btn-outline" data-i18n="card.clear">Clear</button>
-            <button id="resetZoomBtn" class="btn-outline" data-i18n="card.reset">Reset</button>
-          </div>
-          <button id="build-profile-btn" data-i18n="btn.build">Open in AreaStat →</button>
-          <div class="sidebar-source" data-i18n="app.subtitle">Statistik Austria OGD</div>
-        </div>
+        <!-- ══ LEGEND ══ -->
+        <div id="map-legend"></div>
 
-      </aside>
+        <!-- ══ OPEN PROFILE BUTTON ══ -->
+        <button id="build-profile-btn" data-i18n="btn.build">Open in AreaStat →</button>
 
-      <!-- ══ MAP ══ -->
-      <main id="map-area">
-        <div id="map"></div>
       </main>
 
     </div>
