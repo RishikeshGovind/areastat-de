@@ -56,15 +56,15 @@
               <div class="mcc-section">
                 <div class="mcc-label" data-i18n="card.bundesland">Federal State</div>
                 <div class="mcc-pills" id="bundesland-buttons">
-                  <div class="lgd-option"><input type="checkbox" id="bl-bgld" value="Burgenland"><label for="bl-bgld">Bgld</label></div>
-                  <div class="lgd-option"><input type="checkbox" id="bl-ktn" value="Kärnten"><label for="bl-ktn">Ktn</label></div>
-                  <div class="lgd-option"><input type="checkbox" id="bl-noe" value="Niederösterreich"><label for="bl-noe">NÖ</label></div>
-                  <div class="lgd-option"><input type="checkbox" id="bl-ooe" value="Oberösterreich"><label for="bl-ooe">OÖ</label></div>
-                  <div class="lgd-option"><input type="checkbox" id="bl-sbg" value="Salzburg"><label for="bl-sbg">Sbg</label></div>
-                  <div class="lgd-option"><input type="checkbox" id="bl-stmk" value="Steiermark"><label for="bl-stmk">Stmk</label></div>
-                  <div class="lgd-option"><input type="checkbox" id="bl-tir" value="Tirol"><label for="bl-tir">Tir</label></div>
-                  <div class="lgd-option"><input type="checkbox" id="bl-vbg" value="Vorarlberg"><label for="bl-vbg">Vbg</label></div>
-                  <div class="lgd-option"><input type="checkbox" id="bl-wien" value="Wien"><label for="bl-wien">Wien</label></div>
+                  <div class="bl-option"><input type="checkbox" id="bl-bgld" value="Burgenland"><label for="bl-bgld">Bgld</label></div>
+                  <div class="bl-option"><input type="checkbox" id="bl-ktn" value="Kärnten"><label for="bl-ktn">Ktn</label></div>
+                  <div class="bl-option"><input type="checkbox" id="bl-noe" value="Niederösterreich"><label for="bl-noe">NÖ</label></div>
+                  <div class="bl-option"><input type="checkbox" id="bl-ooe" value="Oberösterreich"><label for="bl-ooe">OÖ</label></div>
+                  <div class="bl-option"><input type="checkbox" id="bl-sbg" value="Salzburg"><label for="bl-sbg">Sbg</label></div>
+                  <div class="bl-option"><input type="checkbox" id="bl-stmk" value="Steiermark"><label for="bl-stmk">Stmk</label></div>
+                  <div class="bl-option"><input type="checkbox" id="bl-tir" value="Tirol"><label for="bl-tir">Tir</label></div>
+                  <div class="bl-option"><input type="checkbox" id="bl-vbg" value="Vorarlberg"><label for="bl-vbg">Vbg</label></div>
+                  <div class="bl-option"><input type="checkbox" id="bl-wien" value="Wien"><label for="bl-wien">Wien</label></div>
                 </div>
               </div>
 
@@ -1072,7 +1072,7 @@
           if (statsStrip) { statsStrip.innerHTML = ''; statsStrip.style.display = 'none'; }
 
           document.querySelectorAll('#bundesland-buttons input[type="checkbox"]').forEach(cb => cb.checked = false);
-          document.querySelectorAll('.lgd-btn').forEach(label => label.classList.remove('selected'));
+          document.querySelectorAll('.bl-btn').forEach(label => label.classList.remove('selected'));
 
           const totalPop = document.getElementById('totalPopulation');
           if (totalPop) totalPop.textContent = '0';

@@ -577,25 +577,6 @@ footer a:hover {
     width: 100%
 }
 
-#AA-link, #LGD-link, .eq-link {
-    color: #1e3a5f;
-    margin-left: 15px;
-    cursor: pointer;
-    margin-bottom: 10px;
-    border: 0px;
-    padding: 0px;
-    background-color: #e8e8e8;
-}
-
-.eq-link {
-    margin-bottom: 0px;
-    font-weight: normal;
-}
-
-#eq-col-1, #eq-col-2 {
-    width: 50%
-}
-
 #chart-link {
     text-align: center;
     color: #1e3a5f;
@@ -613,15 +594,6 @@ footer a:hover {
     color: #008675;
 }
 
-#AA-link:hover, #LGD-link:hover, .eq-link:hover {
-    color: #008675;
-}
-
-#assembly-logo, #council-logo {
-    width: 35px;
-    filter: brightness(0) saturate(100%) invert(12%) sepia(94%) saturate(1827%) hue-rotate(221deg) brightness(82%) contrast(101%);
-    margin-right: 10px;
-}
 
 #see-maps, #see-eq {
     font-weight: bold;
@@ -1367,7 +1339,7 @@ html, body {
   flex: 0 0 auto; 
 }
 
-.lgd-selector {
+.bl-selector {
   position: absolute;
   top: 10px;
   left: 10px;
@@ -1383,23 +1355,23 @@ html, body {
   text-align: center;
 }
 
-#lgd-buttons {
+#bl-buttons {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.lgd-btn {
+.bl-btn {
   padding: 8px 10px;
   text-align: left;
   font-size: 14px;
 }
 
-/* .lgd-btn:hover {
+/* .bl-btn:hover {
   background-color: #0064c8;
 }
 
-.lgd-btn.selected {
+.bl-btn.selected {
   background-color: #003e87;
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
 } */
@@ -1537,7 +1509,7 @@ html, body {
   background-color: #0d1b2a;
 }
 
-#lgd-selector h3 {
+#bl-selector h3 {
   background-color: #1e3a5f;
   color: white;
   padding: 0.5rem 1rem;
@@ -1552,7 +1524,7 @@ html, body {
   width: 100%;
 }
 
-#lgd-toggle {
+#bl-toggle {
   width: 100%;
   background: #4a7fb5;
   color: white;
@@ -1563,7 +1535,7 @@ html, body {
   cursor: pointer;
 }
 
-#lgd-menu {
+#bl-menu {
   display: none;
   position: absolute;
   top: 100%;
@@ -1577,13 +1549,13 @@ html, body {
   box-shadow: 0 2px 6px rgba(0,0,0,0.15);
 }
 
-#lgd-menu label {
+#bl-menu label {
   display: block;
   padding: 8px;
   cursor: pointer;
 }
 
-#lgd-menu label:hover {
+#bl-menu label:hover {
   background: #f0f0f0;
 }
 
@@ -1627,19 +1599,19 @@ html, body {
   padding-right: 40px;
 }
 
-.lgd-option {
+.bl-option {
   display: flex;
   align-items: center;
   gap: 2px;
   margin-bottom: 2px;
 }
 
-.lgd-option input[type="checkbox"] {
+.bl-option input[type="checkbox"] {
   margin: 0;
   cursor: pointer;
 }
 
-.lgd-option .lgd-btn {
+.bl-option .bl-btn {
   cursor: pointer;
   font-size: 14px;
   line-height: 1.4;
@@ -1762,11 +1734,6 @@ html, body {
   text-decoration: underline;
 }
 
-.daera-btn:hover {
-  background-color: #0d1b2a;
-  color: #fff;
-  text-decoration: none;
-}
 
 .profile-banner {
   background-color: #1e3a5f;
@@ -2007,7 +1974,7 @@ html, body {
   #map-wrapper{ --cta-height: 88px; }
 }
 
-.lgd-selector .zone-selector-box {
+.bl-selector .zone-selector-box {
   position: static !important;
   width: 100% !important;
   margin: 0 0 10px 0 !important;
@@ -2019,7 +1986,7 @@ html, body {
   box-shadow: 0 2px 6px rgba(0,0,0,0.2);
 }
 
-.lgd-selector .zone-selector-box label {
+.bl-selector .zone-selector-box label {
   display: block;
   margin: 0 0 6px 0;
   font-size: 16px;
@@ -2027,7 +1994,7 @@ html, body {
   color: #fff;
 }
 
-.lgd-selector #zone-selector {
+.bl-selector #zone-selector {
   width: 100%;
   padding: 0.4rem;
   font-size: 14px;
@@ -2256,15 +2223,15 @@ html, body {
   gap: 5px;
 }
 
-.mcc-pills .lgd-option {
+.mcc-pills .bl-option {
   display: contents;
 }
 
-.mcc-pills .lgd-option input[type="checkbox"] {
+.mcc-pills .bl-option input[type="checkbox"] {
   display: none;
 }
 
-.mcc-pills .lgd-option label {
+.mcc-pills .bl-option label {
   display: inline-block;
   padding: 3px 9px;
   border-radius: 20px;
@@ -2277,7 +2244,7 @@ html, body {
   user-select: none;
 }
 
-.mcc-pills .lgd-option input[type="checkbox"]:checked + label {
+.mcc-pills .bl-option input[type="checkbox"]:checked + label {
   background: #1e3a5f;
   color: #fff;
 }
