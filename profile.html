@@ -1169,14 +1169,27 @@
           dataNoteEl.className = 'data-note-banner';
           dataNoteEl.innerHTML = `
             <span class="data-note-icon">ⓘ</span>
-            <span><strong>Data note:</strong>
-              All fiscal indicators are drawn from the most recent complete cross-sectional release of
-              Statistik Austria's OGD municipal finance dataset (reference year <strong>2020</strong>).
-              Because a continuous annual panel is not yet publicly available at Gemeinde level,
-              the XGBoost distress classifier is trained and evaluated on the 2020 cross-section.
-              Incorporating a longitudinal panel as future releases become available is a planned
-              extension of this research.
-            </span>`;
+            <div style="flex:1;min-width:0;">
+              <strong>Data &amp; Model Notes</strong>
+              <ul style="margin:.45rem 0 0;padding-left:1.1rem;line-height:1.65;list-style:disc;">
+                <li><strong>Data source:</strong> All fiscal indicators are drawn from Statistik Austria's
+                  free <strong>OGD</strong> municipal finance release (reference year <strong>2020</strong>),
+                  the most recent complete cross-section publicly available at Gemeinde level.
+                  Richer socio-demographic indicators (age structure, sex ratios, household composition)
+                  held in <strong>STATcube</strong> (Statistik Austria's paid platform) were excluded to keep
+                  the pipeline fully reproducible without a subscription; incorporating those variables
+                  is a planned extension that is expected to meaningfully improve predictive performance.</li>
+                <li><strong>Train / test split:</strong> The XGBoost distress classifier uses a
+                  <strong>stratified 80 / 20 split</strong> on the 2020 cross-section
+                  (stratified by Bundesland to preserve regional representation).
+                  Model selection and hyperparameter tuning were performed on the training fold only;
+                  AUC-ROC is reported on the held-out test set.</li>
+                <li><strong>Temporal scope:</strong> Because a continuous annual panel is not yet
+                  publicly available at Gemeinde level, predictions are anchored to 2020.
+                  Extending to a longitudinal panel as future OGD releases become available
+                  is a core next step of this research.</li>
+              </ul>
+            </div>`;
           container.appendChild(dataNoteEl);
 
           const rDown = !risk   || risk.error;

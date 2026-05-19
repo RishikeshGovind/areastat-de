@@ -866,12 +866,12 @@ a:hover { text-decoration: underline; }
 .data-note-banner {
   display: flex;
   align-items: flex-start;
-  gap: .5rem;
+  gap: .55rem;
   background: #eff6ff;
   border: 1px solid #bfdbfe;
   border-left: 3px solid #3b82f6;
   color: #1e3a5f;
-  padding: .7rem 1rem;
+  padding: .8rem 1rem;
   font-size: .8rem;
   line-height: 1.6;
   border-radius: 6px;
@@ -880,16 +880,14 @@ a:hover { text-decoration: underline; }
   width: calc(100% - 3rem);
   min-width: 0;
 }
-.data-note-banner span:last-child {
-  flex: 1;
-  min-width: 0;
-  word-wrap: break-word;
+.data-note-banner ul {
+  color: #1e3a5f;
 }
 .data-note-icon {
   font-size: .9rem;
   color: #3b82f6;
   flex-shrink: 0;
-  line-height: 1.6;
+  margin-top: .15rem;
 }
 
 /* ── Analysis loading ────────────────────────────────────── */
