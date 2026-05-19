@@ -1,114 +1,97 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <title>AreaStat AT</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-    <script src="https://cdn.jsdelivr.net/gh/jquery/jquery@3.4.1/dist/jquery.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/gh/twbs/bootstrap@v4.5.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/gh/FezVrasta/popper.js@v1.16.1/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/twbs/bootstrap@v4.5.2/dist/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <script src="https://kit.fontawesome.com/ee3848f0f5.js" crossorigin="anonymous"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js/dist/chart.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/3.0.1/chartjs-plugin-annotation.min.js" integrity="sha512-Hn1w6YiiFw6p6S2lXv6yKeqTk0PLVzeCwWY9n32beuPjQ5HLcvz5l2QsP+KilEr1ws37rCTw3bZpvfvVIeTh0Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
-    <link href="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.css" rel="stylesheet" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.css" rel="stylesheet" />
     <link rel="stylesheet" href="style.css">
     <script src="js/shared.js"></script>
   </head>
 
   <body>
-    <div class="wrapper">
-      <div class="content-wrapper">
 
-        <div id="top-container">
-          <div id="top-menu" class="grid" style="margin: 0;">
-            <div class="logo-container" style="display:flex;align-items:center;padding-left:1.5rem;">
-              <span style="font-size:1.1rem;font-weight:600;color:rgba(255,255,255,0.75);letter-spacing:.5px;" data-i18n="app.badge">◈ PhD Research Tool</span>
-            </div>
-            <div id="dashboard-title-container">
-              <h1 id="dashboard-title" data-i18n="app.title">AreaStat AT</h1>
-            </div>
-            <div class="logo-container" style="display:flex;align-items:center;justify-content:flex-end;gap:1rem;padding-right:1.5rem;">
-              <span style="font-size:.9rem;color:rgba(255,255,255,0.7);" data-i18n="app.subtitle">Statistik Austria OGD</span>
-              <button id="lang-toggle" title="Switch language">DE</button>
+    <div id="app-shell">
+
+      <!-- ══ SIDEBAR ══ -->
+      <aside id="sidebar">
+
+        <div id="sidebar-header">
+          <div id="sidebar-brand">
+            <span class="brand-mark">◈</span>
+            <div class="brand-text">
+              <span class="brand-title" data-i18n="app.title">AreaStat AT</span>
+              <span class="brand-sub" data-i18n="app.badge">PhD Research Proposal</span>
             </div>
           </div>
+          <button id="lang-toggle" class="lang-btn">DE</button>
         </div>
 
-        <hr style="border: none; border-top: 4px solid #c9a84c; margin: 0">
+        <div id="sidebar-body">
 
-        <div id="main-container">
+          <div class="filter-group">
+            <div class="filter-label" data-i18n="card.ebene">Geographic Level</div>
+            <select id="zone-selector" class="filter-select">
+              <option value="bezirk">Bezirk (District)</option>
+              <option value="gemeinde" selected>Gemeinde (Municipality)</option>
+            </select>
+          </div>
 
-          <!-- ══ FULL-SCREEN MAP ══ -->
-          <div id="map-wrapper">
-            <div id="map"></div>
-
-            <!-- Floating control card (top-left) -->
-            <div id="map-control-card">
-              <div class="mcc-header" data-i18n="card.header">◈ Select Areas</div>
-
-              <div class="mcc-section">
-                <div class="mcc-label" data-i18n="card.bundesland">Federal State</div>
-                <div class="mcc-pills" id="bundesland-buttons">
-                  <div class="bl-option"><input type="checkbox" id="bl-bgld" value="Burgenland"><label for="bl-bgld">Bgld</label></div>
-                  <div class="bl-option"><input type="checkbox" id="bl-ktn" value="Kärnten"><label for="bl-ktn">Ktn</label></div>
-                  <div class="bl-option"><input type="checkbox" id="bl-noe" value="Niederösterreich"><label for="bl-noe">NÖ</label></div>
-                  <div class="bl-option"><input type="checkbox" id="bl-ooe" value="Oberösterreich"><label for="bl-ooe">OÖ</label></div>
-                  <div class="bl-option"><input type="checkbox" id="bl-sbg" value="Salzburg"><label for="bl-sbg">Sbg</label></div>
-                  <div class="bl-option"><input type="checkbox" id="bl-stmk" value="Steiermark"><label for="bl-stmk">Stmk</label></div>
-                  <div class="bl-option"><input type="checkbox" id="bl-tir" value="Tirol"><label for="bl-tir">Tir</label></div>
-                  <div class="bl-option"><input type="checkbox" id="bl-vbg" value="Vorarlberg"><label for="bl-vbg">Vbg</label></div>
-                  <div class="bl-option"><input type="checkbox" id="bl-wien" value="Wien"><label for="bl-wien">Wien</label></div>
-                </div>
-              </div>
-
-              <div class="mcc-section">
-                <div class="mcc-label" data-i18n="card.ebene">Level</div>
-                <select id="zone-selector" class="mcc-select">
-                  <option value="bezirk">Bezirk (District)</option>
-                  <option value="gemeinde" selected>Gemeinde (Municipality)</option>
-                </select>
-              </div>
-
-              <div class="mcc-section">
-                <div class="mcc-label">Map Colour</div>
-                <div class="seg-switcher" id="seg-switcher">
-                  <button class="seg-btn" data-seg="urban_rural">Urban-Rural</button>
-                  <button class="seg-btn active" data-seg="settlement">Settlement</button>
-                  <button class="seg-btn" data-seg="density">Density</button>
-                </div>
-              </div>
-
-              <div class="mcc-section mcc-controls">
-                <button id="clear-selection-btn" class="mcc-btn" data-i18n="card.clear">Clear</button>
-                <button id="resetZoomBtn" class="mcc-btn" data-i18n="card.reset">Reset</button>
-              </div>
+          <div class="filter-group">
+            <div class="filter-label" data-i18n="card.bundesland">Federal State</div>
+            <div class="mcc-pills" id="bundesland-buttons">
+              <div class="bl-option"><input type="checkbox" id="bl-bgld" value="Burgenland"><label for="bl-bgld">Bgld</label></div>
+              <div class="bl-option"><input type="checkbox" id="bl-ktn" value="Kärnten"><label for="bl-ktn">Ktn</label></div>
+              <div class="bl-option"><input type="checkbox" id="bl-noe" value="Niederösterreich"><label for="bl-noe">NÖ</label></div>
+              <div class="bl-option"><input type="checkbox" id="bl-ooe" value="Oberösterreich"><label for="bl-ooe">OÖ</label></div>
+              <div class="bl-option"><input type="checkbox" id="bl-sbg" value="Salzburg"><label for="bl-sbg">Sbg</label></div>
+              <div class="bl-option"><input type="checkbox" id="bl-stmk" value="Steiermark"><label for="bl-stmk">Stmk</label></div>
+              <div class="bl-option"><input type="checkbox" id="bl-tir" value="Tirol"><label for="bl-tir">Tir</label></div>
+              <div class="bl-option"><input type="checkbox" id="bl-vbg" value="Vorarlberg"><label for="bl-vbg">Vbg</label></div>
+              <div class="bl-option"><input type="checkbox" id="bl-wien" value="Wien"><label for="bl-wien">Wien</label></div>
             </div>
+          </div>
 
-            <!-- Legend (bottom-left) -->
-            <div id="map-legend">
-              <div><span class="legend-swatch urban"></span> <span data-i18n="legend.urban">Urban</span></div>
-              <div><span class="legend-swatch mixed"></span> <span data-i18n="legend.inter">Intermediate</span></div>
-              <div><span class="legend-swatch rural"></span> <span data-i18n="legend.rural">Rural</span></div>
+          <div class="filter-group">
+            <div class="filter-label">Map Colour</div>
+            <div class="seg-switcher" id="seg-switcher">
+              <button class="seg-btn" data-seg="urban_rural">Urban-Rural</button>
+              <button class="seg-btn active" data-seg="settlement">Settlement</button>
+              <button class="seg-btn" data-seg="density">Density</button>
             </div>
+          </div>
 
-            <!-- Build FAB (bottom-right) -->
-            <button id="build-profile-btn" data-i18n="btn.build">Open in AreaStat →</button>
+          <div id="map-legend" class="filter-group legend-group">
+            <div><span class="legend-swatch urban"></span> <span data-i18n="legend.urban">Urban</span></div>
+            <div><span class="legend-swatch mixed"></span> <span data-i18n="legend.inter">Intermediate</span></div>
+            <div><span class="legend-swatch rural"></span> <span data-i18n="legend.rural">Rural</span></div>
           </div>
 
         </div>
-      </div>
+
+        <div id="sidebar-footer">
+          <div id="selection-info">0 zones selected</div>
+          <div class="sidebar-btn-row">
+            <button id="clear-selection-btn" class="btn-outline" data-i18n="card.clear">Clear</button>
+            <button id="resetZoomBtn" class="btn-outline" data-i18n="card.reset">Reset</button>
+          </div>
+          <button id="build-profile-btn" data-i18n="btn.build">Open in AreaStat →</button>
+          <div class="sidebar-source" data-i18n="app.subtitle">Statistik Austria OGD</div>
+        </div>
+
+      </aside>
+
+      <!-- ══ MAP ══ -->
+      <main id="map-area">
+        <div id="map"></div>
+      </main>
+
     </div>
 
     <script src="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.js"></script>
-    <link href="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.css" rel="stylesheet" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
 
     <script>
@@ -464,6 +447,8 @@
               }
 
               window.selectedIdsExcel = selectedIds;
+              const info = document.getElementById('selection-info');
+              if (info) info.textContent = selectedIds.size + ' zone' + (selectedIds.size !== 1 ? 's' : '') + ' selected';
             });
           }
 
@@ -1062,6 +1047,8 @@
           selectedIds.clear();
           selectedBundeslaender.clear();
           popup.remove();
+          const _si = document.getElementById('selection-info');
+          if (_si) _si.textContent = '0 zones selected';
 
           // Elements live in profile.html now — skip if not present
           const _tc = document.getElementById('tables-container');

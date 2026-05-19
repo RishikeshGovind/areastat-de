@@ -5,10 +5,6 @@
     <title>AreaStat AT</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <script src="https://cdn.jsdelivr.net/gh/jquery/jquery@3.4.1/dist/jquery.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/gh/twbs/bootstrap@v4.5.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/gh/FezVrasta/popper.js@v1.16.1/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/twbs/bootstrap@v4.5.2/dist/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://kit.fontawesome.com/ee3848f0f5.js" crossorigin="anonymous"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js/dist/chart.umd.min.js"></script>
@@ -22,142 +18,70 @@
     <script src="js/shared.js"></script>
 
     <style>
-      /* ── Full-page profile overrides ── */
-      body {
-        display: block;
-        height: auto;
-        min-height: 100vh;
-        background: #f4f3ef;
-      }
+      body { display: block; height: auto; min-height: 100vh; background: #f8fafc; }
 
-      /* Nav bar */
-      #profile-nav {
-        background: #0d1b2a;
+      #app-header {
+        background: #ffffff;
+        border-bottom: 1px solid #e5e7eb;
         display: flex;
         align-items: center;
         padding: 0 1.5rem;
-        height: 60px;
+        height: 52px;
         gap: 1rem;
-      }
-      #profile-nav .back-link {
-        color: rgba(255,255,255,0.8);
-        text-decoration: none;
-        font-size: .9rem;
-        font-weight: 500;
-        display: flex;
-        align-items: center;
-        gap: .3rem;
-        white-space: nowrap;
-        transition: color .15s;
-      }
-      #profile-nav .back-link:hover { color: #fff; text-decoration: none; }
-      #profile-nav .nav-divider { width: 1px; height: 28px; background: rgba(255,255,255,0.2); }
-      #profile-nav h1 {
-        flex: 1;
-        font-size: 1.05rem;
-        font-weight: 600;
-        color: #fff;
-        margin: 0;
-        letter-spacing: .3px;
-      }
-      #profile-nav #lang-toggle {
-        background: rgba(255,255,255,0.12);
-        border: 1px solid rgba(255,255,255,0.3);
-        color: #fff;
-        border-radius: 4px;
-        padding: .3rem .7rem;
-        font-size: .85rem;
-        font-weight: 600;
-        cursor: pointer;
-        box-shadow: none;
-        transition: background .15s;
-      }
-      #profile-nav #lang-toggle:hover { background: rgba(255,255,255,0.22); }
-
-      /* Gold separator */
-      .profile-gold-hr { border: none; border-top: 4px solid #c9a84c; margin: 0; }
-
-      /* Override modal styles for full-page context */
-      #modal-header {
-        border-radius: 0;
-        position: static;
-        flex-shrink: unset;
-      }
-      #modal-toolbar {
         position: sticky;
         top: 0;
-        z-index: 100;
+        z-index: 200;
       }
-      #modal-body {
-        flex: none;
-        overflow-y: visible;
-        height: auto;
-        min-height: 0;
-        display: block !important;
+      #app-header .back-link {
+        color: #4f46e5;
+        text-decoration: none;
+        font-size: .875rem;
+        font-weight: 500;
+        white-space: nowrap;
       }
-      #modal-body.analysis-active {
-        overflow: visible;
-        height: auto;
+      #app-header .back-link:hover { text-decoration: underline; }
+      #app-header .header-divider { width: 1px; height: 20px; background: #e5e7eb; flex-shrink: 0; }
+      #app-header .header-title { flex: 1; font-size: .95rem; font-weight: 600; color: #111827; margin: 0; }
+      #app-header .header-badge { font-size: .75rem; color: #6b7280; font-weight: 500; }
+      #app-header #lang-toggle {
+        background: #f3f4f6; border: 1px solid #e5e7eb; color: #374151;
+        border-radius: 4px; padding: .25rem .6rem; font-size: .8rem; font-weight: 600;
+        cursor: pointer; box-shadow: none;
       }
-      /* Analysis container: remove negative margins, use normal flow */
-      #analysis-container {
-        margin: 0 !important;
-        min-height: 500px;
-      }
-      /* Analysis panel wrap: don't constrain height in full-page mode */
-      .analysis-panel-wrap {
-        flex: none !important;
-        overflow-y: visible !important;
-        height: auto !important;
-      }
-      .analysis-panel {
-        height: auto !important;
-        overflow-y: visible !important;
-      }
+      #app-header #lang-toggle:hover { background: #e5e7eb; }
 
-      /* Loading state */
+      #modal-header { border-radius: 0; position: static; flex-shrink: unset; }
+      #modal-toolbar { position: sticky; top: 52px; z-index: 100; }
+      #modal-body { flex: none; overflow-y: visible; height: auto; min-height: 0; display: block !important; }
+      #modal-body.analysis-active { overflow: visible; height: auto; }
+      #analysis-container { margin: 0 !important; min-height: 500px; }
+      .analysis-panel-wrap { flex: none !important; overflow-y: visible !important; height: auto !important; }
+      .analysis-panel { height: auto !important; overflow-y: visible !important; }
+
       #profile-loading {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        min-height: 280px;
-        gap: 1rem;
-        color: #64748b;
-        font-size: .95rem;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        min-height: 280px; gap: 1rem; color: #64748b; font-size: .95rem;
       }
       .profile-spinner {
-        width: 38px;
-        height: 38px;
-        border: 3px solid #e2e8f0;
-        border-top-color: #1e3a5f;
-        border-radius: 50%;
-        animation: profile-spin 0.8s linear infinite;
+        width: 38px; height: 38px; border: 3px solid #e2e8f0;
+        border-top-color: #4f46e5; border-radius: 50%; animation: profile-spin 0.8s linear infinite;
       }
       @keyframes profile-spin { to { transform: rotate(360deg); } }
-
-      /* Error state */
-      #profile-error {
-        display: none;
-        padding: 2.5rem;
-        text-align: center;
-        color: #dc2626;
-        font-size: 1rem;
-      }
-      #profile-error a { color: #1e3a5f; font-weight: 500; }
+      #profile-error { display: none; padding: 2.5rem; text-align: center; color: #dc2626; font-size: 1rem; }
+      #profile-error a { color: #4f46e5; font-weight: 500; }
     </style>
   </head>
 
   <body>
 
-    <!-- ── Nav bar ── -->
-    <div id="profile-nav">
-      <a href="./index.html" class="back-link">← Back to Map</a>
-      <div class="nav-divider"></div>
-      <h1>AreaStat AT</h1>
+    <!-- ── Header ── -->
+    <header id="app-header">
+      <a href="./index.html" class="back-link">← Map</a>
+      <div class="header-divider"></div>
+      <span class="header-title">AreaStat AT</span>
+      <span class="header-badge" data-i18n="app.badge">PhD Research Proposal</span>
       <button id="lang-toggle">DE</button>
-    </div>
-    <hr class="profile-gold-hr">
+    </header>
 
     <!-- ── Loading / error ── -->
     <div id="profile-loading">
