@@ -291,10 +291,10 @@
           activeSegmentation = segKey;
           // Update map paint
           if (map.getLayer('bezirk-fill')) {
-            map.setPaintProperty('bezirk-fill',   'fill-color', buildFillExpression(segKey, '#f59e0b'));
+            map.setPaintProperty('bezirk-fill',   'fill-color', buildFillExpression(segKey, '#c026d3'));
           }
           if (map.getLayer('gemeinde-fill')) {
-            map.setPaintProperty('gemeinde-fill', 'fill-color', buildFillExpression(segKey, '#f59e0b'));
+            map.setPaintProperty('gemeinde-fill', 'fill-color', buildFillExpression(segKey, '#c026d3'));
           }
           // Update legend
           renderLegend();
@@ -334,14 +334,14 @@
           map.addLayer({
             id: 'bezirk-fill', type: 'fill', source: 'bezirke',
             layout: { visibility: 'none' },
-            paint: { 'fill-color': urFillColor('#f59e0b'), 'fill-opacity': 0.62 }
+            paint: { 'fill-color': urFillColor('#c026d3'), 'fill-opacity': 0.62 }
           });
 
           // Gemeinde fill (visible by default)
           map.addLayer({
             id: 'gemeinde-fill', type: 'fill', source: 'gemeinden',
             layout: { visibility: 'visible' },
-            paint: { 'fill-color': urFillColor('#f59e0b'), 'fill-opacity': 0.62 }
+            paint: { 'fill-color': urFillColor('#c026d3'), 'fill-opacity': 0.62 }
           });
 
           // Outlines
@@ -361,7 +361,7 @@
             id: 'bezirk-outline-hover', type: 'line', source: 'bezirke',
             layout: { visibility: 'none' },
             paint: {
-              'line-color': ['case', ['boolean', ['feature-state', 'hovered'], false], '#d97706', 'rgba(0,0,0,0)'],
+              'line-color': ['case', ['boolean', ['feature-state', 'hovered'], false], '#86198f', 'rgba(0,0,0,0)'],
               'line-width': 1.5
             }
           });
@@ -370,7 +370,7 @@
             id: 'gemeinde-outline-hover', type: 'line', source: 'gemeinden',
             layout: { visibility: 'visible' },
             paint: {
-              'line-color': ['case', ['boolean', ['feature-state', 'hovered'], false], '#d97706', 'rgba(0,0,0,0)'],
+              'line-color': ['case', ['boolean', ['feature-state', 'hovered'], false], '#86198f', 'rgba(0,0,0,0)'],
               'line-width': 1.5
             }
           });
