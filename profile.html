@@ -1,0 +1,1965 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>AreaStat AT</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <script src="https://cdn.jsdelivr.net/gh/jquery/jquery@3.4.1/dist/jquery.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/gh/twbs/bootstrap@v4.5.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/gh/FezVrasta/popper.js@v1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/twbs/bootstrap@v4.5.2/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://kit.fontawesome.com/ee3848f0f5.js" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js/dist/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/3.0.1/chartjs-plugin-annotation.min.js" integrity="sha512-Hn1w6YiiFw6p6S2lXv6yKeqTk0PLVzeCwWY9n32beuPjQ5HLcvz5l2QsP+KilEr1ws37rCTw3bZpvfvVIeTh0Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <script src="js/shared.js"></script>
+
+    <style>
+      /* ── Full-page profile overrides ── */
+      body {
+        display: block;
+        height: auto;
+        min-height: 100vh;
+        background: #f4f3ef;
+      }
+
+      /* Nav bar */
+      #profile-nav {
+        background: #0d1b2a;
+        display: flex;
+        align-items: center;
+        padding: 0 1.5rem;
+        height: 60px;
+        gap: 1rem;
+      }
+      #profile-nav .back-link {
+        color: rgba(255,255,255,0.8);
+        text-decoration: none;
+        font-size: .9rem;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: .3rem;
+        white-space: nowrap;
+        transition: color .15s;
+      }
+      #profile-nav .back-link:hover { color: #fff; text-decoration: none; }
+      #profile-nav .nav-divider { width: 1px; height: 28px; background: rgba(255,255,255,0.2); }
+      #profile-nav h1 {
+        flex: 1;
+        font-size: 1.05rem;
+        font-weight: 600;
+        color: #fff;
+        margin: 0;
+        letter-spacing: .3px;
+      }
+      #profile-nav #lang-toggle {
+        background: rgba(255,255,255,0.12);
+        border: 1px solid rgba(255,255,255,0.3);
+        color: #fff;
+        border-radius: 4px;
+        padding: .3rem .7rem;
+        font-size: .85rem;
+        font-weight: 600;
+        cursor: pointer;
+        box-shadow: none;
+        transition: background .15s;
+      }
+      #profile-nav #lang-toggle:hover { background: rgba(255,255,255,0.22); }
+
+      /* Gold separator */
+      .profile-gold-hr { border: none; border-top: 4px solid #c9a84c; margin: 0; }
+
+      /* Override modal styles for full-page context */
+      #modal-header {
+        border-radius: 0;
+        position: static;
+        flex-shrink: unset;
+      }
+      #modal-toolbar {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+      #modal-body {
+        flex: none;
+        overflow-y: visible;
+        height: auto;
+        min-height: 0;
+        display: block !important;
+      }
+      #modal-body.analysis-active {
+        overflow: visible;
+        height: auto;
+      }
+      /* Analysis container: remove negative margins, use normal flow */
+      #analysis-container {
+        margin: 0 !important;
+        min-height: 500px;
+      }
+      /* Analysis panel wrap: don't constrain height in full-page mode */
+      .analysis-panel-wrap {
+        flex: none !important;
+        overflow-y: visible !important;
+        height: auto !important;
+      }
+      .analysis-panel {
+        height: auto !important;
+        overflow-y: visible !important;
+      }
+
+      /* Loading state */
+      #profile-loading {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 280px;
+        gap: 1rem;
+        color: #64748b;
+        font-size: .95rem;
+      }
+      .profile-spinner {
+        width: 38px;
+        height: 38px;
+        border: 3px solid #e2e8f0;
+        border-top-color: #1e3a5f;
+        border-radius: 50%;
+        animation: profile-spin 0.8s linear infinite;
+      }
+      @keyframes profile-spin { to { transform: rotate(360deg); } }
+
+      /* Error state */
+      #profile-error {
+        display: none;
+        padding: 2.5rem;
+        text-align: center;
+        color: #dc2626;
+        font-size: 1rem;
+      }
+      #profile-error a { color: #1e3a5f; font-weight: 500; }
+    </style>
+  </head>
+
+  <body>
+
+    <!-- ── Nav bar ── -->
+    <div id="profile-nav">
+      <a href="./index.html" class="back-link">← Back to Map</a>
+      <div class="nav-divider"></div>
+      <h1>AreaStat AT</h1>
+      <button id="lang-toggle">DE</button>
+    </div>
+    <hr class="profile-gold-hr">
+
+    <!-- ── Loading / error ── -->
+    <div id="profile-loading">
+      <div class="profile-spinner"></div>
+      <span>Loading profile data…</span>
+    </div>
+    <div id="profile-error"></div>
+
+    <!-- ── Modal-header: zone breakdown summary ── -->
+    <div id="modal-header" style="display:none">
+      <div id="breakdown-container"></div>
+    </div>
+
+    <!-- ── Modal toolbar: indicators + tabs + actions ── -->
+    <div id="modal-toolbar" style="display:none">
+      <div id="modal-toolbar-left">
+        <details id="indicator-filter">
+          <summary data-i18n="drawer.indicators">Indicators ▼</summary>
+          <div id="indicator-filter-panel">
+            <form id="category-form">
+              <div class="category-group">
+                <button type="button" class="group-toggle" data-i18n="drawer.demographie">Demographics ▼</button>
+                <div class="group-content">
+                  <label><input type="checkbox" value="Altersstruktur" checked> <span data-i18n="dom.altersstruktur">Age Structure</span></label>
+                  <label><input type="checkbox" value="Migration" checked> <span data-i18n="dom.migration">Migration</span></label>
+                  <label><input type="checkbox" value="Haushalte" checked> <span data-i18n="dom.haushalte">Households</span></label>
+                </div>
+              </div>
+              <div class="category-group">
+                <button type="button" class="group-toggle" data-i18n="drawer.wirtschaft">Economy ▼</button>
+                <div class="group-content">
+                  <label><input type="checkbox" value="Arbeitsmarkt" checked> <span data-i18n="dom.arbeitsmarkt">Labour Market</span></label>
+                  <label><input type="checkbox" value="Wirtschaft" checked> <span data-i18n="dom.wirtschaft">Economy</span></label>
+                  <label><input type="checkbox" value="Bildung" checked> <span data-i18n="dom.bildung">Education</span></label>
+                </div>
+              </div>
+            </form>
+          </div>
+        </details>
+      </div>
+      <div id="modal-toolbar-right">
+        <div id="drawer-tabs">
+          <button class="view-tab selected" data-view="charts" data-i18n="tab.charts">Charts</button>
+          <button class="view-tab" data-view="tables" data-i18n="tab.tables">Tables</button>
+          <button class="view-tab analysis-tab" data-view="analysis">⚡ Analysis</button>
+        </div>
+        <div id="drawer-actions">
+          <button onclick="downloadExcel()" data-i18n="btn.excel">⬇ Excel</button>
+          <button onclick="downloadSummaryImage()" data-i18n="btn.image">⬇ Image</button>
+          <button id="run-typology-btn" data-i18n="btn.typology">Run Typology</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Main body ── -->
+    <div id="modal-body" style="display:none">
+      <div id="stats-strip"></div>
+      <div id="charts-container"></div>
+      <div id="tables-container" style="display:none;"></div>
+      <div id="analysis-container" style="display:none;"></div>
+      <div id="cluster-summary"></div>
+      <div id="cluster-profiles"></div>
+      <p class="drawer-source">
+        Source: <a href="https://data.statistik.gv.at" target="_blank">Statistik Austria OGD</a>
+        · OGDEXT_AEST_GEMTAB_1 · CC BY 4.0
+      </p>
+    </div>
+
+    <script>
+      // ══ CONFIGURATION ══════════════════════════════════════════════════════════
+      // ── Read selection from localStorage (written by index.html on Open in AreaStat click)
+      const selectedIds      = JSON.parse(localStorage.getItem('profile_ids')        || '[]');
+      let currentZoneType    = localStorage.getItem('profile_zone_type')              || 'gemeinde';
+      let currentLang        = localStorage.getItem('profile_lang')                   || 'en';
+      let activeSegmentation = localStorage.getItem('profile_segmentation')           || 'settlement';
+      let selectedCategories = JSON.parse(localStorage.getItem('profile_categories') || JSON.stringify(DEFAULT_PROFILE_CATEGORIES));
+      window.gcdNameMap      = JSON.parse(localStorage.getItem('profile_gcd_names')  || '{}');
+
+      let bezirkData          = {};
+      let gemeindeData        = {};
+      let austriaTotals       = {};
+      let latestAggregatedData = {};
+      let currentView         = 'charts';
+      window.chartInstances   = [];
+
+      const excludedKeys = EXCLUDED_PROFILE_KEYS;
+
+      // ══ HELPERS ════════════════════════════════════════════════════════════════
+
+      function safeStr(val, fallback = 'Low') {
+        if (val === null || val === undefined) return fallback;
+        if (Array.isArray(val)) return String(val[0] || fallback);
+        if (typeof val === 'object') return String(Object.values(val)[0] || fallback);
+        return String(val);
+      }
+
+      function zoneName(gcd) {
+        return (window.gcdNameMap && window.gcdNameMap[gcd]) || gcd;
+      }
+
+      function riskColor(cat) {
+        return cat === 'High' ? '#dc2626' : cat === 'Medium' ? '#f97316' : '#16a34a';
+      }
+
+      function makeSection(title, subtitle) {
+        const sec = document.createElement('div');
+        sec.className = 'analysis-section';
+        sec.innerHTML = `
+          <div class="analysis-section-header">
+            <h3>${escapeHtml(title)}</h3>
+            ${subtitle ? `<p>${escapeHtml(subtitle)}</p>` : ''}
+          </div>`;
+        return sec;
+      }
+
+      const ZONE_PALETTE = ['#1d6fa5','#e07520','#2ca25f','#6b2d8b','#dc2626','#0e7490','#b45309','#0f766e','#7c3aed','#be185d'];
+
+      // ══ RENDERING FUNCTIONS ════════════════════════════════════════════════════
+
+      function renderStatsStrip(selectedIdsArray, dataSource) {
+        const strip = document.getElementById('stats-strip');
+        if (!strip) return;
+        strip.innerHTML = '';
+
+        if (!selectedIdsArray.length) { strip.style.display = 'none'; return; }
+
+        const segCfg    = SEGMENTATION_CONFIG[activeSegmentation];
+        const segCounts = {};
+        segCfg.classes.forEach(c => { segCounts[c.key] = 0; });
+        let totalPop = 0;
+        const indicatorStats = {};
+
+        selectedIdsArray.forEach(id => {
+          const z = dataSource[id];
+          if (!z) return;
+          const segVal = getScalar(z[segCfg.dataKey]);
+          if (segVal && segCounts[segVal] !== undefined) segCounts[segVal]++;
+          totalPop += getScalar(z['Bevölkerung']) || 0;
+
+          for (const [key, value] of Object.entries(z)) {
+            if (excludedKeys.includes(key) || typeof value !== 'object' || value === null) continue;
+            if (!indicatorStats[key]) indicatorStats[key] = {};
+            for (const [ind, val] of Object.entries(value)) {
+              if (typeof val !== 'number') continue;
+              if (!indicatorStats[key][ind]) indicatorStats[key][ind] = { min: Infinity, max: -Infinity, sum: 0, count: 0 };
+              const s = indicatorStats[key][ind];
+              if (val < s.min) s.min = val;
+              if (val > s.max) s.max = val;
+              s.sum += val; s.count++;
+            }
+          }
+        });
+
+        strip.style.display = 'block';
+
+        const kpiRow = document.createElement('div');
+        kpiRow.className = 'stats-kpi-row';
+        const isEn = currentLang === 'en';
+
+        [
+          { label: isEn ? 'Zones'      : 'Gebiete',     value: selectedIdsArray.length,          accent: '#1e3a5f' },
+          { label: isEn ? 'Population' : 'Bevölkerung', value: totalPop.toLocaleString('de-AT'), accent: '#1e3a5f' },
+        ].forEach(kpi => {
+          const card = document.createElement('div');
+          card.className = 'stats-kpi-card';
+          card.style.borderLeftColor = kpi.accent;
+          card.innerHTML = `<div class="stats-kpi-value">${escapeHtml(kpi.value)}</div><div class="stats-kpi-label">${escapeHtml(kpi.label)}</div>`;
+          kpiRow.appendChild(card);
+        });
+
+        segCfg.classes.filter(c => c.key !== 'Unbekannt').forEach(c => {
+          const card = document.createElement('div');
+          card.className = 'stats-kpi-card';
+          card.style.borderLeftColor = c.color;
+          const label = isEn ? c.label_en : c.label_de;
+          card.innerHTML = `<div class="stats-kpi-value">${segCounts[c.key] || 0}</div><div class="stats-kpi-label">${escapeHtml(label)}</div>`;
+          kpiRow.appendChild(card);
+        });
+
+        strip.appendChild(kpiRow);
+
+        const activeDomains = selectedCategories.filter(d => indicatorStats[d]);
+        if (!activeDomains.length) return;
+
+        const details = document.createElement('details');
+        details.className = 'stats-minmax-section';
+        const sumEl = document.createElement('summary');
+        sumEl.className = 'stats-summary-toggle';
+        sumEl.textContent = isEn ? 'Statistical Summary ▼' : 'Statistische Zusammenfassung ▼';
+        details.appendChild(sumEl);
+
+        const grid = document.createElement('div');
+        grid.className = 'stats-minmax-grid';
+
+        activeDomains.forEach(domain => {
+          const ds = indicatorStats[domain];
+          if (!ds || !Object.keys(ds).length) return;
+
+          const card = document.createElement('div');
+          card.className = 'stats-domain-card';
+          const hdr = document.createElement('div');
+          hdr.className = 'stats-domain-title';
+          hdr.textContent = tDomain(domain);
+          card.appendChild(hdr);
+
+          const tbl = document.createElement('table');
+          tbl.className = 'stats-table';
+          tbl.innerHTML = `<thead><tr>
+            <th>${isEn ? 'Indicator' : 'Indikator'}</th>
+            <th>Min</th><th>${isEn ? 'Mean' : 'Ø'}</th><th>Max</th>
+          </tr></thead>`;
+          const tbody = document.createElement('tbody');
+          for (const [ind, s] of Object.entries(ds)) {
+            const mean = s.count > 0 ? s.sum / s.count : 0;
+            const isPct = ind.includes('(%)');
+            const fmt = v => (v === Infinity || v === -Infinity) ? '–' : (isPct ? v.toFixed(1) + '%' : v.toFixed(2));
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td>${escapeHtml(tLabel(ind))}</td><td>${escapeHtml(fmt(s.min))}</td><td><strong>${escapeHtml(fmt(mean))}</strong></td><td>${escapeHtml(fmt(s.max))}</td>`;
+            tbody.appendChild(tr);
+          }
+          tbl.appendChild(tbody);
+          card.appendChild(tbl);
+          grid.appendChild(card);
+        });
+
+        details.appendChild(grid);
+        strip.appendChild(details);
+      }
+
+      function renderZoneBreakdownTable(selectedIdsArray, dataSource, totalPopulation) {
+        const container = document.getElementById('breakdown-container');
+
+        if (!selectedIdsArray.length) {
+          container.innerHTML = '';
+          container.style.display = 'none';
+          window.areaProfileTitle  = undefined;
+          window.lastSelectionHash = undefined;
+          return;
+        }
+
+        container.innerHTML = '';
+        container.style.display = 'block';
+
+        const bundeslandStats  = {};
+        const bundeslandTotals = {};
+
+        for (const [id, z] of Object.entries(dataSource)) {
+          const bl = getScalar(z.Bundesland);
+          if (bl) bundeslandTotals[bl] = (bundeslandTotals[bl] || 0) + 1;
+        }
+
+        const currentSelectionHash = selectedIdsArray.slice().sort().join(',');
+        const isSameSelection = currentSelectionHash === window.lastSelectionHash;
+        window.lastSelectionHash = currentSelectionHash;
+        if (!isSameSelection) window.areaProfileTitle = undefined;
+
+        selectedIdsArray.forEach(id => {
+          const z = dataSource[id];
+          if (!z) return;
+          const bl     = getScalar(z.Bundesland) || 'Unbekannt';
+          const segCfgS = SEGMENTATION_CONFIG[activeSegmentation];
+          const status  = getScalar(z[segCfgS.dataKey]);
+
+          if (!bundeslandStats[bl]) {
+            bundeslandStats[bl] = { total: 0 };
+            segCfgS.classes.forEach(c => { bundeslandStats[bl][c.key] = 0; });
+          }
+          bundeslandStats[bl].total++;
+          if (status && bundeslandStats[bl][status] !== undefined) bundeslandStats[bl][status]++;
+        });
+
+        const savedTitle = window.areaProfileTitle || 'Click to edit title';
+        const layout = document.createElement('div');
+        layout.className = 'summary-row';
+
+        const left = document.createElement('div');
+        left.className = 'summary-left';
+
+        const editableTitle = document.createElement('h2');
+        editableTitle.textContent     = savedTitle;
+        editableTitle.contentEditable = true;
+        editableTitle.spellcheck      = false;
+        editableTitle.title           = 'Click to edit title';
+        editableTitle.style.textAlign    = 'left';
+        editableTitle.style.marginBottom = '1rem';
+        editableTitle.style.outline      = 'none';
+        editableTitle.addEventListener('blur', () => {
+          window.areaProfileTitle = editableTitle.textContent.trim();
+        });
+        left.appendChild(editableTitle);
+
+        const heading = document.createElement('h4');
+        heading.textContent = 'Summary of Areas Selected:';
+        heading.style.marginTop    = '0.5rem';
+        heading.style.marginBottom = '1rem';
+        left.appendChild(heading);
+
+        const summaryList = document.createElement('ul');
+        summaryList.style.listStyleType = 'none';
+        summaryList.style.paddingLeft   = '0';
+        summaryList.style.textAlign     = 'left';
+
+        const segCfgSummary = SEGMENTATION_CONFIG[activeSegmentation];
+        const isEnSummary   = currentLang === 'en';
+        Object.keys(bundeslandStats).sort().forEach(bl => {
+          const stats     = bundeslandStats[bl];
+          const totalInBl = bundeslandTotals[bl] || stats.total;
+          const parts     = segCfgSummary.classes
+            .filter(c => c.key !== 'Unbekannt' && stats[c.key] > 0)
+            .map(c => `${stats[c.key]} ${isEnSummary ? c.label_en.toLowerCase() : c.label_de.toLowerCase()}`);
+          const li = document.createElement('li');
+          li.innerHTML = `${escapeHtml(bl)}: <strong>${stats.total} of ${totalInBl}</strong> zones selected${parts.length ? ` (${escapeHtml(parts.join(', '))})` : ''}`;
+          summaryList.appendChild(li);
+        });
+        left.appendChild(summaryList);
+
+        const right = document.createElement('div');
+        right.className = 'summary-right';
+
+        const card = document.createElement('div');
+        card.className = 'population-card';
+        const lbl = document.createElement('div');
+        lbl.className   = 'population-label';
+        lbl.textContent = 'Population selected';
+        const val = document.createElement('div');
+        val.className   = 'population-value';
+        val.id          = 'totalPopulation';
+        val.textContent = totalPopulation.toLocaleString('de-AT');
+        card.appendChild(lbl);
+        card.appendChild(val);
+        right.appendChild(card);
+        layout.appendChild(left);
+        layout.appendChild(right);
+        container.appendChild(layout);
+      }
+
+      function updateCategorySelector(availableKeys) {
+        document.querySelectorAll('#category-form input[type="checkbox"]').forEach(checkbox => {
+          const label = checkbox.closest('label');
+          if (availableKeys.includes(checkbox.value)) {
+            label.style.display = 'block';
+          } else {
+            label.style.display = 'none';
+            checkbox.checked = false;
+          }
+        });
+      }
+
+      function updateTables(selectedIdsArray) {
+        const tablesContainer = document.getElementById('tables-container');
+        const chartsContainer = document.getElementById('charts-container');
+
+        let selectedTab = document.querySelector('.view-tab.selected');
+        if (!selectedTab) {
+          selectedTab = document.querySelector('.view-tab[data-view="charts"]');
+          if (selectedTab) selectedTab.classList.add('selected');
+        }
+        const selectedView = selectedTab ? selectedTab.getAttribute('data-view') : 'charts';
+
+        tablesContainer.innerHTML = '';
+        chartsContainer.innerHTML = '';
+        tablesContainer.style.display = 'none';
+        chartsContainer.style.display = 'none';
+
+        const dataSource = currentZoneType === 'gemeinde' ? gemeindeData : bezirkData;
+
+        const domainAgg = {};
+        let totalPopulation = 0;
+
+        selectedIdsArray.forEach(id => {
+          const zoneData = dataSource[id];
+          if (!zoneData) return;
+          totalPopulation += getScalar(zoneData['Bevölkerung']) || 0;
+
+          for (const [key, value] of Object.entries(zoneData)) {
+            if (excludedKeys.includes(key)) continue;
+            if (typeof value !== 'object' || value === null) continue;
+            if (!domainAgg[key]) domainAgg[key] = {};
+            for (const [indicator, val] of Object.entries(value)) {
+              if (typeof val !== 'number') continue;
+              if (!domainAgg[key][indicator]) domainAgg[key][indicator] = { sum: 0, count: 0 };
+              domainAgg[key][indicator].sum   += val;
+              domainAgg[key][indicator].count += 1;
+            }
+          }
+        });
+
+        const aggregatedData = {};
+        for (const [domain, indicators] of Object.entries(domainAgg)) {
+          aggregatedData[domain] = {};
+          for (const [ind, { sum, count }] of Object.entries(indicators)) {
+            if (isRatePer1000Indicator(domain, ind)) {
+              aggregatedData[domain][ind] = totalPopulation > 0 ? parseFloat(((sum / totalPopulation) * 1000).toFixed(2)) : 0;
+            } else {
+              aggregatedData[domain][ind] = count > 0 ? parseFloat((sum / count).toFixed(2)) : 0;
+            }
+          }
+        }
+
+        latestAggregatedData = aggregatedData;
+        window.latestAggregatedData = aggregatedData;
+        window.chosenCategories     = selectedCategories;
+
+        renderZoneBreakdownTable(selectedIdsArray, dataSource, totalPopulation);
+        renderStatsStrip(selectedIdsArray, dataSource);
+
+        const availableKeys   = Object.keys(aggregatedData);
+        const validCategories = selectedCategories.filter(c => availableKeys.includes(c));
+        updateCategorySelector(availableKeys);
+
+        if (selectedView === 'charts') {
+          chartsContainer.style.display = 'grid';
+          renderAggregatedCharts(aggregatedData, validCategories);
+        } else if (selectedView === 'tables') {
+          tablesContainer.style.display = 'block';
+          renderAggregatedTables(aggregatedData, validCategories);
+        }
+      }
+
+      function renderAggregatedTables(aggregatedData, selCategories) {
+        if (!aggregatedData || Object.keys(aggregatedData).length === 0) return;
+        const valid = selCategories.filter(c => Object.keys(aggregatedData).includes(c));
+        if (valid.length === 0) return;
+
+        const container = document.getElementById('tables-container');
+        container.innerHTML = '';
+
+        const grid = document.createElement('div');
+        grid.className = 'table-grid';
+        grid.style.cssText = 'display:flex;flex-wrap:wrap;gap:2rem;';
+
+        valid.forEach(domain => {
+          const values = aggregatedData[domain];
+          if (!values) return;
+
+          const wrapper = document.createElement('div');
+          wrapper.className = 'table-wrapper';
+          wrapper.style.cssText = 'flex:0 0 calc(50% - 1rem);background:#fff;box-shadow:0 2px 4px rgba(0,0,0,.1);padding:16px;border-radius:8px;box-sizing:border-box;';
+
+          const title = document.createElement('h3');
+          title.textContent = tDomain(domain);
+          wrapper.appendChild(title);
+
+          const table = document.createElement('table');
+          table.className = 'data-table';
+
+          const thead = document.createElement('thead');
+          const headerRow = document.createElement('tr');
+          [t('col.indicator'), t('col.selected'), t('col.austria')].forEach(text => {
+            const th = document.createElement('th');
+            th.textContent = text;
+            headerRow.appendChild(th);
+          });
+          thead.appendChild(headerRow);
+          table.appendChild(thead);
+
+          const tbody = document.createElement('tbody');
+          const atDomain = austriaTotals[domain] || {};
+
+          for (const [indicator, meanVal] of Object.entries(values)) {
+            const row    = document.createElement('tr');
+            const fmtV = v => formatIndicatorValue(domain, indicator, v);
+
+            const tdLabel = document.createElement('td');
+            tdLabel.textContent = displayIndicatorLabel(domain, indicator);
+            row.appendChild(tdLabel);
+
+            const tdMean = document.createElement('td');
+            tdMean.textContent = typeof meanVal === 'number' ? fmtV(meanVal) : '–';
+            row.appendChild(tdMean);
+
+            const tdAt = document.createElement('td');
+            const atVal = comparableAustriaValue(domain, indicator, atDomain[indicator]);
+            tdAt.textContent = typeof atVal === 'number' ? fmtV(atVal) : '–';
+            row.appendChild(tdAt);
+
+            tbody.appendChild(row);
+          }
+
+          table.appendChild(tbody);
+          wrapper.appendChild(table);
+          grid.appendChild(wrapper);
+        });
+
+        container.appendChild(grid);
+        window.latestAggregatedData = aggregatedData;
+      }
+
+      function renderAggregatedCharts(data, selCategories) {
+        if (!data || Object.keys(data).length === 0) return;
+        const validCategories = selCategories.filter(c => Object.keys(data).includes(c));
+        if (validCategories.length === 0) return;
+
+        const container = document.getElementById('charts-container');
+        container.innerHTML = '';
+
+        validCategories.forEach(domain => {
+          const values = data[domain];
+          if (!values) return;
+
+          const atDomain  = austriaTotals[domain] || {};
+          const rawLabels = Object.keys(values);
+
+          const card = document.createElement('div');
+          card.className = 'css-chart-domain-card';
+
+          const head = document.createElement('div');
+          head.className = 'css-chart-domain-head';
+          head.innerHTML = `<span class="css-chart-domain-title">${escapeHtml(tDomain(domain))}</span>
+            <span class="css-chart-at-legend"><span class="css-chart-at-swatch"></span>${escapeHtml(t('col.austria'))}</span>`;
+          card.appendChild(head);
+
+          rawLabels.forEach(rawLabel => {
+            const value = values[rawLabel];
+            if (typeof value !== 'number') return;
+            const atVal  = comparableAustriaValue(domain, rawLabel, atDomain[rawLabel]);
+            const fmt    = v => formatIndicatorValue(domain, rawLabel, v);
+            const label  = displayIndicatorLabel(domain, rawLabel);
+            const maxVal = Math.max(value, atVal ?? 0) * 1.12 || 1;
+            const barPct = Math.min((value / maxVal) * 100, 100).toFixed(1);
+            const atPct  = atVal != null ? Math.min((atVal / maxVal) * 100, 100).toFixed(1) : null;
+            const overAT = atVal != null && value > atVal;
+
+            const row = document.createElement('div');
+            row.className = 'css-indicator-row';
+            row.innerHTML = `
+              <div class="css-indicator-meta">
+                <span class="css-indicator-label">${escapeHtml(label)}</span>
+                <span class="css-indicator-value">${escapeHtml(fmt(value))}${atVal != null ? ` <span class="css-indicator-at">(AT: ${escapeHtml(fmt(atVal))})</span>` : ''}</span>
+              </div>
+              <div class="css-bar-track">
+                <div class="css-bar-fill${overAT ? ' over-at' : ''}" style="width:${barPct}%"></div>
+                ${atPct != null ? `<div class="css-bar-at" style="left:${atPct}%"></div>` : ''}
+              </div>`;
+            card.appendChild(row);
+          });
+
+          container.appendChild(card);
+        });
+      }
+
+      function aggregateUrbanRuralData(selectedIdsArray, selCategories) {
+        const dataSource = currentZoneType === 'gemeinde' ? gemeindeData : bezirkData;
+        const segCfg     = SEGMENTATION_CONFIG[activeSegmentation];
+        const classKeys  = segCfg.classes.map(c => c.key);
+        const rawGroups  = {};
+        const groupPopulations = {};
+        classKeys.forEach(k => { rawGroups[k] = {}; });
+        classKeys.forEach(k => { groupPopulations[k] = 0; });
+
+        selectedIdsArray.forEach(id => {
+          const data   = dataSource[id];
+          const segVal = getScalar(data?.[segCfg.dataKey]);
+          if (!data || !classKeys.includes(segVal)) return;
+          groupPopulations[segVal] += Number(getScalar(data['Bevölkerung'])) || 0;
+
+          for (const [key, value] of Object.entries(data)) {
+            if (excludedKeys.includes(key) || typeof value !== 'object' || value === null) continue;
+            if (selCategories.length > 0 && !selCategories.includes(key)) continue;
+            if (!rawGroups[segVal][key]) rawGroups[segVal][key] = {};
+            for (const [ind, val] of Object.entries(value)) {
+              if (typeof val !== 'number') continue;
+              if (!rawGroups[segVal][key][ind]) rawGroups[segVal][key][ind] = { sum: 0, count: 0 };
+              rawGroups[segVal][key][ind].sum   += val;
+              rawGroups[segVal][key][ind].count += 1;
+            }
+          }
+        });
+
+        const groups = {};
+        classKeys.forEach(k => { groups[k] = {}; });
+        for (const g of classKeys) {
+          for (const [domain, indicators] of Object.entries(rawGroups[g])) {
+            groups[g][domain] = {};
+            for (const [ind, { sum, count }] of Object.entries(indicators)) {
+              if (isRatePer1000Indicator(domain, ind)) {
+                groups[g][domain][ind] = groupPopulations[g] > 0 ? parseFloat(((sum / groupPopulations[g]) * 1000).toFixed(2)) : 0;
+              } else {
+                groups[g][domain][ind] = count > 0 ? parseFloat((sum / count).toFixed(2)) : 0;
+              }
+            }
+          }
+        }
+        return groups;
+      }
+
+      window.renderUrbanRuralComparison = function (selectedIdsArray) {
+        const groups = aggregateUrbanRuralData(selectedIdsArray, selectedCategories);
+        window.urbanRuralComparisonData = groups;
+        const container = document.getElementById('urban-rural-comparison');
+        if (!container) return;
+      };
+
+      // ══ DOWNLOAD FUNCTIONS ════════════════════════════════════════════════════
+
+      function waitForImagesToLoad(container) {
+        const images   = container.querySelectorAll('img');
+        const promises = Array.from(images).map(img => new Promise(resolve => {
+          if (img.complete) resolve();
+          else img.onload = img.onerror = resolve;
+        }));
+        return Promise.all(promises);
+      }
+
+      function downloadSummaryImage() {
+        const selectedTab = document.querySelector('.view-tab.selected');
+        const view = selectedTab ? selectedTab.getAttribute('data-view') : 'charts';
+
+        if (view === 'analysis') {
+          const src = document.getElementById('analysis-container');
+          if (!src) return;
+          const wrap = document.createElement('div');
+          wrap.style.cssText = 'background:#fff;padding:20px;font-family:sans-serif;max-width:1200px;margin:0 auto;';
+          const clone = src.cloneNode(true);
+          clone.style.cssText = 'display:flex;flex-direction:column;visibility:visible;';
+          wrap.appendChild(clone);
+          document.body.appendChild(wrap);
+          wrap.offsetHeight;
+          waitForImagesToLoad(wrap).then(() =>
+            new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(() =>
+              html2canvas(wrap, { useCORS: true, scale: 2, backgroundColor: '#ffffff' }).then(resolve)
+            )))
+          ).then(canvas => {
+            const fc = document.createElement('canvas');
+            fc.width = canvas.width; fc.height = canvas.height + 40;
+            const ctx = fc.getContext('2d');
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, fc.width, fc.height);
+            ctx.drawImage(canvas, 0, 0);
+            ctx.font = '12px sans-serif';
+            ctx.fillStyle = '#666666';
+            ctx.textAlign = 'right';
+            ctx.fillText('Source: Statistik Austria | Gemeindegebarung', fc.width - 20, canvas.height + 25);
+            const link = document.createElement('a');
+            link.download = 'fiscal-analysis.png';
+            link.href = fc.toDataURL('image/png');
+            link.click();
+            document.body.removeChild(wrap);
+          });
+          return;
+        }
+
+        const breakdownContainer = document.getElementById('breakdown-container');
+        const contentSource = ({ charts: document.getElementById('charts-container'), tables: document.getElementById('tables-container') })[view];
+        if (!contentSource) return;
+
+        const cloneWrapper = document.createElement('div');
+        cloneWrapper.style.cssText = 'background:#fff;padding:20px;font-family:sans-serif;max-width:1200px;margin:0 auto;';
+
+        const breakdownClone = breakdownContainer.cloneNode(true);
+        const contentClone   = contentSource.cloneNode(true);
+
+        if (view === 'charts') {
+          const chartWrapper = document.createElement('div');
+          chartWrapper.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;gap:20px;';
+          const origCards   = contentSource.querySelectorAll('.chart-wrapper');
+          const clonedCards = contentClone.querySelectorAll('.chart-wrapper');
+
+          origCards.forEach((origCard, i) => {
+            const clonedCard   = clonedCards[i];
+            const origCanvas   = origCard.querySelector('canvas');
+            const clonedCanvas = clonedCard?.querySelector('canvas');
+            if (origCanvas && clonedCanvas) {
+              const img = new Image();
+              img.src = origCanvas.toDataURL('image/png');
+              img.style.cssText = 'max-width:100%;display:block;margin-top:10px;';
+              clonedCanvas.parentNode.replaceChild(img, clonedCanvas);
+            }
+            if (clonedCard) chartWrapper.appendChild(clonedCard);
+          });
+
+          contentClone.innerHTML = '';
+          contentClone.appendChild(chartWrapper);
+        }
+
+        contentClone.style.cssText = 'display:block;visibility:visible;';
+        cloneWrapper.appendChild(breakdownClone);
+        cloneWrapper.appendChild(document.createElement('hr'));
+        cloneWrapper.appendChild(contentClone);
+        document.body.appendChild(cloneWrapper);
+        cloneWrapper.offsetHeight;
+
+        waitForImagesToLoad(cloneWrapper).then(() =>
+          new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(() =>
+            html2canvas(cloneWrapper, { useCORS: true, scale: 2, backgroundColor: '#ffffff' }).then(resolve)
+          )))
+        ).then(canvas => {
+          const finalCanvas = document.createElement('canvas');
+          finalCanvas.width  = canvas.width;
+          finalCanvas.height = canvas.height + 40;
+          const ctx = finalCanvas.getContext('2d');
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, finalCanvas.width, finalCanvas.height);
+          ctx.drawImage(canvas, 0, 0);
+          ctx.font      = '12px sans-serif';
+          ctx.fillStyle = '#666666';
+          ctx.textAlign = 'right';
+          ctx.fillText('Datenquelle: Statistik Austria OGD | OGDEXT_AEST_GEMTAB_1', finalCanvas.width - 20, canvas.height + 25);
+          const link  = document.createElement('a');
+          link.download = 'area-summary.png';
+          link.href   = finalCanvas.toDataURL('image/png');
+          link.click();
+          document.body.removeChild(cloneWrapper);
+        });
+      }
+
+      function downloadExcel() {
+        window.renderUrbanRuralComparison(selectedIds);
+
+        const aggregated       = window.latestAggregatedData  || {};
+        const comparison       = window.urbanRuralComparisonData || {};
+        const chosenCategories = window.chosenCategories || [];
+        const atTotals         = window.austriaTotals    || {};
+        const workbook         = XLSX.utils.book_new();
+        const segCfgXlsx   = SEGMENTATION_CONFIG[activeSegmentation];
+        const segGroupNames = segCfgXlsx.classes.map(c => c.key);
+
+        (chosenCategories.length ? chosenCategories : Object.keys(aggregated)).forEach(domain => {
+          const sheetData = [];
+          sheetData.push([{ v: domain, t: 's' }]);
+          sheetData.push([{ v: 'Indikator', t: 's' }, { v: 'Ø Ausgewählt', t: 's' }, { v: 'Österreich Ø', t: 's' }]);
+
+          const values = aggregated[domain] || {};
+          const atDom  = atTotals[domain] || {};
+
+          for (const [ind, meanVal] of Object.entries(values)) {
+            const atVal = comparableAustriaValue(domain, ind, atDom[ind]);
+            const isPct = ind.includes('(%)');
+            sheetData.push([
+              { v: displayIndicatorLabel(domain, ind), t: 's' },
+              { v: typeof meanVal === 'number' ? (isPct ? meanVal / 100 : meanVal) : null, t: 'n', z: isPct ? '0.0%' : '0.0' },
+              { v: typeof atVal   === 'number' ? (isPct ? atVal / 100 : atVal) : null, t: 'n', z: isPct ? '0.0%' : '0.0' }
+            ]);
+          }
+
+          sheetData.push([]);
+
+          segGroupNames.forEach(g => {
+            const groupDomainData = comparison[g]?.[domain];
+            if (!groupDomainData || Object.keys(groupDomainData).length === 0) return;
+            sheetData.push([{ v: `${domain} – ${g}`, t: 's' }]);
+            sheetData.push([{ v: 'Indikator', t: 's' }, { v: `Ø ${g}`, t: 's' }, { v: 'Österreich Ø', t: 's' }]);
+            for (const [ind, meanVal] of Object.entries(groupDomainData)) {
+              const atVal = comparableAustriaValue(domain, ind, atDom[ind]);
+              const isPct = ind.includes('(%)');
+              sheetData.push([
+                { v: displayIndicatorLabel(domain, ind), t: 's' },
+                { v: typeof meanVal === 'number' ? (isPct ? meanVal / 100 : meanVal) : null, t: 'n', z: isPct ? '0.0%' : '0.0' },
+                { v: typeof atVal   === 'number' ? (isPct ? atVal / 100 : atVal) : null, t: 'n', z: isPct ? '0.0%' : '0.0' }
+              ]);
+            }
+            sheetData.push([]);
+          });
+
+          const worksheet = XLSX.utils.aoa_to_sheet(sheetData);
+          XLSX.utils.book_append_sheet(workbook, worksheet, domain.substring(0, 31));
+        });
+
+        const ad = window.latestAnalysisData;
+
+        if (ad?.ml?.zones) {
+          const mlRows = [['Zone', 'GCD', 'Risk Category', 'Distress Probability (%)', 'Deficit Streak (yrs)', 'Bundesland', 'Settlement Class']];
+          ad.ml.zones.forEach(z => {
+            mlRows.push([
+              zoneName(z.gcd), z.gcd,
+              safeStr(z.risk_category, ''),
+              ((z.distress_probability || 0) * 100).toFixed(1),
+              z.deficit_streak ?? '',
+              safeStr(z.bundesland, ''),
+              safeStr(z.settlement_class, '')
+            ]);
+          });
+          if (ad.shap?.explanations?.length) {
+            mlRows.push([], ['SHAP Key Drivers'], ['GCD', 'Feature', 'Direction', 'SHAP Value']);
+            ad.shap.explanations.forEach(e => {
+              (e.top_drivers || []).forEach(d => {
+                mlRows.push([e.gcd, d.feature.replace(/_/g, ' '), d.direction === 'increases_risk' ? 'Increases risk' : 'Decreases risk', typeof d.shap_value === 'number' ? d.shap_value.toFixed(4) : '']);
+              });
+            });
+          }
+          XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(mlRows), 'ML Distress');
+        }
+
+        if (ad?.risk?.zones) {
+          const riskRows = [['Zone', 'GCD', 'Risk Category', 'Risk Score', 'Trend', 'Deficit Ratio (%)', 'Deficit Streak (yrs)', 'Exp/Capita (€)', 'Rev/Capita (€)', 'National Percentile', 'Bundesland']];
+          ad.risk.zones.forEach(z => {
+            riskRows.push([
+              zoneName(z.gcd), z.gcd,
+              safeStr(z.risk_category, ''),
+              z.risk_score ?? '',
+              safeStr(z.trend_direction, ''),
+              z.deficit_ratio != null ? (z.deficit_ratio * 100).toFixed(1) : '',
+              z.deficit_streak ?? '',
+              z.exp_per_capita ? Math.round(z.exp_per_capita) : '',
+              z.rev_per_capita ? Math.round(z.rev_per_capita) : '',
+              z.national_percentile ?? '',
+              safeStr(z.bundesland, '')
+            ]);
+          });
+          XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(riskRows), 'Risk Summary');
+        }
+
+        if (ad?.profile?.zones) {
+          const SPEND_CATS_XL = [
+            { key: 'admin',             label: 'Administration (%)' },
+            { key: 'education_culture', label: 'Education & Culture (%)' },
+            { key: 'social_welfare',    label: 'Social Welfare (%)' },
+            { key: 'health',            label: 'Health (%)' },
+            { key: 'infrastructure',    label: 'Infrastructure (%)' },
+            { key: 'finance_debt',      label: 'Finance & Debt (%)' },
+            { key: 'economy',           label: 'Economy (%)' },
+            { key: 'utilities',         label: 'Utilities (%)' },
+          ];
+          const spendRows = [['Zone', 'GCD', 'Year', ...SPEND_CATS_XL.map(c => c.label), 'Deficit Ratio (%)', 'Risk Score', 'Bundesland']];
+          ad.profile.zones.forEach(z => {
+            if (!z.spending_shares) return;
+            spendRows.push([
+              zoneName(z.gcd), z.gcd, ad.profile.year ?? '',
+              ...SPEND_CATS_XL.map(c => ((z.spending_shares[c.key] || 0) * 100).toFixed(1)),
+              z.fiscal?.deficit_ratio != null ? (z.fiscal.deficit_ratio * 100).toFixed(1) : '',
+              z.risk_score ?? '',
+              safeStr(z.bundesland, '')
+            ]);
+          });
+          XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(spendRows), 'Spending Profile');
+        }
+
+        if (ad?.tsData?.length) {
+          const trendRows = [];
+          ad.tsData.forEach(ts => {
+            const years = ts.data.years_available || [];
+            trendRows.push([ts.label], ['Zone', 'GCD', ...years.map(String)]);
+            (ts.data.series || []).forEach(z => {
+              trendRows.push([
+                zoneName(z.gcd), z.gcd,
+                ...years.map(yr => { const idx = (z.years || []).indexOf(yr); return idx >= 0 ? z.values[idx] : ''; })
+              ]);
+            });
+            trendRows.push([]);
+          });
+          XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(trendRows), 'Fiscal Trends');
+        }
+
+        XLSX.writeFile(workbook, 'austria_area_profile.xlsx');
+      }
+
+      // ══ CLUSTER TYPOLOGY FUNCTIONS ════════════════════════════════════════════
+
+      const CLUSTER_COLORS = ['#1d6fa5', '#e07520', '#2ca25f', '#6b2d8b', '#dc2626', '#0e7490'];
+
+      function renderTypologyResults(data) {
+        document.getElementById('cluster-profiles').innerHTML = '';
+
+        const container = document.getElementById('cluster-summary');
+        container.innerHTML = '';
+
+        const summary   = data.summary   || {};
+        const profiles  = data.profiles  || [];
+        const atProfile = data.at_profile || {};
+
+        // Build per-cluster differentiator data from profiles array
+        const profileByCluster = {};
+        profiles.forEach(p => {
+          const diffs = Object.entries(p)
+            .filter(([key]) => key !== 'cluster')
+            .map(([key, val]) => {
+              const raw = atProfile[key];
+              const at  = Array.isArray(raw) ? raw[0] : raw;
+              if (at == null || typeof val !== 'number' || at === 0) return null;
+              return { label: key, pct: ((val - at) / at) * 100 };
+            })
+            .filter(x => x && x.pct > 0)
+            .sort((a, b) => b.pct - a.pct)
+            .slice(0, 3);
+          profileByCluster[p.cluster] = diffs;
+        });
+
+        const totalZones  = Object.values(summary).reduce((s, info) => s + (Number(info.count) || 0), 0);
+        const numClusters = Object.keys(summary).length;
+
+        // Section header
+        const hdr = document.createElement('div');
+        hdr.className = 'typology-section-header';
+        hdr.innerHTML = `<span class="typology-badge">◈ Typology Analysis</span>
+          <span class="typology-meta">${escapeHtml(String(totalZones))} zones &middot; ${escapeHtml(String(numClusters))} clusters</span>`;
+        container.appendChild(hdr);
+
+        let colorIdx = 0;
+        for (const [clusterId, info] of Object.entries(summary)) {
+          const color      = CLUSTER_COLORS[colorIdx++ % CLUSTER_COLORS.length];
+          const zones      = info.zones || [];
+          const clusterNum = parseInt(clusterId.split('_').pop(), 10);
+
+          const zoneChips  = zones.map(z => `<span class="typology-zone-chip">${escapeHtml(z)}</span>`).join('');
+          const traitItems = (info.common_traits || []).map(t => `<li>${escapeHtml(t)}</li>`).join('') || '<li>—</li>';
+          const chalItems  = (info.challenges    || []).map(c => `<li>${escapeHtml(c)}</li>`).join('') || '<li>—</li>';
+          const oppItems   = (info.opportunities || []).map(o => `<li>${escapeHtml(o)}</li>`).join('') || '<li>—</li>';
+
+          // Differentiator bars
+          const diffs = profileByCluster[clusterNum] || [];
+          let driverHtml = '';
+          if (diffs.length > 0) {
+            driverHtml = diffs.map(d => {
+              const barW = Math.min(Math.abs(d.pct), 100).toFixed(1);
+              const sign = d.pct >= 0 ? '+' : '';
+              return `<div class="typology-driver-row">
+                <div class="typology-driver-label">${escapeHtml(d.label)}</div>
+                <div class="typology-driver-bar-wrap">
+                  <div class="typology-driver-bar-fill" style="width:${escapeHtml(barW)}%;background:${escapeHtml(color)}"></div>
+                </div>
+                <div class="typology-driver-pct">${escapeHtml(sign + d.pct.toFixed(1))}%</div>
+              </div>`;
+            }).join('');
+          } else {
+            driverHtml = `<p class="typology-no-data">No variable notably above the Austria-wide average.</p>`;
+          }
+
+          // Narrative from drivers in summary
+          let narrativeHtml = '';
+          if (Array.isArray(info.drivers) && info.drivers.length > 0) {
+            let para = '';
+            info.drivers.slice(0, 3).forEach((d, i) => {
+              const variable = Array.isArray(d.variable) ? d.variable[0] : d.variable;
+              const pct      = Array.isArray(d.pct_over) ? d.pct_over[0] : d.pct_over;
+              const zVal     = Array.isArray(d.z) ? d.z[0] : d.z;
+              const label    = variable.replace(/^.*\./, '').replace(/_/g, ' ');
+              const absZ     = Math.abs(zVal);
+              const strength = absZ > 2.0 ? 'strong' : absZ > 1.0 ? 'moderate' : 'mild';
+
+              let lead;
+              if (i === 0)      lead = `This cluster has a <strong>${escapeHtml(String(pct))}% higher</strong> share of <em>${escapeHtml(label)}</em> than the Austria-wide average.`;
+              else if (i === 1) lead = ` It also has a <strong>${escapeHtml(String(pct))}% higher</strong> share of <em>${escapeHtml(label)}</em>.`;
+              else              lead = ` Additionally, <em>${escapeHtml(label)}</em> is <strong>${escapeHtml(String(pct))}% above</strong> the national average.`;
+
+              para += ` ${lead} This is a ${escapeHtml(strength)} relative outlier within this selection (z&nbsp;=&nbsp;${escapeHtml(zVal.toFixed(2))}).`;
+            });
+            narrativeHtml = `<div class="typology-narrative"><p>${para.trim()}</p></div>`;
+          }
+
+          const card = document.createElement('div');
+          card.className = 'typology-cluster-card';
+          card.innerHTML = `
+            <div class="typology-card-accent" style="background:${escapeHtml(color)}"></div>
+            <div class="typology-card-inner">
+              <div class="typology-card-header">
+                <div class="typology-card-title">
+                  <span class="typology-cluster-dot" style="background:${escapeHtml(color)}"></span>
+                  <span class="typology-cluster-name">${escapeHtml(clusterId.replace(/_/g, ' '))}</span>
+                </div>
+                <span class="typology-count-badge">${escapeHtml(String(info.count))} zones</span>
+              </div>
+              <div class="typology-zones-row">${zoneChips}</div>
+              <div class="typology-insights-grid">
+                <div class="typology-insight-col">
+                  <div class="typology-insight-heading typology-traits-heading">Characteristics</div>
+                  <ul class="typology-insight-list">${traitItems}</ul>
+                </div>
+                <div class="typology-insight-col">
+                  <div class="typology-insight-heading typology-challenges-heading">Challenges</div>
+                  <ul class="typology-insight-list">${chalItems}</ul>
+                </div>
+                <div class="typology-insight-col">
+                  <div class="typology-insight-heading typology-opps-heading">Opportunities</div>
+                  <ul class="typology-insight-list">${oppItems}</ul>
+                </div>
+              </div>
+              <div class="typology-drivers-section">
+                <div class="typology-section-label">Key differentiators vs Austria average</div>
+                <div class="typology-driver-rows">${driverHtml}</div>
+              </div>
+              ${narrativeHtml}
+            </div>`;
+          container.appendChild(card);
+        }
+      }
+
+      function runClusterTypologyAnalysis(ids) {
+        if (ids.length < 3) {
+          alert('Please select at least 3 zones to run typology clustering.');
+          return;
+        }
+
+        const btn = document.getElementById('run-typology-btn');
+        btn.disabled = true;
+        btn.textContent = 'Running…';
+
+        // Ensure cluster containers are visible (switch away from Analysis tab if needed)
+        const modalBody = document.getElementById('modal-body');
+        if (modalBody.classList.contains('analysis-active')) {
+          modalBody.classList.remove('analysis-active');
+          document.querySelectorAll('.view-tab').forEach(t => t.classList.remove('selected'));
+          const chartsTab = document.querySelector('.view-tab[data-view="charts"]');
+          if (chartsTab) chartsTab.classList.add('selected');
+          document.getElementById('charts-container').style.display = 'grid';
+          document.getElementById('analysis-container').style.display = 'none';
+        }
+
+        const url = `${PLUMBER_BASE}/cluster_typology?ids=${encodeURIComponent(ids.join(','))}`;
+        fetch(url)
+          .then(res => {
+            if (!res.ok) {
+              alert(`Could not retrieve typology (status ${res.status}). Is your R plumber server running on port 8000?`);
+              throw new Error('HTTP ' + res.status);
+            }
+            return res.json();
+          })
+          .then(data => {
+            renderTypologyResults(data);
+            document.getElementById('cluster-summary').scrollIntoView({ behavior: 'smooth', block: 'start' });
+          })
+          .catch(err => console.error('Cluster error:', err))
+          .finally(() => {
+            btn.disabled = false;
+            btn.textContent = 'Run Typology';
+          });
+      }
+
+      // ══ FISCAL ANALYSIS ════════════════════════════════════════════════════════
+
+      async function runFiscalAnalysis(ids) {
+        const container = document.getElementById('analysis-container');
+        if (!ids.length) {
+          container.innerHTML = '<p style="padding:2rem;color:#666;">No zones to analyse.</p>';
+          return;
+        }
+
+        // Fiscal/ML panel data is municipality-level — expand any Bezirk IDs to
+        // their constituent Gemeinden using the first 3 digits of the GKZ.
+        const gemeindeIds = [...new Set(ids.flatMap(id => {
+          if (String(id).length <= 3) {
+            const prefix = String(id).padStart(3, '0');
+            return Object.keys(gemeindeData || {}).filter(k => String(k).substring(0, 3) === prefix);
+          }
+          return [id];
+        }))];
+
+        if (gemeindeIds.length === 0) {
+          container.innerHTML = '<p style="padding:2rem;color:#666;">No municipality data found for the selected zones.</p>';
+          return;
+        }
+
+        container.innerHTML = `<div class="analysis-loading">
+          <div class="analysis-spinner"></div>
+          <span>Running fiscal analysis across ${gemeindeIds.length} zone${gemeindeIds.length > 1 ? 's' : ''}…</span>
+        </div>`;
+
+        const idsParam = gemeindeIds.join(',');
+        const idsBody  = JSON.stringify({ ids: gemeindeIds });
+
+        const TS_METRICS = [
+          { key: 'deficit_ratio',      label: 'Deficit Ratio',        fmt: v => (v*100).toFixed(1)+'%' },
+          { key: 'exp_per_capita',     label: 'Expenditure / Capita', fmt: v => '€'+Math.round(v).toLocaleString('de-AT') },
+          { key: 'rev_per_capita',     label: 'Revenue / Capita',     fmt: v => '€'+Math.round(v).toLocaleString('de-AT') },
+          { key: 'balance_per_capita', label: 'Balance / Capita',     fmt: v => (v>=0?'+':'')+'€'+Math.round(v).toLocaleString('de-AT') },
+          { key: 'exp_growth',         label: 'Expenditure Growth',   fmt: v => (v*100).toFixed(1)+'%' },
+          { key: 'rev_growth',         label: 'Revenue Growth',       fmt: v => (v*100).toFixed(1)+'%' },
+        ];
+
+        try {
+          const [riskRes, profileRes, clusterRes, mlRes, shapRes, ...tsResults] = await Promise.allSettled([
+            fetch(`${PLUMBER_BASE}/fiscal_risk_summary?ids=${encodeURIComponent(idsParam)}`).then(r => r.json()),
+            fetch(`${PLUMBER_BASE}/fiscal_profile?ids=${encodeURIComponent(idsParam)}`).then(r => r.json()),
+            fetch(`${PLUMBER_BASE}/fiscal_clustering?ids=${encodeURIComponent(idsParam)}&k=3`).then(r => r.json()),
+            fetch(`${ML_BASE}/predict_distress`, { method:'POST', headers:{'Content-Type':'application/json'}, body: idsBody }).then(r => r.json()),
+            fetch(`${ML_BASE}/shap_explain`,     { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ ids, top_n: 6 }) }).then(r => r.json()),
+            ...TS_METRICS.map(m => fetch(`${PLUMBER_BASE}/fiscal_timeseries?ids=${encodeURIComponent(idsParam)}&metric=${m.key}`).then(r => r.json())),
+          ]);
+
+          const risk    = riskRes.status    === 'fulfilled' ? riskRes.value    : null;
+          const profile = profileRes.status === 'fulfilled' ? profileRes.value : null;
+          const cluster = clusterRes.status === 'fulfilled' ? clusterRes.value : null;
+          const ml      = mlRes.status      === 'fulfilled' ? mlRes.value      : null;
+          const shap    = shapRes.status    === 'fulfilled' ? shapRes.value     : null;
+          const tsData  = tsResults.map((r, i) => ({
+            ...TS_METRICS[i],
+            data: r.status === 'fulfilled' && !r.value.error ? r.value : null
+          })).filter(t => t.data);
+
+          window.latestAnalysisData = { ml, risk, profile, cluster, tsData, shap };
+
+          container.innerHTML = '';
+
+          const rDown = !risk   || risk.error;
+          const mDown = !ml     || ml.detail;
+          if (rDown || mDown) {
+            const banner = document.createElement('div');
+            banner.className = 'analysis-api-banner';
+            banner.innerHTML = [
+              rDown ? '⚠ R analysis API not responding — fiscal indicators unavailable.' : '',
+              mDown ? '⚠ Python ML API not responding — distress predictions unavailable.' : '',
+            ].filter(Boolean).join('<br>');
+            container.appendChild(banner);
+          }
+
+          const ATABS = [
+            { id: 'atab-ml',       label: 'ML Distress',    available: !!(ml && ml.zones) },
+            { id: 'atab-risk',     label: 'Risk Summary',   available: !!(risk && risk.zones) },
+            { id: 'atab-spending', label: 'Spending',       available: !!(profile && profile.zones) },
+            { id: 'atab-cluster',  label: 'Clustering',     available: !!(cluster && cluster.profiles) },
+            { id: 'atab-trends',   label: 'Trends',         available: tsData.length > 0 },
+          ].filter(t => t.available);
+
+          if (ATABS.length === 0) {
+            container.innerHTML += '<p style="padding:2rem;color:#888;">No data returned from either server.</p>';
+          } else {
+            const tabBar = document.createElement('div');
+            tabBar.className = 'analysis-inner-tabbar';
+            ATABS.forEach((t, i) => {
+              const btn = document.createElement('button');
+              btn.className = 'analysis-inner-tab' + (i === 0 ? ' active' : '');
+              btn.dataset.target = t.id;
+              btn.textContent = t.label;
+              btn.addEventListener('click', () => {
+                tabBar.querySelectorAll('.analysis-inner-tab').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                panelWrap.querySelectorAll('.analysis-panel').forEach(p => p.style.display = 'none');
+                panelWrap.querySelector('#' + t.id).style.display = '';
+              });
+              tabBar.appendChild(btn);
+            });
+            container.appendChild(tabBar);
+
+            const panelWrap = document.createElement('div');
+            panelWrap.className = 'analysis-panel-wrap';
+
+            if (ml && ml.zones) {
+              const p = document.createElement('div');
+              p.className = 'analysis-panel'; p.id = 'atab-ml';
+              renderMLRiskSection(p, ml, shap);
+              panelWrap.appendChild(p);
+            }
+            if (risk && risk.zones) {
+              const p = document.createElement('div');
+              p.className = 'analysis-panel'; p.id = 'atab-risk';
+              p.style.display = 'none';
+              renderRiskSummarySection(p, risk);
+              panelWrap.appendChild(p);
+            }
+            if (profile && profile.zones) {
+              const p = document.createElement('div');
+              p.className = 'analysis-panel'; p.id = 'atab-spending';
+              p.style.display = 'none';
+              renderSpendingProfileSection(p, profile);
+              panelWrap.appendChild(p);
+            }
+            if (cluster && cluster.profiles) {
+              const p = document.createElement('div');
+              p.className = 'analysis-panel'; p.id = 'atab-cluster';
+              p.style.display = 'none';
+              renderFiscalClusterSection(p, cluster);
+              panelWrap.appendChild(p);
+            }
+            if (tsData.length > 0) {
+              const p = document.createElement('div');
+              p.className = 'analysis-panel'; p.id = 'atab-trends';
+              p.style.display = 'none';
+              renderTrendsSection(p, tsData, ids);
+              panelWrap.appendChild(p);
+            }
+
+            container.appendChild(panelWrap);
+          }
+
+        } catch (err) {
+          container.innerHTML = `<div class="analysis-api-banner">Error running analysis: ${escapeHtml(err.message)}</div>`;
+        }
+      }
+
+      function svgArcGauge(prob, color, size = 90) {
+        const R = 34, cx = size / 2, cy = size * 0.58;
+        const startA = Math.PI, endA = Math.PI + (prob / 100) * Math.PI;
+        const x1 = cx + R * Math.cos(startA), y1 = cy + R * Math.sin(startA);
+        const x2 = cx + R * Math.cos(endA),   y2 = cy + R * Math.sin(endA);
+        const lg = prob > 50 ? 1 : 0;
+        const track = `M${(cx - R).toFixed(1)},${cy.toFixed(1)} A${R},${R} 0 0,1 ${(cx + R).toFixed(1)},${cy.toFixed(1)}`;
+        const fill  = `M${x1.toFixed(1)},${y1.toFixed(1)} A${R},${R} 0 ${lg},1 ${x2.toFixed(1)},${y2.toFixed(1)}`;
+        return `<svg width="${size}" height="${Math.round(size * 0.62)}" viewBox="0 0 ${size} ${Math.round(size * 0.62)}" style="display:block;overflow:visible">
+          <path d="${track}" fill="none" stroke="#e2e8f0" stroke-width="7" stroke-linecap="round"/>
+          <path d="${fill}" fill="none" stroke="${color}" stroke-width="7" stroke-linecap="round"/>
+          <text x="${cx}" y="${(cy - 2).toFixed(1)}" text-anchor="middle" font-size="15" font-weight="800" fill="${color}">${prob}%</text>
+        </svg>`;
+      }
+
+      function renderMLRiskSection(container, ml, shap) {
+        const sec  = makeSection('ML Fiscal Distress Prediction', `XGBoost · Predicts deficit in ${ml.year + 1} · AUC-ROC 0.632`);
+        const grid = document.createElement('div');
+        grid.className = 'analysis-risk-grid';
+
+        ml.zones.forEach(zone => {
+          const shapZone = shap?.explanations?.find(e => e.gcd === zone.gcd);
+          const card    = document.createElement('div');
+          const riskCat = safeStr(zone.risk_category, 'Low');
+          const riskKey = riskCat.toLowerCase();
+          card.className = `analysis-risk-card arc-card risk-${riskKey}`;
+
+          const prob  = Math.round((zone.distress_probability || 0) * 100);
+          const color = riskColor(riskCat);
+          card.innerHTML = `
+            <div class="arc-card-header risk-${riskKey}">
+              <div class="arc-card-title-row">
+                <div>
+                  <div class="arc-gcd">${escapeHtml(zoneName(zone.gcd))}</div>
+                  <div class="arc-meta"><span class="arc-gcd-code">${escapeHtml(zone.gcd)}</span> · ${escapeHtml(safeStr(zone.bundesland,''))} · ${escapeHtml(safeStr(zone.settlement_class,''))}</div>
+                </div>
+                <div class="arc-badge risk-badge-${escapeHtml(riskKey)}">${escapeHtml(riskCat)}</div>
+              </div>
+            </div>
+            <div class="arc-card-body">
+              <div class="arc-gauge-row">
+                <div class="arc-gauge-svg">${svgArcGauge(prob, color)}</div>
+                <div class="arc-gauge-info">
+                  <div class="arc-prob-label">Distress probability<br>in ${(ml.year || 2019) + 1}</div>
+                  ${(zone.deficit_streak || 0) > 0
+                    ? `<div class="arc-streak">${escapeHtml(zone.deficit_streak)} consecutive deficit yr${zone.deficit_streak > 1 ? 's' : ''}</div>`
+                    : '<div class="arc-streak" style="color:#16a34a">No recent streak</div>'}
+                </div>
+              </div>
+              ${shapZone ? renderShapDrivers(shapZone.top_drivers) : ''}
+            </div>
+          `;
+          grid.appendChild(card);
+        });
+
+        sec.appendChild(grid);
+        container.appendChild(sec);
+      }
+
+      function renderShapDrivers(drivers) {
+        if (!drivers || !drivers.length) return '';
+        const maxAbs = Math.max(...drivers.map(d => Math.abs(d.shap_value)), 0.001);
+        const rows = drivers.map(d => {
+          const pct  = Math.round((Math.abs(d.shap_value) / maxAbs) * 100);
+          const col  = d.direction === 'increases_risk' ? '#dc2626' : '#16a34a';
+          const sign = d.direction === 'increases_risk' ? '▲' : '▼';
+          return `<div class="shap-row">
+            <span class="shap-sign" style="color:${col}">${sign}</span>
+            <span class="shap-feat">${escapeHtml(d.feature.replace(/_/g,' '))}</span>
+            <div class="shap-bar-wrap">
+              <div class="shap-bar" style="width:${pct}%;background:${col};"></div>
+            </div>
+          </div>`;
+        }).join('');
+        return `<div class="shap-section"><div class="shap-title">Key risk drivers</div>${rows}</div>`;
+      }
+
+      function renderRiskSummarySection(container, risk) {
+        const nat = risk.national_context || {};
+        const natDefPct = nat.median_deficit_ratio != null ? (Number(nat.median_deficit_ratio) * 100).toFixed(1) : '–';
+        const natMunPct = nat.pct_municipalities_in_deficit != null ? Number(nat.pct_municipalities_in_deficit) : '–';
+        const sec = makeSection('Fiscal Risk Summary',
+          `Rule-based score · National median deficit ratio: ${natDefPct}% · ${natMunPct}% of all municipalities in deficit`);
+
+        const table = document.createElement('table');
+        table.className = 'analysis-table';
+        table.innerHTML = `<thead><tr>
+          <th>Zone</th><th>Risk</th><th>Score</th><th>Trend</th>
+          <th>Deficit ratio</th><th>Streak (yrs)</th><th>Exp/capita €</th><th>Rev/capita €</th><th>National %ile</th>
+        </tr></thead>`;
+        const tbody = document.createElement('tbody');
+
+        risk.zones.forEach(z => {
+          const zRiskCat = safeStr(z.risk_category, 'Low');
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td><strong>${escapeHtml(zoneName(z.gcd))}</strong><br><small class="arc-gcd-code">${escapeHtml(z.gcd)}</small> <small>${escapeHtml(safeStr(z.bundesland,''))}</small></td>
+            <td><span class="risk-pill risk-pill-${escapeHtml(zRiskCat.toLowerCase())}">${escapeHtml(zRiskCat)}</span></td>
+            <td>${escapeHtml(z.risk_score ?? '–')}</td>
+            <td class="${safeStr(z.trend_direction,'') === 'Deteriorating' ? 'trend-bad' : safeStr(z.trend_direction,'') === 'Improving' ? 'trend-good' : ''}">${escapeHtml(safeStr(z.trend_direction,'–'))}</td>
+            <td>${escapeHtml(z.deficit_ratio != null ? (z.deficit_ratio * 100).toFixed(1) + '%' : '–')}</td>
+            <td>${escapeHtml(z.deficit_streak ?? '–')}</td>
+            <td>${escapeHtml(z.exp_per_capita ? Math.round(z.exp_per_capita).toLocaleString('de-AT') : '–')}</td>
+            <td>${escapeHtml(z.rev_per_capita ? Math.round(z.rev_per_capita).toLocaleString('de-AT') : '–')}</td>
+            <td>${escapeHtml(z.national_percentile != null ? z.national_percentile + 'th' : '–')}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+
+        table.appendChild(tbody);
+        sec.appendChild(table);
+        container.appendChild(sec);
+      }
+
+      function renderSpendingProfileSection(container, profile) {
+        const sec = makeSection('Spending Profile', `Expenditure shares by category · Year ${profile.year}`);
+        const nat = profile.national_benchmark?.spending_shares || {};
+
+        const CATS = [
+          { key: 'admin',             label: 'Administration',    color: '#4e79a7' },
+          { key: 'education_culture', label: 'Education & Culture', color: '#f28e2b' },
+          { key: 'social_welfare',    label: 'Social Welfare',    color: '#e15759' },
+          { key: 'health',            label: 'Health',            color: '#76b7b2' },
+          { key: 'infrastructure',    label: 'Infrastructure',    color: '#59a14f' },
+          { key: 'finance_debt',      label: 'Finance & Debt',    color: '#edc949' },
+          { key: 'economy',           label: 'Economy',           color: '#af7aa1' },
+          { key: 'utilities',         label: 'Utilities',         color: '#ff9da7' },
+        ];
+
+        const grid = document.createElement('div');
+        grid.className = 'spending-profile-grid';
+
+        profile.zones.forEach(zone => {
+          if (!zone.spending_shares) return;
+
+          const allVals = CATS.map(cat => ((zone.spending_shares || {})[cat.key] || 0) * 100);
+          const maxVal  = Math.max(...allVals, ...CATS.map(cat => (nat[cat.key] || 0) * 100)) * 1.1 || 1;
+
+          const card = document.createElement('div');
+          card.className = 'spending-card';
+          card.innerHTML = `<div class="spending-card-title">${escapeHtml(zoneName(zone.gcd))} <span>${escapeHtml(safeStr(zone.bundesland,''))}</span></div>`;
+
+          CATS.forEach(cat => {
+            const val    = ((zone.spending_shares || {})[cat.key] || 0) * 100;
+            const natVal = (nat[cat.key] || 0) * 100;
+            const diff   = val - natVal;
+            const barPct = Math.min((val / maxVal) * 100, 100).toFixed(1);
+            const natPct = natVal > 0 ? Math.min((natVal / maxVal) * 100, 100).toFixed(1) : null;
+            const diffStr = natVal > 0
+              ? `<span class="spend-diff ${diff > 0 ? 'spend-over' : 'spend-under'}">${diff > 0 ? '+' : ''}${diff.toFixed(1)}pp</span>`
+              : '';
+            card.innerHTML += `
+              <div class="spend-row">
+                <div class="spend-label">${escapeHtml(cat.label)}</div>
+                <div class="spend-bar-wrap">
+                  <div class="spend-bar" style="width:${barPct}%;background:${cat.color};"></div>
+                  ${natPct != null ? `<div class="spend-nat-line" style="left:${natPct}%;"></div>` : ''}
+                </div>
+                <div class="spend-val">${escapeHtml(val.toFixed(1))}% ${diffStr}</div>
+              </div>`;
+          });
+
+          const fis = zone.fiscal;
+          const balColor = fis.fiscal_balance >= 0 ? '#16a34a' : '#dc2626';
+          card.innerHTML += `
+            <div class="spend-fiscal-footer">
+              <span>Balance: <strong style="color:${balColor}">${escapeHtml(fis.fiscal_balance >= 0 ? '+' : '')}${escapeHtml(Math.round(fis.fiscal_balance / 1000).toLocaleString('de-AT'))}k €</strong></span>
+              <span>Deficit ratio: ${escapeHtml((fis.deficit_ratio * 100).toFixed(1))}%</span>
+              <span>Risk score: ${escapeHtml(zone.risk_score)}</span>
+            </div>`;
+
+          grid.appendChild(card);
+        });
+
+        sec.appendChild(grid);
+        container.appendChild(sec);
+      }
+
+      function renderFiscalClusterSection(container, cluster) {
+        const sec = makeSection('Fiscal Typology Clustering',
+          `K-means on fiscal features · k=${cluster.k} · Year ${cluster.year} · ${cluster.n_zones} zones`);
+
+        const CLUSTER_COLORS = ['#1d6fa5','#e07520','#2ca25f','#6b2d8b','#dc2626','#0e7490'];
+        const SPEND_CATS = [
+          { key: 'share_exp_admin',             label: 'Admin' },
+          { key: 'share_exp_education_culture', label: 'Education' },
+          { key: 'share_exp_social_welfare',    label: 'Social' },
+          { key: 'share_exp_health',            label: 'Health' },
+          { key: 'share_exp_infrastructure',    label: 'Infrastructure' },
+          { key: 'share_exp_finance_debt',      label: 'Finance/Debt' },
+        ];
+        const safeNum = (v, mult, dec) => (v != null && !isNaN(Number(v))) ? (Number(v) * mult).toFixed(dec) : null;
+
+        cluster.profiles.forEach((prof, i) => {
+          const clr  = CLUSTER_COLORS[i % CLUSTER_COLORS.length];
+          const nZ   = Number(prof.n_zones) || 0;
+          const aRsk = Number(prof.avg_risk_score) || 0;
+          const top  = safeStr(prof.top_spending_cat, '–').replace(/_/g, ' ');
+          const fp   = prof.fiscal_profile || {};
+          const riskClr = aRsk >= 60 ? '#dc2626' : aRsk >= 30 ? '#f97316' : '#16a34a';
+
+          const block = document.createElement('div');
+          block.className = 'fcb2-block';
+          block.style.borderTopColor = clr;
+
+          const hdr = document.createElement('div');
+          hdr.className = 'fcb2-hdr';
+          hdr.innerHTML = `
+            <span class="fcb2-badge" style="background:${clr}">Cluster ${escapeHtml(prof.cluster)}</span>
+            <span class="fcb2-count">${nZ} zone${nZ !== 1 ? 's' : ''}</span>
+            <span class="fcb2-top">Top spend: <strong>${escapeHtml(top)}</strong></span>
+            <span class="fcb2-risk" style="color:${riskClr}">Avg risk <strong>${aRsk}</strong>/100</span>
+          `;
+          block.appendChild(hdr);
+
+          const body = document.createElement('div');
+          body.className = 'fcb2-body';
+
+          const left = document.createElement('div');
+          left.className = 'fcb2-left';
+
+          const kpis = [
+            { label: 'Deficit ratio',  val: safeNum(fp.deficit_ratio, 100, 1) != null ? safeNum(fp.deficit_ratio, 100, 1)+'%' : '–', neg: fp.deficit_ratio > 0.3 },
+            { label: 'Exp/capita',     val: fp.exp_per_capita != null ? '€'+Math.round(fp.exp_per_capita).toLocaleString('de-AT') : '–', neg: false },
+            { label: 'Rev/capita',     val: fp.rev_per_capita != null ? '€'+Math.round(fp.rev_per_capita).toLocaleString('de-AT') : '–', neg: false },
+            { label: 'Exp growth',     val: safeNum(fp.exp_growth, 100, 1) != null ? safeNum(fp.exp_growth,100,1)+'%' : '–', neg: fp.exp_growth > 0.05 },
+            { label: 'Rev growth',     val: safeNum(fp.rev_growth, 100, 1) != null ? safeNum(fp.rev_growth,100,1)+'%' : '–', neg: false },
+            { label: 'Deficit streak', val: fp.deficit_streak != null ? Number(fp.deficit_streak).toFixed(1)+' yrs' : '–', neg: fp.deficit_streak > 3 },
+          ];
+          left.innerHTML = `<div class="fcb2-kpi-grid">${
+            kpis.map(k => `<div class="fcb2-kpi">
+              <div class="fcb2-kpi-val" style="color:${k.neg ? '#dc2626' : '#1e3a5f'}">${escapeHtml(k.val)}</div>
+              <div class="fcb2-kpi-lbl">${escapeHtml(k.label)}</div>
+            </div>`).join('')
+          }</div>`;
+
+          const maxShare = Math.max(...SPEND_CATS.map(c => Number(fp[c.key]) || 0));
+          left.innerHTML += `<div class="fcb2-spend-title">Spending breakdown (cluster avg)</div>
+            <div class="fcb2-spend-bars">${
+              SPEND_CATS.map(c => {
+                const pct  = ((Number(fp[c.key]) || 0) * 100);
+                const barW = maxShare > 0 ? Math.round((Number(fp[c.key]) || 0) / maxShare * 100) : 0;
+                return `<div class="fcb2-spend-row">
+                  <span class="fcb2-spend-lbl">${escapeHtml(c.label)}</span>
+                  <div class="fcb2-spend-barwrap">
+                    <div class="fcb2-spend-bar" style="width:${barW}%;background:${clr}88;"></div>
+                  </div>
+                  <span class="fcb2-spend-pct">${pct.toFixed(1)}%</span>
+                </div>`;
+              }).join('')
+            }</div>`;
+
+          body.appendChild(left);
+
+          const right = document.createElement('div');
+          right.className = 'fcb2-right';
+
+          const blDist  = prof.bundesland_dist || {};
+          const BL_COLORS = ['#1d6fa5','#e07520','#2ca25f','#6b2d8b','#dc2626','#0e7490','#b45309','#0f766e','#7c3aed'];
+          const blEntries = Object.entries(blDist).sort((a,b) => b[1]-a[1]);
+          const blSlices  = blEntries.map(([bl, cnt], j) => ({ label: bl, value: Number(cnt), color: BL_COLORS[j % BL_COLORS.length] }));
+          const blTotal   = blSlices.reduce((s, d) => s + d.value, 0) || 1;
+          const blLegend  = blSlices.map(s => `<div class="donut-legend-row"><span class="donut-dot" style="background:${s.color}"></span><span class="donut-lbl">${escapeHtml(s.label)}</span><span class="donut-pct">${Math.round(s.value/blTotal*100)}%</span></div>`).join('');
+          right.innerHTML = `<div class="fcb2-dist-title">Bundesland distribution</div>
+            <div class="donut-wrap">${svgDonut(blSlices, 90)}<div class="donut-legend">${blLegend}</div></div>`;
+
+          const scDist   = prof.settlement_dist || {};
+          const SC_COLORS = { Großstadt:'#6b2d8b', Kleinstadt:'#1d6fa5', Marktgemeinde:'#e07520', Dorfgemeinde:'#2ca25f' };
+          const scOrder  = ['Großstadt','Kleinstadt','Marktgemeinde','Dorfgemeinde'];
+          const scSlices = scOrder.filter(k => scDist[k]).map(k => ({ label: k, value: Number(scDist[k]), color: SC_COLORS[k] }));
+          const scTotal  = scSlices.reduce((s, d) => s + d.value, 0) || 1;
+          const scLegend = scSlices.map(s => `<div class="donut-legend-row"><span class="donut-dot" style="background:${s.color}"></span><span class="donut-lbl">${escapeHtml(s.label)}</span><span class="donut-pct">${Math.round(s.value/scTotal*100)}%</span></div>`).join('');
+          right.innerHTML += `<div class="fcb2-dist-title" style="margin-top:12px">Settlement types</div>
+            <div class="donut-wrap">${svgDonut(scSlices, 90)}<div class="donut-legend">${scLegend}</div></div>`;
+
+          const zones      = Array.isArray(prof.zones) ? prof.zones : [];
+          const zonesSorted = [...zones].sort((a,b) => (Number(b.risk_score)||0) - (Number(a.risk_score)||0));
+          const listId     = `fcb2-zones-${i}`;
+          right.innerHTML += `<div class="fcb2-zones-hdr">
+            <span>${nZ} zone${nZ!==1?'s':''} — sorted by risk score</span>
+            ${nZ > 6 ? `<button class="fcb2-show-all" onclick="
+              const el=document.getElementById('${listId}');
+              const hidden=el.querySelectorAll('.fcb2-zone-row.hidden');
+              if(hidden.length){hidden.forEach(r=>r.classList.remove('hidden'));this.textContent='Show fewer';}
+              else{el.querySelectorAll('.fcb2-zone-row:nth-child(n+7)').forEach(r=>r.classList.add('hidden'));this.textContent='Show all ${nZ}';}
+            ">Show all ${nZ}</button>` : ''}
+          </div>
+          <div class="fcb2-zone-list" id="${listId}">${
+            zonesSorted.map((z, zi) => {
+              const zRisk    = Number(z.risk_score) || 0;
+              const zRiskClr = zRisk >= 60 ? '#dc2626' : zRisk >= 30 ? '#f97316' : '#16a34a';
+              const zName    = zoneName(safeStr(z.gcd,''));
+              const zDr      = safeStr(z.deficit_ratio,'');
+              const drPct    = zDr && !isNaN(Number(zDr)) ? (Number(zDr)*100).toFixed(1)+'%' : '–';
+              const expCap   = Number(z.exp_per_capita) ? '€'+Math.round(z.exp_per_capita).toLocaleString('de-AT') : '–';
+              return `<div class="fcb2-zone-row${zi>=6?' hidden':''}">
+                <div class="fcb2-zone-name" title="${escapeHtml(safeStr(z.gcd,''))}">${escapeHtml(zName)}</div>
+                <div class="fcb2-zone-meta">${escapeHtml(safeStr(z.bundesland,''))} · ${escapeHtml(safeStr(z.settlement_class,''))}</div>
+                <div class="fcb2-zone-stats">
+                  <span style="color:${zRiskClr};font-weight:700">${zRisk}</span>
+                  <span class="fcb2-zone-stat-lbl">risk</span>
+                  <span>${escapeHtml(drPct)}</span>
+                  <span class="fcb2-zone-stat-lbl">def.</span>
+                  <span>${escapeHtml(expCap)}</span>
+                  <span class="fcb2-zone-stat-lbl">exp/cap</span>
+                </div>
+              </div>`;
+            }).join('')
+          }</div>`;
+
+          body.appendChild(right);
+          block.appendChild(body);
+          sec.appendChild(block);
+        });
+
+        container.appendChild(sec);
+      }
+
+      // ══ SVG CHART HELPERS ══════════════════════════════════════════════════════
+
+      function svgDonut(slices, size = 100) {
+        const total = slices.reduce((s, d) => s + Number(d.value), 0);
+        if (!total) return `<svg width="${size}" height="${size}"></svg>`;
+        const cx = size / 2, cy = size / 2, r = size / 2 - 3, ir = r * 0.52;
+        let angle = -Math.PI / 2;
+        const paths = slices.map(d => {
+          const a = Math.min((Number(d.value) / total) * 2 * Math.PI, 2 * Math.PI - 0.001);
+          const x1  = cx + r  * Math.cos(angle),   y1  = cy + r  * Math.sin(angle);
+          const x2  = cx + r  * Math.cos(angle+a),  y2  = cy + r  * Math.sin(angle+a);
+          const ix1 = cx + ir * Math.cos(angle),    iy1 = cy + ir * Math.sin(angle);
+          const ix2 = cx + ir * Math.cos(angle+a),  iy2 = cy + ir * Math.sin(angle+a);
+          const la  = a > Math.PI ? 1 : 0;
+          const seg = `<path d="M${x1.toFixed(2)},${y1.toFixed(2)} A${r},${r},0,${la},1,${x2.toFixed(2)},${y2.toFixed(2)} L${ix2.toFixed(2)},${iy2.toFixed(2)} A${ir},${ir},0,${la},0,${ix1.toFixed(2)},${iy1.toFixed(2)} Z" fill="${d.color}"><title>${escapeHtml(d.label)}: ${Math.round(Number(d.value)/total*100)}%</title></path>`;
+          angle += a;
+          return seg;
+        }).join('');
+        return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" style="display:block;flex-shrink:0">${paths}</svg>`;
+      }
+
+      function svgLineChart(series, years, W = 420, H = 190) {
+        if (!series.length || years.length < 2) return '';
+        const PL = 46, PR = 14, PT = 10, PB = 28;
+        const w = W - PL - PR, h = H - PT - PB;
+        const allV = series.flatMap(s => s.values.filter(v => v != null && !isNaN(v)));
+        if (!allV.length) return '';
+        let lo = Math.min(...allV), hi = Math.max(...allV);
+        const span = hi - lo || Math.abs(lo) * 0.2 || 1;
+        lo -= span * 0.15; hi += span * 0.15;
+        const xS   = i => PL + (i / (years.length - 1)) * w;
+        const yS   = v => PT + h - ((v - lo) / (hi - lo)) * h;
+        const fmtY = v => Math.abs(v) >= 1000 ? (v/1000).toFixed(1)+'k' : Math.abs(v) < 0.5 ? (v*100).toFixed(1)+'%' : v.toFixed(1);
+
+        let grid = '', yLbls = '', xLbls = '';
+        [0, 0.25, 0.5, 0.75, 1].forEach(t => {
+          const v = lo + (hi - lo) * t;
+          const y = yS(v).toFixed(1);
+          grid  += `<line x1="${PL}" y1="${y}" x2="${W - PR}" y2="${y}" stroke="#eceff4" stroke-width="1"/>`;
+          yLbls += `<text x="${PL - 5}" y="${(+y + 3).toFixed(1)}" text-anchor="end" font-size="9" fill="#94a3b8">${fmtY(v)}</text>`;
+        });
+        years.forEach((yr, i) => {
+          if (i % 2 === 0 || i === years.length - 1)
+            xLbls += `<text x="${xS(i).toFixed(1)}" y="${(PT + h + 18).toFixed(1)}" text-anchor="middle" font-size="9" fill="#94a3b8">${escapeHtml(String(yr))}</text>`;
+        });
+
+        const seriesPts = series.map(s =>
+          years.map((_, i) => { const v = s.values[i]; return (v != null && !isNaN(v)) ? [xS(i), yS(v), v] : null; })
+        );
+
+        function smoothPath(pts) {
+          const valid = pts.filter(Boolean);
+          if (valid.length < 2) return '';
+          let d = `M${valid[0][0].toFixed(1)},${valid[0][1].toFixed(1)}`;
+          for (let i = 1; i < valid.length; i++) {
+            const p0 = valid[Math.max(i - 2, 0)], p1 = valid[i - 1], p2 = valid[i], p3 = valid[Math.min(i + 1, valid.length - 1)];
+            const cp1x = p1[0] + (p2[0] - p0[0]) / 6, cp1y = p1[1] + (p2[1] - p0[1]) / 6;
+            const cp2x = p2[0] - (p3[0] - p1[0]) / 6, cp2y = p2[1] - (p3[1] - p1[1]) / 6;
+            d += ` C${cp1x.toFixed(1)},${cp1y.toFixed(1)} ${cp2x.toFixed(1)},${cp2y.toFixed(1)} ${p2[0].toFixed(1)},${p2[1].toFixed(1)}`;
+          }
+          return d;
+        }
+
+        const baseY = (PT + h).toFixed(1);
+        const defs = series.map((s, si) => s.dashed ? '' :
+          `<linearGradient id="slg${si}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${s.color}" stop-opacity="0.25"/><stop offset="90%" stop-color="${s.color}" stop-opacity="0.02"/></linearGradient>`
+        ).join('');
+
+        const areas = series.map((s, si) => {
+          if (s.dashed) return '';
+          const valid = seriesPts[si].filter(Boolean);
+          if (valid.length < 2) return '';
+          const lp = smoothPath(seriesPts[si]);
+          if (!lp) return '';
+          return `<path d="${lp} L${valid[valid.length-1][0].toFixed(1)},${baseY} L${valid[0][0].toFixed(1)},${baseY} Z" fill="url(#slg${si})" stroke="none"/>`;
+        }).join('');
+
+        const lines = series.map((s, si) => {
+          const lp = smoothPath(seriesPts[si]);
+          if (!lp) return '';
+          const dash = s.dashed ? ' stroke-dasharray="5,4"' : '';
+          const sw   = s.dashed ? 1.5 : 2.5;
+          const op   = s.dashed ? ' opacity="0.65"' : '';
+          return `<path d="${lp}" fill="none" stroke="${s.color}" stroke-width="${sw}"${dash}${op} stroke-linejoin="round" stroke-linecap="round"><title>${escapeHtml(s.label)}</title></path>`;
+        }).join('');
+
+        const dots = series.map((s, si) => {
+          if (s.dashed) return '';
+          return years.map((yr, i) => {
+            const pt = seriesPts[si][i];
+            if (!pt) return '';
+            return `<circle cx="${pt[0].toFixed(1)}" cy="${pt[1].toFixed(1)}" r="3.5" fill="${s.color}" stroke="#fff" stroke-width="1.5"><title>${escapeHtml(yr)}: ${escapeHtml(fmtY(pt[2]))}</title></circle>`;
+          }).join('');
+        }).join('');
+
+        return `<svg width="100%" height="${H}" viewBox="0 0 ${W} ${H}" style="display:block"><defs>${defs}</defs>${grid}${yLbls}${xLbls}${areas}${lines}${dots}</svg>`;
+      }
+
+      function renderTrendsSection(container, tsData, ids) {
+        const sec  = makeSection('Fiscal Trends', '10-year time series · National median shown as dashed grey line');
+        const grid = document.createElement('div');
+        grid.className = 'trends-grid';
+
+        const zoneColorMap = {};
+        ids.forEach((id, i) => { zoneColorMap[id] = ZONE_PALETTE[i % ZONE_PALETTE.length]; });
+
+        tsData.forEach(ts => {
+          const card  = document.createElement('div');
+          card.className = 'trends-chart-card';
+
+          const years  = ts.data.years_available || [];
+          const series = (ts.data.series || []).map(z => ({
+            label: `${zoneName(z.gcd)} (${z.gcd})`,
+            color: zoneColorMap[z.gcd] || '#888',
+            values: years.map(yr => {
+              const idx = (z.years || []).indexOf(yr);
+              return idx >= 0 ? z.values[idx] : null;
+            }),
+          }));
+
+          const natMed = ts.data.national_median;
+          if (natMed && natMed.years && natMed.values) {
+            series.push({
+              label: 'National median',
+              color: '#94a3b8',
+              dashed: true,
+              values: years.map(yr => {
+                const idx = natMed.years.indexOf(yr);
+                return idx >= 0 ? natMed.values[idx] : null;
+              }),
+            });
+          }
+
+          const legendSeries = series.filter(s => !s.dashed);
+
+          card.innerHTML = `
+            <div class="trends-chart-title">
+              ${escapeHtml(ts.label)}
+              <button class="trends-expand-btn" title="Expand chart">⤢</button>
+            </div>`;
+          card.innerHTML += svgLineChart(series, years, 420, 190);
+          if (legendSeries.length > 0) {
+            card.innerHTML += `<div class="trends-legend">${
+              legendSeries.map(s => `<span class="trends-legend-item"><span class="trends-legend-dot" style="background:${s.color}"></span>${escapeHtml(s.label)}</span>`).join('')
+            }</div>`;
+          }
+
+          card.querySelector('.trends-expand-btn').addEventListener('click', () => {
+            const overlay = document.getElementById('chart-zoom-overlay');
+            document.getElementById('chart-zoom-title').textContent  = ts.label;
+            document.getElementById('chart-zoom-svg').innerHTML      = svgLineChart(series, years, 1200, 420);
+            document.getElementById('chart-zoom-legend').innerHTML   = legendSeries.map(s =>
+              `<span style="display:flex;align-items:center;gap:5px"><span style="width:12px;height:12px;border-radius:50%;background:${s.color};flex-shrink:0"></span>${escapeHtml(s.label)}</span>`
+            ).join('');
+            overlay.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+          });
+
+          grid.appendChild(card);
+        });
+
+        sec.appendChild(grid);
+        container.appendChild(sec);
+      }
+
+      // ══ INITIALISATION ══════════════════════════════════════════════════════════
+      document.addEventListener('DOMContentLoaded', async () => {
+        applyLang();
+
+        // Chart zoom overlay close handlers
+        function closeChartZoom() {
+          document.getElementById('chart-zoom-overlay').style.display = 'none';
+          document.body.style.overflow = '';
+        }
+        document.getElementById('chart-zoom-close').addEventListener('click', closeChartZoom);
+        document.getElementById('chart-zoom-overlay').addEventListener('click', e => {
+          if (e.target === e.currentTarget) closeChartZoom();
+        });
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeChartZoom(); });
+
+        if (!selectedIds.length) {
+          document.getElementById('profile-loading').innerHTML =
+            '<p style="color:#dc2626">No zones selected.<br><a href="./index.html" style="color:#1e3a5f;font-weight:500;">← Return to map</a></p>';
+          return;
+        }
+
+        try {
+          const data    = await fetch('./data.json').then(r => r.json());
+          bezirkData    = data['Bezirk']       || {};
+          gemeindeData  = data['Gemeinde']      || {};
+          austriaTotals = data['Austria Total'] || {};
+          window.austriaTotals = austriaTotals;
+          window.austriaPopulation = totalPopulationForData(gemeindeData);
+
+          // Show content
+          document.getElementById('profile-loading').style.display    = 'none';
+          document.getElementById('modal-header').style.display       = '';
+          document.getElementById('modal-toolbar').style.display      = '';
+          document.getElementById('modal-body').style.display         = '';
+
+          // Sync category checkboxes to the saved selection
+          document.querySelectorAll('#category-form input[type="checkbox"]').forEach(cb => {
+            cb.checked = selectedCategories.includes(cb.value);
+          });
+
+          window.selectedIdsExcel = new Set(selectedIds);
+          window.chosenCategories = selectedCategories;
+
+          // Render initial view (charts)
+          updateTables(selectedIds);
+
+          // ── Tab bar
+          const tabButtons = document.querySelectorAll('.view-tab');
+          const views = {
+            charts:   document.getElementById('charts-container'),
+            tables:   document.getElementById('tables-container'),
+            analysis: document.getElementById('analysis-container'),
+          };
+
+          tabButtons.forEach(tab => {
+            tab.addEventListener('click', () => {
+              tabButtons.forEach(btn => btn.classList.remove('selected'));
+              tab.classList.add('selected');
+              Object.values(views).forEach(div => div.style.display = 'none');
+
+              const view = tab.getAttribute('data-view');
+              currentView = view;
+
+              if (view === 'analysis') {
+                views.analysis.style.display = 'flex';
+                document.getElementById('modal-body').classList.add('analysis-active');
+                runFiscalAnalysis(selectedIds);
+                return;
+              }
+              document.getElementById('modal-body').classList.remove('analysis-active');
+
+              if (!selectedCategories || selectedCategories.length === 0) return;
+              const avail = Object.keys(latestAggregatedData);
+              const valid = selectedCategories.filter(c => avail.includes(c));
+
+              if (view === 'charts') {
+                renderAggregatedCharts(latestAggregatedData, valid);
+                views[view].style.display = 'grid';
+              } else if (view === 'tables') {
+                renderAggregatedTables(latestAggregatedData, valid);
+                views[view].style.display = 'block';
+              }
+            });
+          });
+
+          // ── Category form
+          document.getElementById('category-form').addEventListener('change', () => {
+            selectedCategories = Array.from(document.querySelectorAll('#category-form input:checked')).map(i => i.value);
+            window.chosenCategories = selectedCategories;
+
+            document.getElementById('charts-container').style.display = 'none';
+            document.getElementById('tables-container').style.display = 'none';
+
+            updateTables(selectedIds);
+
+            if (selectedCategories.length === 0) return;
+            const avail = Object.keys(latestAggregatedData);
+            const valid = selectedCategories.filter(c => avail.includes(c));
+            if (valid.length === 0) return;
+
+            if (currentView === 'charts') {
+              renderAggregatedCharts(latestAggregatedData, valid);
+              document.getElementById('charts-container').style.display = 'grid';
+            } else if (currentView === 'tables') {
+              renderAggregatedTables(latestAggregatedData, valid);
+              document.getElementById('tables-container').style.display = 'block';
+            }
+          });
+
+          // ── Run Typology button
+          document.getElementById('run-typology-btn').addEventListener('click', () => {
+            runClusterTypologyAnalysis(selectedIds);
+          });
+
+          // ── Language toggle
+          document.getElementById('lang-toggle').addEventListener('click', () => {
+            currentLang = currentLang === 'en' ? 'de' : 'en';
+            applyLang();
+            updateTables(selectedIds);
+          });
+
+          // ── Group toggle accordions
+          document.querySelectorAll('.group-toggle').forEach(button => {
+            const content = button.nextElementSibling;
+            const label   = button.textContent.trim();
+            content.style.display = 'block';
+            button.textContent = label.replace('▼', '▲');
+            button.addEventListener('click', () => {
+              const isVisible = content.style.display !== 'none';
+              content.style.display = isVisible ? 'none' : 'block';
+              button.textContent = label.replace(isVisible ? '▲' : '▼', isVisible ? '▼' : '▲');
+            });
+          });
+
+        } catch (err) {
+          document.getElementById('profile-loading').style.display = 'none';
+          const errDiv = document.getElementById('profile-error');
+          errDiv.style.display = 'block';
+          errDiv.innerHTML = `<strong>Error loading data:</strong> ${escapeHtml(err.message)}<br><br><a href="./index.html">← Return to map</a>`;
+        }
+      });
+    </script>
+
+  <!-- Chart zoom overlay -->
+  <div id="chart-zoom-overlay" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(10,20,40,0.82);backdrop-filter:blur(4px);align-items:center;justify-content:center;">
+    <div id="chart-zoom-box" style="background:#fff;border-radius:14px;padding:24px 28px 20px;width:92vw;max-width:1300px;max-height:90vh;overflow-y:auto;position:relative;box-shadow:0 24px 64px rgba(0,0,0,0.35);">
+      <button id="chart-zoom-close" style="position:absolute;top:14px;right:16px;background:none;border:none;font-size:22px;cursor:pointer;color:#64748b;line-height:1;" title="Close">✕</button>
+      <div id="chart-zoom-title" style="font-size:15px;font-weight:700;color:#1e3a5f;text-transform:uppercase;letter-spacing:.5px;margin-bottom:16px;padding-right:32px;"></div>
+      <div id="chart-zoom-svg"></div>
+      <div id="chart-zoom-legend" style="display:flex;flex-wrap:wrap;gap:8px 14px;margin-top:14px;font-size:11px;color:#374151;"></div>
+    </div>
+  </div>
+  </body>
+</html>
