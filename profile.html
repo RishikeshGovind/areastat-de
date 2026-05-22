@@ -774,30 +774,13 @@
 
         const contentClone = contentSource.cloneNode(true);
 
+        // Charts are CSS bar charts (divs), not canvas — no conversion needed.
+        // Restore the grid display that the live tab uses.
         if (view === 'charts') {
-          const chartWrapper = document.createElement('div');
-          chartWrapper.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;gap:20px;';
-          const origCards   = contentSource.querySelectorAll('.chart-wrapper');
-          const clonedCards = contentClone.querySelectorAll('.chart-wrapper');
-
-          origCards.forEach((origCard, i) => {
-            const clonedCard   = clonedCards[i];
-            const origCanvas   = origCard.querySelector('canvas');
-            const clonedCanvas = clonedCard?.querySelector('canvas');
-            if (origCanvas && clonedCanvas) {
-              const img = new Image();
-              img.src = origCanvas.toDataURL('image/png');
-              img.style.cssText = 'max-width:100%;display:block;margin-top:10px;';
-              clonedCanvas.parentNode.replaceChild(img, clonedCanvas);
-            }
-            if (clonedCard) chartWrapper.appendChild(clonedCard);
-          });
-
-          contentClone.innerHTML = '';
-          contentClone.appendChild(chartWrapper);
+          contentClone.style.cssText = 'display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:1.25rem;padding:1.5rem;visibility:visible;';
+        } else {
+          contentClone.style.cssText = 'display:block;visibility:visible;';
         }
-
-        contentClone.style.cssText = 'display:block;visibility:visible;';
         cloneWrapper.appendChild(breakdownClone);
         cloneWrapper.appendChild(document.createElement('hr'));
         cloneWrapper.appendChild(contentClone);
