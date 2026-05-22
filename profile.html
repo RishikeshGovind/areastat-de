@@ -14,6 +14,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link href="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.css" rel="stylesheet" />
     <link rel="stylesheet" href="style.css">
     <script src="js/shared.js"></script>
 
@@ -400,6 +401,10 @@
 
         const right = document.createElement('div');
         right.className = 'summary-right';
+
+        const miniMapDiv = document.createElement('div');
+        miniMapDiv.id = 'zone-minimap';
+        right.appendChild(miniMapDiv);
 
         const card = document.createElement('div');
         card.className = 'population-card';
@@ -1824,6 +1829,9 @@
           // Render initial view (charts)
           updateTables(selectedIds);
 
+          // Mini-map — renders asynchronously, boundary GeoJSON is browser-cached from index.html
+          window.initZoneMiniMap(selectedIds, currentZoneType);
+
           // ── Tab bar
           const tabButtons = document.querySelectorAll('.view-tab');
           const views = {
@@ -1930,5 +1938,98 @@
       <div id="chart-zoom-legend" style="display:flex;flex-wrap:wrap;gap:8px 14px;margin-top:14px;font-size:11px;color:#374151;"></div>
     </div>
   </div>
+  <script src="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
+  <script>
+    (function () {
+      const ZONE_URLS = {
+        bezirk: [
+          'https://raw.githubusercontent.com/ginseng666/GeoJSON-TopoJSON-Austria/master/2021/simplified-99.9/bezirke_999_geo.json',
+          'https://raw.githubusercontent.com/ginseng666/GeoJSON-TopoJSON-Austria/master/2021/simplified-99.5/bezirke_995_geo.json',
+        ],
+        gemeinde: [
+          'https://raw.githubusercontent.com/ginseng666/GeoJSON-TopoJSON-Austria/master/2021/simplified-95/gemeinden_95_topo.json',
+        ],
+      };
+
+      function toGeoJSON(raw) {
+        if (raw.type === 'Topology') {
+          const key = Object.keys(raw.objects)[0];
+          return topojson.feature(raw, raw.objects[key]);
+        }
+        return raw;
+      }
+
+      function getGkz(props, idx, zoneType) {
+        const candidates = [props.iso, props.GKZ, props.gkz, props.GCD, props.gcd, props.BEZ_ID, props.GEM_ID, props.id];
+        for (const c of candidates) {
+          if (c == null || c === '') continue;
+          const n = parseInt(String(c), 10);
+          if (isNaN(n)) continue;
+          if (zoneType === 'bezirk'   && n >= 100   && n < 1000)  return String(n);
+          if (zoneType === 'gemeinde' && n >= 10000  && n < 100000) return String(n).padStart(5, '0');
+        }
+        return null;
+      }
+
+      async function fetchFirst(urls) {
+        for (const url of urls) {
+          try { const r = await fetch(url); if (r.ok) return r.json(); } catch (_) {}
+        }
+        return null;
+      }
+
+      window.initZoneMiniMap = async function (selectedIds, zoneType) {
+        const container = document.getElementById('zone-minimap');
+        if (!container || typeof maplibregl === 'undefined' || typeof topojson === 'undefined') return;
+
+        const raw = await fetchFirst(ZONE_URLS[zoneType] || ZONE_URLS.gemeinde);
+        if (!raw) return;
+
+        const geoJSON = toGeoJSON(raw);
+        const selectedSet = new Set(selectedIds);
+
+        let minLng = Infinity, minLat = Infinity, maxLng = -Infinity, maxLat = -Infinity;
+        geoJSON.features.forEach((f, idx) => {
+          const gkz = getGkz(f.properties, idx, zoneType);
+          f.properties._sel = gkz && selectedSet.has(gkz) ? 1 : 0;
+          if (!f.properties._sel) return;
+          const scan = (a) => {
+            if (typeof a[0] === 'number') {
+              if (a[0] < minLng) minLng = a[0]; if (a[0] > maxLng) maxLng = a[0];
+              if (a[1] < minLat) minLat = a[1]; if (a[1] > maxLat) maxLat = a[1];
+            } else a.forEach(scan);
+          };
+          if (f.geometry?.coordinates) scan(f.geometry.coordinates);
+        });
+
+        const bounds = minLng < Infinity
+          ? [[minLng, minLat], [maxLng, maxLat]]
+          : [[9.5, 46.4], [17.2, 49.0]];
+
+        const map = new maplibregl.Map({
+          container: 'zone-minimap',
+          style: 'https://tiles.openfreemap.org/styles/bright',
+          bounds,
+          fitBoundsOptions: { padding: 32 },
+          interactive: false,
+          attributionControl: false,
+        });
+
+        map.on('load', () => {
+          map.addSource('zones', { type: 'geojson', data: geoJSON, generateId: true });
+          map.addLayer({ id: 'zones-bg', type: 'fill', source: 'zones',
+            filter: ['==', ['get', '_sel'], 0],
+            paint: { 'fill-color': '#d1d5db', 'fill-opacity': 0.5 } });
+          map.addLayer({ id: 'zones-sel', type: 'fill', source: 'zones',
+            filter: ['==', ['get', '_sel'], 1],
+            paint: { 'fill-color': '#c026d3', 'fill-opacity': 0.65 } });
+          map.addLayer({ id: 'zones-sel-line', type: 'line', source: 'zones',
+            filter: ['==', ['get', '_sel'], 1],
+            paint: { 'line-color': '#86198f', 'line-width': 1.2 } });
+        });
+      };
+    })();
+  </script>
   </body>
 </html>
