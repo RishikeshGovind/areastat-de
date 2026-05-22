@@ -753,18 +753,22 @@
 
         const breakdownClone = breakdownContainer.cloneNode(true);
 
-        // Replace the WebGL mini-map canvas with a static image (html2canvas can't capture WebGL)
-        const miniMapPlaceholder = breakdownClone.querySelector('#zone-minimap');
-        if (miniMapPlaceholder && window._zoneMiniMap) {
-          try {
-            const mapCanvas = window._zoneMiniMap.getCanvas();
-            const mapImg = new Image();
-            mapImg.src = mapCanvas.toDataURL('image/png');
-            mapImg.style.cssText = miniMapPlaceholder.style.cssText;
-            mapImg.style.display = 'block';
-            miniMapPlaceholder.parentNode.replaceChild(mapImg, miniMapPlaceholder);
-          } catch (_) {
-            miniMapPlaceholder.remove();
+        // Replace the WebGL mini-map with a static <img> so html2canvas can render it.
+        // toDataURL works here because the MapLibre canvas is same-origin (no cross-origin taint).
+        const miniMapInClone = breakdownClone.querySelector('#zone-minimap');
+        if (miniMapInClone) {
+          let mmDataUrl = null;
+          if (window._zoneMiniMap) {
+            try { mmDataUrl = window._zoneMiniMap.getCanvas().toDataURL('image/png'); } catch (_) {}
+          }
+          if (mmDataUrl) {
+            const mmImg = new Image();
+            mmImg.src = mmDataUrl;
+            mmImg.style.cssText = 'width:100%;height:180px;border-radius:8px;object-fit:cover;display:block;';
+            miniMapInClone.innerHTML = '';
+            miniMapInClone.appendChild(mmImg);
+          } else {
+            miniMapInClone.remove();
           }
         }
 
@@ -816,9 +820,9 @@
           ctx.fillStyle = '#666666';
           ctx.textAlign = 'right';
           ctx.fillText('Datenquelle: Statistik Austria OGD | OGDEXT_AEST_GEMTAB_1', finalCanvas.width - 20, canvas.height + 25);
-          const link  = document.createElement('a');
+          const link = document.createElement('a');
           link.download = 'area-summary.png';
-          link.href   = finalCanvas.toDataURL('image/png');
+          link.href = finalCanvas.toDataURL('image/png');
           link.click();
           document.body.removeChild(cloneWrapper);
         });
