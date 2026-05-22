@@ -1123,10 +1123,18 @@
           return;
         }
 
-        container.innerHTML = `<div class="analysis-loading">
+        container.innerHTML = `<div class="analysis-loading" id="analysis-loading-msg">
           <div class="analysis-spinner"></div>
-          <span>Running fiscal analysis across ${gemeindeIds.length} zone${gemeindeIds.length > 1 ? 's' : ''}…</span>
+          <span id="analysis-loading-text">Running fiscal analysis across ${gemeindeIds.length} zone${gemeindeIds.length > 1 ? 's' : ''}…</span>
         </div>`;
+
+        const warmupTimer = setTimeout(() => {
+          const el = document.getElementById('analysis-loading-text');
+          if (el) el.innerHTML = `Running fiscal analysis across ${gemeindeIds.length} zone${gemeindeIds.length > 1 ? 's' : ''}…<br>
+            <span style="font-size:.78rem;color:#6b7280;margin-top:.4rem;display:block;">
+              API is warming up — this can take up to 60 seconds on first use.
+            </span>`;
+        }, 8000);
 
         const idsParam = gemeindeIds.join(',');
         const idsBody  = JSON.stringify({ ids: gemeindeIds });
@@ -1150,6 +1158,7 @@
             ...TS_METRICS.map(m => fetch(`${PLUMBER_BASE}/fiscal_timeseries?ids=${encodeURIComponent(idsParam)}&metric=${m.key}`).then(r => r.json())),
           ]);
 
+          clearTimeout(warmupTimer);
           const risk    = riskRes.status    === 'fulfilled' ? riskRes.value    : null;
           const profile = profileRes.status === 'fulfilled' ? profileRes.value : null;
           const cluster = clusterRes.status === 'fulfilled' ? clusterRes.value : null;
@@ -1764,6 +1773,14 @@
       // ══ INITIALISATION ══════════════════════════════════════════════════════════
       document.addEventListener('DOMContentLoaded', async () => {
         applyLang();
+
+        // Pre-warm HuggingFace Spaces silently — free tier goes cold after inactivity,
+        // cold start takes 30-60s. Pinging now means the Space is ready by the time
+        // the user clicks the Analysis tab.
+        Promise.allSettled([
+          fetch(`${PLUMBER_BASE}/fiscal_risk_summary?ids=10101`).catch(() => {}),
+          fetch(`${ML_BASE}/health`).catch(() => {}),
+        ]);
 
         // Chart zoom overlay close handlers
         function closeChartZoom() {
