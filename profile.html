@@ -404,6 +404,7 @@
 
         const miniMapDiv = document.createElement('div');
         miniMapDiv.id = 'zone-minimap';
+        miniMapDiv.style.cssText = 'width:100%;height:200px;border-radius:8px;overflow:hidden;border:1px solid #e5e7eb;background:#f3f4f6;margin-bottom:.75rem;flex-shrink:0;';
         right.appendChild(miniMapDiv);
 
         const card = document.createElement('div');
@@ -1829,8 +1830,8 @@
           // Render initial view (charts)
           updateTables(selectedIds);
 
-          // Mini-map — renders asynchronously, boundary GeoJSON is browser-cached from index.html
-          window.initZoneMiniMap(selectedIds, currentZoneType);
+          // Mini-map — defer one frame so browser has calculated layout before MapLibre reads container size
+          requestAnimationFrame(() => window.initZoneMiniMap(selectedIds, currentZoneType));
 
           // ── Tab bar
           const tabButtons = document.querySelectorAll('.view-tab');
@@ -2012,7 +2013,9 @@
           style: 'https://tiles.openfreemap.org/styles/bright',
           bounds,
           fitBoundsOptions: { padding: 32 },
-          interactive: false,
+          dragPan: false, scrollZoom: false, boxZoom: false,
+          dragRotate: false, keyboard: false, doubleClickZoom: false,
+          touchZoomRotate: false,
           attributionControl: false,
         });
 
