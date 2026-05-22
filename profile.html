@@ -357,9 +357,11 @@
         const savedTitle = window.areaProfileTitle || 'Click to edit title';
         const layout = document.createElement('div');
         layout.className = 'summary-row';
+        layout.style.cssText = 'display:flex;align-items:stretch;gap:20px;';
 
         const left = document.createElement('div');
         left.className = 'summary-left';
+        left.style.cssText = 'flex:1;min-width:0;';
 
         const editableTitle = document.createElement('h2');
         editableTitle.textContent     = savedTitle;
@@ -399,34 +401,35 @@
         });
         left.appendChild(summaryList);
 
-        // Centre column — population card
+        // Centre column — population card (inline styles for cache reliability)
         const centre = document.createElement('div');
-        centre.className = 'summary-centre';
+        centre.style.cssText = 'flex:0 0 150px;display:flex;align-items:center;justify-content:center;';
 
         const card = document.createElement('div');
-        card.className = 'population-card';
+        card.id = 'pop-card';
+        card.style.cssText = 'background:#4f46e5;color:#fff;border-radius:12px;padding:1.25rem 1rem;text-align:center;width:100%;box-shadow:0 4px 16px rgba(79,70,229,.3);';
         const lbl = document.createElement('div');
-        lbl.className   = 'population-label';
+        lbl.style.cssText = 'font-size:.68rem;font-weight:600;text-transform:uppercase;letter-spacing:.07em;opacity:.8;margin-bottom:.3rem;';
         lbl.textContent = 'Population';
         const val = document.createElement('div');
-        val.className   = 'population-value';
-        val.id          = 'totalPopulation';
+        val.id = 'totalPopulation';
+        val.style.cssText = 'font-size:1.5rem;font-weight:700;line-height:1.1;letter-spacing:-.02em;';
         val.textContent = totalPopulation.toLocaleString('de-AT');
         const sublbl = document.createElement('div');
-        sublbl.className = 'population-sublabel';
+        sublbl.style.cssText = 'font-size:.68rem;opacity:.72;margin-top:.2rem;';
         sublbl.textContent = 'selected';
         card.appendChild(lbl);
         card.appendChild(val);
         card.appendChild(sublbl);
         centre.appendChild(card);
 
-        // Right column — mini-map
+        // Right column — mini-map (inline styles for reliability)
         const right = document.createElement('div');
-        right.className = 'summary-right';
+        right.style.cssText = 'flex:0 0 280px;width:280px;';
 
         const miniMapDiv = document.createElement('div');
         miniMapDiv.id = 'zone-minimap';
-        miniMapDiv.style.cssText = 'width:100%;height:180px;';
+        miniMapDiv.style.cssText = 'width:100%;height:180px;border-radius:8px;overflow:hidden;border:1px solid #e5e7eb;background:#f3f4f6;';
         right.appendChild(miniMapDiv);
 
         layout.appendChild(left);
