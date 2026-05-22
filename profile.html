@@ -752,7 +752,23 @@
         cloneWrapper.style.cssText = 'background:#fff;padding:20px;font-family:sans-serif;max-width:1200px;margin:0 auto;';
 
         const breakdownClone = breakdownContainer.cloneNode(true);
-        const contentClone   = contentSource.cloneNode(true);
+
+        // Replace the WebGL mini-map canvas with a static image (html2canvas can't capture WebGL)
+        const miniMapPlaceholder = breakdownClone.querySelector('#zone-minimap');
+        if (miniMapPlaceholder && window._zoneMiniMap) {
+          try {
+            const mapCanvas = window._zoneMiniMap.getCanvas();
+            const mapImg = new Image();
+            mapImg.src = mapCanvas.toDataURL('image/png');
+            mapImg.style.cssText = miniMapPlaceholder.style.cssText;
+            mapImg.style.display = 'block';
+            miniMapPlaceholder.parentNode.replaceChild(mapImg, miniMapPlaceholder);
+          } catch (_) {
+            miniMapPlaceholder.remove();
+          }
+        }
+
+        const contentClone = contentSource.cloneNode(true);
 
         if (view === 'charts') {
           const chartWrapper = document.createElement('div');
@@ -2031,7 +2047,9 @@
           dragRotate: false, keyboard: false, doubleClickZoom: false,
           touchZoomRotate: false,
           attributionControl: false,
+          preserveDrawingBuffer: true,
         });
+        window._zoneMiniMap = map;
 
         map.on('load', () => {
           map.addSource('zones', { type: 'geojson', data: geoJSON, generateId: true });
