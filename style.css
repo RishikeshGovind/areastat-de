@@ -1053,7 +1053,7 @@ button {
 /* Override breakdown styles inside header */
 #modal-header .summary-row {
   display: flex;
-  align-items: flex-start;
+  align-items: stretch;
   background: transparent;
   border: none;
   padding: 0;
@@ -1066,6 +1066,45 @@ button {
   min-width: 0;
 }
 
+.summary-centre {
+  flex: 0 0 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.population-card {
+  background: var(--accent);
+  color: #fff;
+  border-radius: 12px;
+  padding: 1.25rem 1rem;
+  text-align: center;
+  width: 100%;
+  box-shadow: 0 4px 16px rgba(79,70,229,.25);
+}
+
+.population-label {
+  font-size: .72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  opacity: .85;
+  margin-bottom: .3rem;
+}
+
+.population-value {
+  font-size: 1.65rem;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -.02em;
+}
+
+.population-sublabel {
+  font-size: .7rem;
+  opacity: .75;
+  margin-top: .25rem;
+}
+
 .summary-right {
   flex: 0 0 280px;
   width: 280px;
@@ -1076,16 +1115,13 @@ button {
 /* ── Zone mini-map (summary panel) ──────────────────────── */
 #zone-minimap {
   width: 100%;
-  height: 200px;
+  height: 180px;
   border-radius: 8px;
   overflow: hidden;
   border: 1px solid var(--border);
   background: #f3f4f6;
-  margin-bottom: .75rem;
-  flex-shrink: 0;
 }
 
-/* MapLibre attribution inside mini-map */
 #zone-minimap .maplibregl-ctrl-attrib { display: none; }
 #zone-minimap .maplibregl-ctrl-logo   { display: none; }
 

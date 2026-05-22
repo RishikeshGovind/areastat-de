@@ -399,6 +399,28 @@
         });
         left.appendChild(summaryList);
 
+        // Centre column — population card
+        const centre = document.createElement('div');
+        centre.className = 'summary-centre';
+
+        const card = document.createElement('div');
+        card.className = 'population-card';
+        const lbl = document.createElement('div');
+        lbl.className   = 'population-label';
+        lbl.textContent = 'Population';
+        const val = document.createElement('div');
+        val.className   = 'population-value';
+        val.id          = 'totalPopulation';
+        val.textContent = totalPopulation.toLocaleString('de-AT');
+        const sublbl = document.createElement('div');
+        sublbl.className = 'population-sublabel';
+        sublbl.textContent = 'selected';
+        card.appendChild(lbl);
+        card.appendChild(val);
+        card.appendChild(sublbl);
+        centre.appendChild(card);
+
+        // Right column — mini-map
         const right = document.createElement('div');
         right.className = 'summary-right';
 
@@ -407,19 +429,8 @@
         miniMapDiv.style.cssText = 'width:100%;height:180px;';
         right.appendChild(miniMapDiv);
 
-        const card = document.createElement('div');
-        card.className = 'population-card';
-        const lbl = document.createElement('div');
-        lbl.className   = 'population-label';
-        lbl.textContent = 'Population selected';
-        const val = document.createElement('div');
-        val.className   = 'population-value';
-        val.id          = 'totalPopulation';
-        val.textContent = totalPopulation.toLocaleString('de-AT');
-        card.appendChild(lbl);
-        card.appendChild(val);
-        right.appendChild(card);
         layout.appendChild(left);
+        layout.appendChild(centre);
         layout.appendChild(right);
         container.appendChild(layout);
       }
