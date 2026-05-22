@@ -1052,11 +1052,25 @@ button {
 
 /* Override breakdown styles inside header */
 #modal-header .summary-row {
+  display: flex;
+  align-items: flex-start;
   background: transparent;
   border: none;
   padding: 0;
   margin: 0;
-  gap: 16px;
+  gap: 20px;
+}
+
+.summary-left {
+  flex: 1;
+  min-width: 0;
+}
+
+.summary-right {
+  flex: 0 0 280px;
+  width: 280px;
+  display: flex;
+  flex-direction: column;
 }
 
 /* ── Zone mini-map (summary panel) ──────────────────────── */
