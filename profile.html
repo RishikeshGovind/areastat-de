@@ -195,55 +195,41 @@
       <div id="breakdown-container"></div>
     </div>
 
-    <!-- ── Modal toolbar: indicators + tabs + actions ── -->
+    <!-- ── Modal toolbar: domain tabs + actions ── -->
     <div id="modal-toolbar" style="display:none">
-      <div id="modal-toolbar-left">
-        <details id="indicator-filter">
-          <summary data-i18n="drawer.indicators">Indicators ▼</summary>
-          <div id="indicator-filter-panel">
-            <form id="category-form">
-              <div class="category-group">
-                <button type="button" class="group-toggle" data-i18n="drawer.demographie">Demographics ▼</button>
-                <div class="group-content">
-                  <label><input type="checkbox" value="AgeStructure" checked> <span data-i18n="dom.agestructure">Age Structure</span></label>
-                  <label><input type="checkbox" value="Migration" checked> <span data-i18n="dom.migration">Migration</span></label>
-                  <label><input type="checkbox" value="Housing" checked> <span data-i18n="dom.housing">Housing</span></label>
-                  <label><input type="checkbox" value="Safety" checked> <span data-i18n="dom.safety">Safety</span></label>
-                </div>
-              </div>
-              <div class="category-group">
-                <button type="button" class="group-toggle" data-i18n="drawer.economy">Economy ▼</button>
-                <div class="group-content">
-                  <label><input type="checkbox" value="LabourMarket" checked> <span data-i18n="dom.labourmarket">Labour Market</span></label>
-                  <label><input type="checkbox" value="Economy" checked> <span data-i18n="dom.economy">Economy</span></label>
-                  <label><input type="checkbox" value="Education" checked> <span data-i18n="dom.education">Education</span></label>
-                </div>
-              </div>
-            </form>
-          </div>
-        </details>
+      <div id="drawer-tabs">
+        <button class="view-tab selected" data-view="overview">Overview</button>
+        <button class="view-tab" data-view="demographics">Demographics</button>
+        <button class="view-tab" data-view="economics">Economics</button>
+        <button class="view-tab" data-view="financial">Financial</button>
+        <button class="view-tab" data-view="ml-export">ML Export</button>
+        <button class="view-tab" data-view="explore">DST Explorer</button>
       </div>
-      <div id="modal-toolbar-right">
-        <div id="drawer-tabs">
-          <button class="view-tab selected" data-view="charts" data-i18n="tab.charts">Charts</button>
-          <button class="view-tab" data-view="tables" data-i18n="tab.tables">Tables</button>
-          <button class="view-tab analysis-tab" data-view="analysis">⚡ Analysis</button>
-          <button class="view-tab" data-view="explore">🗄️ Explore DST</button>
-        </div>
-        <div id="drawer-actions">
-          <button onclick="downloadExcel()" data-i18n="btn.excel">⬇ Excel</button>
-          <button onclick="downloadSummaryImage()" data-i18n="btn.image">⬇ Image</button>
-          <button id="run-typology-btn" data-i18n="btn.typology">Run Typology</button>
-        </div>
+      <div id="drawer-actions">
+        <button onclick="downloadExcel()">⬇ Excel</button>
+        <button onclick="downloadSummaryImage()">⬇ Image</button>
       </div>
+      <!-- Hidden form kept for internal aggregation logic -->
+      <form id="category-form" style="display:none">
+        <input type="checkbox" value="AgeStructure" checked>
+        <input type="checkbox" value="LabourMarket" checked>
+        <input type="checkbox" value="Economy" checked>
+        <input type="checkbox" value="Education" checked>
+        <input type="checkbox" value="Migration" checked>
+        <input type="checkbox" value="Housing" checked>
+        <input type="checkbox" value="Safety" checked>
+      </form>
     </div>
 
     <!-- ── Main body ── -->
     <div id="modal-body" style="display:none">
-      <div id="stats-strip"></div>
-      <div id="charts-container"></div>
-      <div id="tables-container" style="display:none;"></div>
-      <div id="analysis-container" style="display:none;"></div>
+      <!-- Domain tabs -->
+      <div id="overview-container"></div>
+      <div id="demographics-container" style="display:none;"></div>
+      <div id="economics-container" style="display:none;"></div>
+      <div id="financial-container" style="display:none;"></div>
+      <div id="ml-export-container" style="display:none;"></div>
+      <!-- DST Explorer -->
       <div id="explorer-container" style="display:none;">
         <div id="explorer-sidebar"></div>
         <div id="explorer-panel">
@@ -255,8 +241,13 @@
           </div>
         </div>
       </div>
-      <div id="cluster-summary"></div>
-      <div id="cluster-profiles"></div>
+      <!-- Hidden: used by download functions only -->
+      <div id="stats-strip" style="display:none;"></div>
+      <div id="charts-container" style="display:none;"></div>
+      <div id="tables-container" style="display:none;"></div>
+      <div id="analysis-container" style="display:none;"></div>
+      <div id="cluster-summary" style="display:none;"></div>
+      <div id="cluster-profiles" style="display:none;"></div>
       <p class="drawer-source">
         Source: <a href="https://www.dst.dk" target="_blank">Statistics Denmark (DST)</a>
         · <a href="https://api.dataforsyningen.dk" target="_blank">DAWA</a> · CC BY 4.0
@@ -272,12 +263,15 @@
       let selectedCategories = JSON.parse(localStorage.getItem('profile_categories') || JSON.stringify(DEFAULT_PROFILE_CATEGORIES));
       window.gcdNameMap      = JSON.parse(localStorage.getItem('profile_gcd_names')  || '{}');
 
-      let kommuneData         = {};
-      let regionData            = {};
-      let denmarkTotals       = {};
+      let kommuneData          = {};
+      let regionData           = {};
+      let denmarkTotals        = {};
       let latestAggregatedData = {};
-      let currentView         = 'charts';
-      window.chartInstances   = [];
+      let currentView          = 'overview';
+      window.chartInstances    = [];
+
+      const DEMO_DOMAINS = ['AgeStructure', 'Migration', 'Housing', 'Safety'];
+      const ECON_DOMAINS = ['LabourMarket', 'Economy', 'Education'];
 
       const excludedKeys = EXCLUDED_PROFILE_KEYS;
 
@@ -564,12 +558,7 @@
         const tablesContainer = document.getElementById('tables-container');
         const chartsContainer = document.getElementById('charts-container');
 
-        let selectedTab = document.querySelector('.view-tab.selected');
-        if (!selectedTab) {
-          selectedTab = document.querySelector('.view-tab[data-view="charts"]');
-          if (selectedTab) selectedTab.classList.add('selected');
-        }
-        const selectedView = selectedTab ? selectedTab.getAttribute('data-view') : 'charts';
+        const selectedView = 'charts'; // always populate charts-container for Excel download
 
         tablesContainer.innerHTML = '';
         chartsContainer.innerHTML = '';
@@ -818,7 +807,56 @@
 
       function downloadSummaryImage() {
         const selectedTab = document.querySelector('.view-tab.selected');
-        const view = selectedTab ? selectedTab.getAttribute('data-view') : 'charts';
+        const view = selectedTab ? selectedTab.getAttribute('data-view') : 'overview';
+
+        // For domain tabs, capture the active domain container
+        const domainContainerMap = {
+          overview:     'overview-container',
+          demographics: 'demographics-container',
+          economics:    'economics-container',
+          financial:    'financial-container',
+          'ml-export':  'ml-export-container',
+        };
+        if (domainContainerMap[view]) {
+          const src = document.getElementById(domainContainerMap[view]);
+          if (!src) return;
+          const wrap = document.createElement('div');
+          wrap.style.cssText = 'background:#fff;padding:20px;font-family:sans-serif;max-width:1200px;margin:0 auto;';
+          const clone = src.cloneNode(true);
+          clone.style.display = 'block';
+          const mmInClone = clone.querySelector('#zone-minimap');
+          if (mmInClone && window._zoneMiniMap) {
+            try {
+              const img = new Image();
+              img.src = window._zoneMiniMap.getCanvas().toDataURL('image/png');
+              img.style.cssText = 'width:100%;height:220px;border-radius:8px;object-fit:cover;display:block;';
+              mmInClone.innerHTML = '';
+              mmInClone.appendChild(img);
+            } catch (_) { mmInClone.remove(); }
+          }
+          wrap.appendChild(clone);
+          document.body.appendChild(wrap);
+          wrap.offsetHeight;
+          waitForImagesToLoad(wrap).then(() =>
+            new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(() =>
+              html2canvas(wrap, { useCORS: true, scale: 2, backgroundColor: '#ffffff' }).then(resolve)
+            )))
+          ).then(canvas => {
+            const fc = document.createElement('canvas');
+            fc.width = canvas.width; fc.height = canvas.height + 40;
+            const ctx = fc.getContext('2d');
+            ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, fc.width, fc.height);
+            ctx.drawImage(canvas, 0, 0);
+            ctx.font = '12px sans-serif'; ctx.fillStyle = '#666666'; ctx.textAlign = 'right';
+            ctx.fillText('Source: Statistics Denmark (DST) · DAWA · CC BY 4.0', fc.width - 20, canvas.height + 25);
+            const link = document.createElement('a');
+            link.download = `areastat_${view}.png`;
+            link.href = fc.toDataURL('image/png');
+            link.click();
+            document.body.removeChild(wrap);
+          });
+          return;
+        }
 
         if (view === 'analysis') {
           const src = document.getElementById('analysis-container');
@@ -1198,19 +1236,9 @@
         }
 
         const btn = document.getElementById('run-typology-btn');
-        btn.disabled = true;
-        btn.textContent = 'Running…';
+        if (btn) { btn.disabled = true; btn.textContent = 'Running…'; }
 
-        // Ensure cluster containers are visible (switch away from Analysis tab if needed)
-        const modalBody = document.getElementById('modal-body');
-        if (modalBody.classList.contains('analysis-active')) {
-          modalBody.classList.remove('analysis-active');
-          document.querySelectorAll('.view-tab').forEach(t => t.classList.remove('selected'));
-          const chartsTab = document.querySelector('.view-tab[data-view="charts"]');
-          if (chartsTab) chartsTab.classList.add('selected');
-          document.getElementById('charts-container').style.display = 'grid';
-          document.getElementById('analysis-container').style.display = 'none';
-        }
+        document.getElementById('modal-body').classList.remove('analysis-active');
 
         const url = `${PLUMBER_BASE}/cluster_typology?ids=${encodeURIComponent(ids.join(','))}`;
         fetch(url)
@@ -1227,8 +1255,7 @@
           })
           .catch(err => console.error('Cluster error:', err))
           .finally(() => {
-            btn.disabled = false;
-            btn.textContent = 'Run Typology';
+            if (btn) { btn.disabled = false; btn.textContent = 'Run Typology'; }
           });
       }
 
@@ -1927,118 +1954,120 @@
           window.denmarkPopulation = totalPopulationForData(kommuneData);
 
           // Show content
-          document.getElementById('profile-loading').style.display    = 'none';
-          document.getElementById('modal-header').style.display       = '';
-          document.getElementById('modal-toolbar').style.display      = '';
-          document.getElementById('modal-body').style.display         = '';
-
-          // Sync category checkboxes to the saved selection
-          document.querySelectorAll('#category-form input[type="checkbox"]').forEach(cb => {
-            cb.checked = selectedCategories.includes(cb.value);
-          });
+          document.getElementById('profile-loading').style.display = 'none';
+          document.getElementById('modal-toolbar').style.display   = '';
+          document.getElementById('modal-body').style.display      = '';
+          // modal-header (old breakdown bar) stays hidden — overview tab handles this
 
           window.selectedIdsExcel = new Set(selectedIds);
           window.chosenCategories = selectedCategories;
 
-          // Render initial view (charts)
-          updateTables(selectedIds);
+          // Compute aggregated data (no rendering side-effects that would conflict with new tabs)
+          (function computeAggregated() {
+            const src = currentZoneType === 'region' ? regionData : kommuneData;
+            const agg = {};
+            let totalPop = 0;
+            selectedIds.forEach(id => {
+              const z = src[id];
+              if (!z) return;
+              totalPop += getScalar(z['Population']) || 0;
+              for (const [key, val] of Object.entries(z)) {
+                if (excludedKeys.includes(key) || typeof val !== 'object' || val === null) continue;
+                if (!agg[key]) agg[key] = {};
+                for (const [ind, v] of Object.entries(val)) {
+                  if (typeof v !== 'number') continue;
+                  if (!agg[key][ind]) agg[key][ind] = { sum: 0, count: 0 };
+                  agg[key][ind].sum += v;
+                  agg[key][ind].count++;
+                }
+              }
+            });
+            latestAggregatedData = {};
+            for (const [domain, inds] of Object.entries(agg)) {
+              latestAggregatedData[domain] = {};
+              for (const [ind, { sum, count }] of Object.entries(inds)) {
+                latestAggregatedData[domain][ind] = isRatePer1000Indicator(domain, ind)
+                  ? (totalPop > 0 ? parseFloat(((sum / totalPop) * 1000).toFixed(2)) : 0)
+                  : (count > 0 ? parseFloat((sum / count).toFixed(2)) : 0);
+              }
+            }
+            window.latestAggregatedData = latestAggregatedData;
+            window.chosenCategories = DEFAULT_PROFILE_CATEGORIES;
+            selectedCategories = DEFAULT_PROFILE_CATEGORIES;
+          })();
 
-          // Mini-map — defer one frame so browser has calculated layout before MapLibre reads container size
-          requestAnimationFrame(() => window.initZoneMiniMap(selectedIds, currentZoneType));
+          // Render Overview tab (default landing)
+          renderOverview(selectedIds);
 
           // ── Tab bar
-          const tabButtons = document.querySelectorAll('.view-tab');
-          const views = {
-            charts:   document.getElementById('charts-container'),
-            tables:   document.getElementById('tables-container'),
-            analysis: document.getElementById('analysis-container'),
-            explore:  document.getElementById('explorer-container'),
+          const allTabContainers = {
+            overview:     document.getElementById('overview-container'),
+            demographics: document.getElementById('demographics-container'),
+            economics:    document.getElementById('economics-container'),
+            financial:    document.getElementById('financial-container'),
+            'ml-export':  document.getElementById('ml-export-container'),
+            explore:      document.getElementById('explorer-container'),
           };
 
-          // Hide the indicator filter panel when Explore is active
-          const indicatorFilter = document.getElementById('indicator-filter');
+          // Track which tabs have already been rendered
+          const _rendered = new Set();
 
-          tabButtons.forEach(tab => {
+          document.querySelectorAll('.view-tab').forEach(tab => {
             tab.addEventListener('click', () => {
-              tabButtons.forEach(btn => btn.classList.remove('selected'));
+              document.querySelectorAll('.view-tab').forEach(btn => btn.classList.remove('selected'));
               tab.classList.add('selected');
-              Object.values(views).forEach(div => { if (div) div.style.display = 'none'; });
+              Object.values(allTabContainers).forEach(div => { if (div) div.style.display = 'none'; });
 
               const view = tab.getAttribute('data-view');
               currentView = view;
 
+              const container = allTabContainers[view];
+              if (!container) return;
+
               if (view === 'explore') {
-                views.explore.style.display = 'flex';
-                document.getElementById('modal-body').classList.remove('analysis-active');
-                if (indicatorFilter) indicatorFilter.style.display = 'none';
+                container.style.display = 'flex';
                 initExplorer(new Set(selectedIds), currentZoneType);
                 return;
               }
 
-              if (indicatorFilter) indicatorFilter.style.display = '';
-
-              if (view === 'analysis') {
-                views.analysis.style.display = 'flex';
-                document.getElementById('modal-body').classList.add('analysis-active');
-                runFiscalAnalysis(selectedIds);
+              if (view === 'demographics') {
+                container.style.display = 'block';
+                if (!_rendered.has('demographics')) {
+                  renderDomainView('demographics-container', DEMO_DOMAINS);
+                  _rendered.add('demographics');
+                }
                 return;
               }
-              document.getElementById('modal-body').classList.remove('analysis-active');
 
-              if (!selectedCategories || selectedCategories.length === 0) return;
-              const avail = Object.keys(latestAggregatedData);
-              const valid = selectedCategories.filter(c => avail.includes(c));
-
-              if (view === 'charts') {
-                renderAggregatedCharts(latestAggregatedData, valid);
-                views[view].style.display = 'grid';
-              } else if (view === 'tables') {
-                renderAggregatedTables(latestAggregatedData, valid);
-                views[view].style.display = 'block';
+              if (view === 'economics') {
+                container.style.display = 'block';
+                if (!_rendered.has('economics')) {
+                  renderDomainView('economics-container', ECON_DOMAINS);
+                  _rendered.add('economics');
+                }
+                return;
               }
-            });
-          });
 
-          // ── Category form
-          document.getElementById('category-form').addEventListener('change', () => {
-            selectedCategories = Array.from(document.querySelectorAll('#category-form input:checked')).map(i => i.value);
-            window.chosenCategories = selectedCategories;
+              if (view === 'financial') {
+                container.style.display = 'block';
+                if (!_rendered.has('financial')) {
+                  renderFinancial(selectedIds);
+                  _rendered.add('financial');
+                }
+                return;
+              }
 
-            document.getElementById('charts-container').style.display = 'none';
-            document.getElementById('tables-container').style.display = 'none';
+              if (view === 'ml-export') {
+                container.style.display = 'block';
+                if (!_rendered.has('ml-export')) {
+                  renderMLExport(selectedIds);
+                  _rendered.add('ml-export');
+                }
+                return;
+              }
 
-            updateTables(selectedIds);
-
-            if (selectedCategories.length === 0) return;
-            const avail = Object.keys(latestAggregatedData);
-            const valid = selectedCategories.filter(c => avail.includes(c));
-            if (valid.length === 0) return;
-
-            if (currentView === 'charts') {
-              renderAggregatedCharts(latestAggregatedData, valid);
-              document.getElementById('charts-container').style.display = 'grid';
-            } else if (currentView === 'tables') {
-              renderAggregatedTables(latestAggregatedData, valid);
-              document.getElementById('tables-container').style.display = 'block';
-            }
-          });
-
-          // ── Run Typology button
-          document.getElementById('run-typology-btn').addEventListener('click', () => {
-            runClusterTypologyAnalysis(selectedIds);
-          });
-
-
-          // ── Group toggle accordions
-          document.querySelectorAll('.group-toggle').forEach(button => {
-            const content = button.nextElementSibling;
-            const label   = button.textContent.trim();
-            content.style.display = 'block';
-            button.textContent = label.replace('▼', '▲');
-            button.addEventListener('click', () => {
-              const isVisible = content.style.display !== 'none';
-              content.style.display = isVisible ? 'none' : 'block';
-              button.textContent = label.replace(isVisible ? '▲' : '▼', isVisible ? '▼' : '▲');
+              // overview
+              container.style.display = 'block';
             });
           });
 
@@ -2049,7 +2078,450 @@
           errDiv.innerHTML = `<strong>Error loading data:</strong> ${escapeHtml(err.message)}<br><br><a href="./index.html">← Return to map</a>`;
         }
       });
-    </script>
+
+      // ══ OVERVIEW TAB ══════════════════════════════════════════════════════════
+
+      function renderOverview(ids) {
+        const container = document.getElementById('overview-container');
+        if (!container) return;
+        container.innerHTML = '';
+
+        const dataSource = currentZoneType === 'region' ? regionData : kommuneData;
+        const segCfg = SEGMENTATION_CONFIG[activeSegmentation];
+
+        let totalPop = 0;
+        const segCounts = {};
+        segCfg.classes.forEach(c => { segCounts[c.key] = 0; });
+        const regionCounts = {};
+        const zoneRows = [];
+
+        ids.forEach(id => {
+          const z = dataSource[id];
+          if (!z) return;
+          totalPop += getScalar(z['Population']) || 0;
+          const segVal = getScalar(z[segCfg.dataKey]);
+          if (segVal && segCounts[segVal] !== undefined) segCounts[segVal]++;
+          const reg = getScalar(z['Region']) || 'Unknown';
+          regionCounts[reg] = (regionCounts[reg] || 0) + 1;
+          zoneRows.push({ id, name: zoneName(id), region: reg, pop: getScalar(z['Population']) || 0, seg: segVal || '–' });
+        });
+
+        // KPI row
+        const kpiRow = document.createElement('div');
+        kpiRow.style.cssText = 'display:flex;flex-wrap:wrap;gap:.75rem;padding:1.25rem 1.5rem .75rem;';
+
+        const kpis = [
+          { label: 'Zones Selected', value: ids.length, color: '#1e3a5f' },
+          { label: 'Total Population', value: totalPop.toLocaleString(), color: '#4f46e5' },
+          ...segCfg.classes.filter(c => segCounts[c.key] > 0).map(c => ({ label: c.label_en, value: segCounts[c.key], color: c.color })),
+        ];
+        kpis.forEach(k => {
+          const card = document.createElement('div');
+          card.style.cssText = `background:#fff;border:1px solid #e5e7eb;border-left:4px solid ${k.color};border-radius:8px;padding:.9rem 1.2rem;min-width:120px;`;
+          card.innerHTML = `<div style="font-size:1.4rem;font-weight:700;color:#1e3a5f;line-height:1.1;">${escapeHtml(String(k.value))}</div><div style="font-size:.72rem;color:#6b7280;margin-top:.2rem;font-weight:500;text-transform:uppercase;letter-spacing:.04em;">${escapeHtml(k.label)}</div>`;
+          kpiRow.appendChild(card);
+        });
+        container.appendChild(kpiRow);
+
+        // Layout: zone list + mini-map
+        const layout = document.createElement('div');
+        layout.style.cssText = 'display:flex;gap:1.5rem;padding:0 1.5rem 1.5rem;align-items:flex-start;';
+
+        // Zone table
+        const tableWrap = document.createElement('div');
+        tableWrap.style.cssText = 'flex:1;min-width:0;background:#fff;border:1px solid #e5e7eb;border-radius:8px;overflow:hidden;';
+        const tbl = document.createElement('table');
+        tbl.style.cssText = 'width:100%;border-collapse:collapse;font-size:.8rem;';
+        tbl.innerHTML = `<thead><tr style="background:#1e3a5f;color:#fff;">
+          <th style="padding:.55rem .9rem;text-align:left;font-weight:600;">Zone</th>
+          <th style="padding:.55rem .9rem;text-align:left;font-weight:600;">Region</th>
+          <th style="padding:.55rem .9rem;text-align:right;font-weight:600;">Population</th>
+          <th style="padding:.55rem .9rem;text-align:left;font-weight:600;">Type</th>
+        </tr></thead>`;
+        const tbody = document.createElement('tbody');
+        zoneRows.sort((a,b) => b.pop - a.pop).forEach((z, i) => {
+          const tr = document.createElement('tr');
+          tr.style.cssText = `border-bottom:1px solid #f0f0f0;${i%2===1?'background:#f9fafb;':''}`;
+          tr.innerHTML = `<td style="padding:.45rem .9rem;font-weight:500;color:#111827;">${escapeHtml(z.name || z.id)}</td>
+            <td style="padding:.45rem .9rem;color:#6b7280;">${escapeHtml(z.region)}</td>
+            <td style="padding:.45rem .9rem;text-align:right;font-family:'JetBrains Mono',monospace;color:#374151;">${z.pop.toLocaleString()}</td>
+            <td style="padding:.45rem .9rem;color:#6b7280;">${escapeHtml(z.seg)}</td>`;
+          tbody.appendChild(tr);
+        });
+        tbl.appendChild(tbody);
+        tableWrap.appendChild(tbl);
+
+        // Mini-map placeholder (actual map rendered separately via initZoneMiniMap)
+        const mapCol = document.createElement('div');
+        mapCol.style.cssText = 'flex:0 0 280px;width:280px;';
+        const miniMapDiv = document.createElement('div');
+        miniMapDiv.id = 'zone-minimap';
+        miniMapDiv.style.cssText = 'width:100%;height:220px;border-radius:8px;overflow:hidden;border:1px solid #e5e7eb;background:#f3f4f6;';
+        mapCol.appendChild(miniMapDiv);
+
+        layout.appendChild(tableWrap);
+        layout.appendChild(mapCol);
+        container.appendChild(layout);
+
+        // Trigger mini-map render into the new element
+        requestAnimationFrame(() => window.initZoneMiniMap(selectedIds, currentZoneType));
+      }
+
+      // ══ DEMOGRAPHICS / ECONOMICS DOMAIN VIEWS ════════════════════════════════
+
+      function renderDomainView(containerId, domains) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        container.innerHTML = '';
+
+        const avail = Object.keys(latestAggregatedData);
+        const valid = domains.filter(d => avail.includes(d));
+        if (!valid.length) {
+          container.innerHTML = '<p style="padding:2rem;color:#6b7280;">No data available for selected zones.</p>';
+          return;
+        }
+
+        // Charts grid
+        const grid = document.createElement('div');
+        grid.style.cssText = 'display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:1.25rem;padding:1.5rem;';
+
+        valid.forEach(domain => {
+          const values = latestAggregatedData[domain];
+          if (!values) return;
+          const atDomain = denmarkTotals[domain] || {};
+
+          const card = document.createElement('div');
+          card.className = 'css-chart-domain-card';
+
+          const head = document.createElement('div');
+          head.className = 'css-chart-domain-head';
+          head.innerHTML = `<span class="css-chart-domain-title">${escapeHtml(tDomain(domain))}</span>
+            <span class="css-chart-at-legend"><span class="css-chart-at-swatch"></span>Denmark avg</span>`;
+          card.appendChild(head);
+
+          Object.entries(values).forEach(([rawLabel, value]) => {
+            if (typeof value !== 'number') return;
+            const atVal  = comparableDenmarkValue(domain, rawLabel, atDomain[rawLabel]);
+            const fmt    = v => formatIndicatorValue(domain, rawLabel, v);
+            const label  = displayIndicatorLabel(domain, rawLabel);
+            const maxVal = Math.max(value, atVal ?? 0) * 1.12 || 1;
+            const barPct = Math.min((value / maxVal) * 100, 100).toFixed(1);
+            const atPct  = atVal != null ? Math.min((atVal / maxVal) * 100, 100).toFixed(1) : null;
+            const overAT = atVal != null && value > atVal;
+
+            const row = document.createElement('div');
+            row.className = 'css-indicator-row';
+            row.innerHTML = `
+              <div class="css-indicator-meta">
+                <span class="css-indicator-label">${escapeHtml(label)}</span>
+                <span class="css-indicator-value">${escapeHtml(fmt(value))}${atVal != null ? ` <span class="css-indicator-at">(DK: ${escapeHtml(fmt(atVal))})</span>` : ''}</span>
+              </div>
+              <div class="css-bar-track">
+                <div class="css-bar-fill${overAT ? ' over-at' : ''}" style="width:${barPct}%"></div>
+                ${atPct != null ? `<div class="css-bar-at" style="left:${atPct}%"></div>` : ''}
+              </div>`;
+            card.appendChild(row);
+          });
+
+          grid.appendChild(card);
+        });
+
+        container.appendChild(grid);
+      }
+
+      // ══ FINANCIAL TAB — live DST NGLK fetch ══════════════════════════════════
+
+      async function renderFinancial(ids) {
+        const container = document.getElementById('financial-container');
+        if (!container) return;
+
+        if (currentZoneType !== 'kommune') {
+          container.innerHTML = '<p style="padding:2rem;color:#6b7280;">Financial data is available at municipality (kommune) level only. Switch the geographic level on the map to Kommune.</p>';
+          return;
+        }
+
+        container.innerHTML = `<div style="display:flex;align-items:center;gap:1rem;padding:2rem;color:#6b7280;font-size:.9rem;">
+          <div style="width:24px;height:24px;border:3px solid #e2e8f0;border-top-color:#4f46e5;border-radius:50%;animation:profile-spin .7s linear infinite;flex-shrink:0;"></div>
+          Fetching municipal finance data from Statistics Denmark…
+        </div>`;
+
+        try {
+          // NGLK: Key figures for municipal general economy. KOMKODE area var.
+          // Variables: FUNKTION (line item), KOMKODE (municipality), TID (year)
+          const latest = new Date().getFullYear() - 1;
+          const koderParam = ids.map(id => id.padStart(4,'0')).join(',');
+
+          const metaRes = await fetch('https://api.statbank.dk/v1/tableinfo/NGLK?lang=en');
+          const meta    = await metaRes.json();
+
+          // Find the FUNKTION variable values
+          const funktionVar = (meta.variables || []).find(v => v.id === 'FUNKTION');
+          const tidVar      = (meta.variables || []).find(v => v.id === 'TID');
+
+          const allFunktioner = funktionVar ? funktionVar.values.map(v => v.id) : [];
+          const latestYear    = tidVar ? tidVar.values[tidVar.values.length - 1].id : String(latest);
+          const funktionLabels = {};
+          if (funktionVar) funktionVar.values.forEach(v => { funktionLabels[v.id] = v.text; });
+
+          // Fetch the data
+          const body = {
+            table: 'NGLK', format: 'JSONSTAT',
+            valuePresentation: 'Value',
+            variables: [
+              { code: 'FUNKTION', values: allFunktioner.length ? allFunktioner : ['*'] },
+              { code: 'KOMKODE',  values: ids.map(id => id.padStart(4,'0')) },
+              { code: 'TID',      values: [latestYear] },
+            ]
+          };
+          const dataRes  = await fetch('https://api.statbank.dk/v1/data', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+          });
+          const rawData = await dataRes.json();
+
+          // Parse JSONSTAT
+          const ds     = rawData.dataset || rawData;
+          const dims   = ds.dimension;
+          const values = ds.value;
+
+          if (!dims || !values) throw new Error('Unexpected NGLK response format');
+
+          const funktionIds  = dims.FUNKTION.category.index;
+          const komIds       = dims.KOMKODE.category.index;
+          const tidIds       = dims.TID.category.index;
+          const funktionLbls = dims.FUNKTION.category.label;
+          const komLbls      = dims.KOMKODE.category.label;
+
+          const nF = Object.keys(funktionIds).length;
+          const nK = Object.keys(komIds).length;
+          const nT = Object.keys(tidIds).length;
+
+          // Build lookup: komkode → funktion → value
+          const table = {};
+          Object.entries(komIds).forEach(([kom, ki]) => {
+            table[kom] = {};
+            Object.entries(funktionIds).forEach(([funk, fi]) => {
+              const idx = fi * nK * nT + ki * nT + 0;
+              table[kom][funk] = values[idx];
+            });
+          });
+
+          // Render
+          container.innerHTML = '';
+
+          const header = document.createElement('div');
+          header.style.cssText = 'padding:1.25rem 1.5rem .5rem;';
+          header.innerHTML = `<h2 style="font-size:1rem;font-weight:700;color:#1e3a5f;margin:0 0 .25rem;">Municipal Finances — Key Figures (${escapeHtml(latestYear)})</h2>
+            <p style="font-size:.78rem;color:#6b7280;margin:0;">Source: Statistics Denmark · NGLK · DKK 1,000 · <a href="https://api.statbank.dk" target="_blank" style="color:#4f46e5;">api.statbank.dk</a></p>`;
+          container.appendChild(header);
+
+          const scroll = document.createElement('div');
+          scroll.style.cssText = 'overflow-x:auto;padding:0 1.5rem 1.5rem;';
+
+          const tbl = document.createElement('table');
+          tbl.style.cssText = 'width:100%;border-collapse:collapse;font-size:.78rem;white-space:nowrap;background:#fff;border:1px solid #e5e7eb;border-radius:8px;overflow:hidden;';
+
+          const funktionList = Object.keys(funktionIds);
+
+          // Header row
+          const thead = document.createElement('thead');
+          const hRow = document.createElement('tr');
+          hRow.innerHTML = `<th style="background:#1e3a5f;color:#fff;padding:.5rem .9rem;text-align:left;position:sticky;left:0;z-index:1;">Municipality</th>`;
+          funktionList.forEach(fk => {
+            const th = document.createElement('th');
+            th.style.cssText = 'background:#1e3a5f;color:#fff;padding:.5rem .75rem;text-align:right;max-width:130px;';
+            th.title = funktionLbls[fk] || fk;
+            th.textContent = (funktionLbls[fk] || fk).substring(0, 22);
+            hRow.appendChild(th);
+          });
+          thead.appendChild(hRow);
+          tbl.appendChild(thead);
+
+          const tbody = document.createElement('tbody');
+          Object.entries(komIds).forEach(([kom, ki], ri) => {
+            const tr = document.createElement('tr');
+            tr.style.cssText = `border-bottom:1px solid #f0f0f0;${ri%2===1?'background:#f9fafb;':''}`;
+            const nameTd = document.createElement('td');
+            nameTd.style.cssText = 'padding:.45rem .9rem;font-weight:600;color:#1e3a5f;position:sticky;left:0;background:inherit;z-index:1;';
+            nameTd.textContent = komLbls[kom] || kom;
+            tr.appendChild(nameTd);
+            funktionList.forEach(fk => {
+              const td = document.createElement('td');
+              td.style.cssText = 'padding:.45rem .75rem;text-align:right;font-family:"JetBrains Mono",monospace;color:#374151;';
+              const v = table[kom]?.[fk];
+              td.textContent = (v != null && !isNaN(v)) ? Number(v).toLocaleString() : '–';
+              tr.appendChild(td);
+            });
+            tbody.appendChild(tr);
+          });
+          tbl.appendChild(tbody);
+          scroll.appendChild(tbl);
+          container.appendChild(scroll);
+
+        } catch (err) {
+          container.innerHTML = `<div style="padding:2rem;color:#dc2626;background:#fef2f2;border-radius:8px;margin:1.5rem;">
+            <strong>Could not load financial data.</strong><br>${escapeHtml(err.message)}<br>
+            <small style="color:#6b7280;display:block;margin-top:.5rem;">Tip: Financial data requires kommuner selected (not regions), and a network connection to api.statbank.dk.</small>
+          </div>`;
+        }
+      }
+
+      // ══ ML EXPORT TAB — feature matrix + CSV download ════════════════════════
+
+      function renderMLExport(ids) {
+        const container = document.getElementById('ml-export-container');
+        if (!container) return;
+        container.innerHTML = '';
+
+        const dataSource = currentZoneType === 'region' ? regionData : kommuneData;
+
+        // Build flat feature rows
+        const ALL_DOMAINS = [...DEMO_DOMAINS, ...ECON_DOMAINS];
+        const colDefs = []; // { domain, indicator, colName }
+
+        // Discover all columns from first valid zone
+        for (const id of ids) {
+          const z = dataSource[id];
+          if (!z) continue;
+          ALL_DOMAINS.forEach(domain => {
+            const domData = z[domain];
+            if (!domData) return;
+            Object.keys(domData).forEach(indicator => {
+              const colName = (domain + '_' + indicator)
+                .replace(/[^a-zA-Z0-9_]/g, '_')
+                .replace(/_+/g, '_')
+                .replace(/_%_/g, '_pct_')
+                .toLowerCase();
+              if (!colDefs.find(c => c.colName === colName)) {
+                colDefs.push({ domain, indicator, colName });
+              }
+            });
+          });
+          break;
+        }
+
+        const metaCols = ['zone_code', 'zone_name', 'region', 'population', 'urban_rural', 'settlement_class'];
+        const allCols  = [...metaCols, ...colDefs.map(c => c.colName)];
+
+        const rows = ids.map(id => {
+          const z = dataSource[id];
+          if (!z) return null;
+          const row = {
+            zone_code:       id,
+            zone_name:       zoneName(id),
+            region:          getScalar(z['Region']) || '',
+            population:      getScalar(z['Population']) || 0,
+            urban_rural:     getScalar(z['Urban_rural_status']) || '',
+            settlement_class: getScalar(z['Settlement_class']) || '',
+          };
+          colDefs.forEach(({ domain, indicator, colName }) => {
+            const v = z[domain]?.[indicator];
+            row[colName] = typeof v === 'number' ? v : '';
+          });
+          return row;
+        }).filter(Boolean);
+
+        if (!rows.length) {
+          container.innerHTML = '<p style="padding:2rem;color:#6b7280;">No zone data found.</p>';
+          return;
+        }
+
+        // Header
+        const hdr = document.createElement('div');
+        hdr.style.cssText = 'padding:1.25rem 1.5rem .5rem;display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:.75rem;';
+        hdr.innerHTML = `<div>
+          <h2 style="font-size:1rem;font-weight:700;color:#1e3a5f;margin:0 0 .2rem;">ML Feature Matrix</h2>
+          <p style="font-size:.78rem;color:#6b7280;margin:0;">${escapeHtml(String(rows.length))} zones &times; ${escapeHtml(String(allCols.length))} features &nbsp;&middot;&nbsp; Each row = one area &nbsp;&middot;&nbsp; Ready for model training</p>
+        </div>
+        <div style="display:flex;gap:.5rem;">
+          <button id="ml-dl-csv" style="background:#4f46e5;color:#fff;border:none;border-radius:6px;padding:.45rem 1rem;font-size:.82rem;font-weight:600;cursor:pointer;">⬇ Download CSV</button>
+          <button id="ml-dl-json" style="background:#fff;color:#374151;border:1px solid #d1d5db;border-radius:6px;padding:.45rem 1rem;font-size:.82rem;font-weight:600;cursor:pointer;">⬇ JSON</button>
+        </div>`;
+        container.appendChild(hdr);
+
+        // Column groups legend
+        const legend = document.createElement('div');
+        legend.style.cssText = 'padding:.25rem 1.5rem .9rem;display:flex;flex-wrap:wrap;gap:.4rem;';
+        const groups = [
+          { label: 'Meta', count: metaCols.length, color: '#6b7280' },
+          { label: 'Demographics', count: colDefs.filter(c => DEMO_DOMAINS.includes(c.domain)).length, color: '#7c3aed' },
+          { label: 'Economics', count: colDefs.filter(c => ECON_DOMAINS.includes(c.domain)).length, color: '#0e7490' },
+        ];
+        groups.forEach(g => {
+          const chip = document.createElement('span');
+          chip.style.cssText = `display:inline-flex;align-items:center;gap:.3rem;background:${g.color}18;border:1px solid ${g.color}40;color:${g.color};border-radius:99px;padding:.2rem .65rem;font-size:.72rem;font-weight:600;`;
+          chip.textContent = `${g.label} (${g.count})`;
+          legend.appendChild(chip);
+        });
+        container.appendChild(legend);
+
+        // Table
+        const scroll = document.createElement('div');
+        scroll.style.cssText = 'overflow:auto;padding:0 1.5rem 1.5rem;max-height:60vh;';
+
+        const tbl = document.createElement('table');
+        tbl.style.cssText = 'width:100%;border-collapse:collapse;font-size:.75rem;white-space:nowrap;background:#fff;border:1px solid #e5e7eb;';
+
+        const thead = document.createElement('thead');
+        const hRow = document.createElement('tr');
+        allCols.forEach((col, ci) => {
+          const th = document.createElement('th');
+          const isDemo = colDefs.find(c => c.colName === col && DEMO_DOMAINS.includes(c.domain));
+          const isEcon = colDefs.find(c => c.colName === col && ECON_DOMAINS.includes(c.domain));
+          const bg = ci < metaCols.length ? '#374151' : isDemo ? '#5b21b6' : '#0e7490';
+          th.style.cssText = `background:${bg};color:#fff;padding:.45rem .65rem;text-align:left;position:sticky;top:0;font-weight:600;`;
+          th.title = col;
+          th.textContent = col.length > 20 ? col.substring(0,18) + '…' : col;
+          hRow.appendChild(th);
+        });
+        thead.appendChild(hRow);
+        tbl.appendChild(thead);
+
+        const tbody = document.createElement('tbody');
+        rows.forEach((row, ri) => {
+          const tr = document.createElement('tr');
+          tr.style.cssText = `border-bottom:1px solid #f0f0f0;${ri%2===1?'background:#f9fafb;':''}`;
+          allCols.forEach((col, ci) => {
+            const td = document.createElement('td');
+            const isMeta = ci < metaCols.length;
+            td.style.cssText = `padding:.38rem .65rem;${isMeta?'font-weight:500;color:#1e3a5f;':'font-family:"JetBrains Mono",monospace;color:#374151;text-align:right;'}`;
+            const v = row[col];
+            td.textContent = typeof v === 'number' ? (Number.isInteger(v) ? v.toLocaleString() : v.toFixed(2)) : String(v ?? '');
+            tr.appendChild(td);
+          });
+          tbody.appendChild(tr);
+        });
+        tbl.appendChild(tbody);
+        scroll.appendChild(tbl);
+        container.appendChild(scroll);
+
+        // CSV download
+        document.getElementById('ml-dl-csv').addEventListener('click', () => {
+          const lines = [allCols.join(',')];
+          rows.forEach(row => {
+            lines.push(allCols.map(col => {
+              const v = row[col];
+              const s = v == null ? '' : String(v);
+              return s.includes(',') || s.includes('"') ? `"${s.replace(/"/g, '""')}"` : s;
+            }).join(','));
+          });
+          const blob = new Blob([lines.join('\n')], { type: 'text/csv' });
+          const a = document.createElement('a');
+          a.href = URL.createObjectURL(blob);
+          a.download = `areastat_ml_features_${ids.length}zones.csv`;
+          a.click();
+        });
+
+        // JSON download
+        document.getElementById('ml-dl-json').addEventListener('click', () => {
+          const blob = new Blob([JSON.stringify({ columns: allCols, rows }, null, 2)], { type: 'application/json' });
+          const a = document.createElement('a');
+          a.href = URL.createObjectURL(blob);
+          a.download = `areastat_ml_features_${ids.length}zones.json`;
+          a.click();
+        });
+      }
 
   <!-- Chart zoom overlay -->
   <div id="chart-zoom-overlay" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(10,20,40,0.82);backdrop-filter:blur(4px);align-items:center;justify-content:center;">

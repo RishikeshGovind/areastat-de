@@ -206,13 +206,17 @@
                 f.properties[segCfg.prop] = data ? getScalar(data[segCfg.dataKey]) || '' : '';
               }
             };
+            window.gcdNameMap = {};
             kg.features.forEach((f, idx) => {
               const gkz = extractGkz(f.properties, idx, 'kommune');
               kommuneIdMap[idx] = gkz;
-              if (gkz) kommuneGkzToId[gkz] = idx;
+              if (gkz) {
+                kommuneGkzToId[gkz] = idx;
+                const n = f.properties.navn || f.properties.name || f.properties.NAME || null;
+                if (n) window.gcdNameMap[gkz] = n;
+              }
               annotateFeature(f, gkz && kommuneData[gkz] ? kommuneData[gkz] : null);
             });
-            window.gcdNameMap = {};
             sg.features.forEach((f, idx) => {
               const gkz = extractGkz(f.properties, idx, 'region');
               regionIdMap[idx] = gkz;

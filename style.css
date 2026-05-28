@@ -316,8 +316,7 @@ a:hover { text-decoration: underline; }
   flex-wrap: wrap;
 }
 
-#modal-toolbar-left { display: flex; align-items: center; gap: .75rem; }
-#modal-toolbar-right { display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; }
+/* #modal-toolbar-left / -right removed — toolbar is now a single flex row */
 
 /* ── Indicator filter (details/summary) ─────────────────── */
 #indicator-filter summary {
@@ -1128,51 +1127,26 @@ button {
 /* Modal toolbar (indicator filter + tabs + actions) */
 #modal-toolbar {
   display: flex;
-  align-items: flex-start;
-  gap: 0;
+  align-items: center;
+  gap: 1rem;
   background: var(--surface);
   border-bottom: 1px solid var(--border);
   flex-shrink: 0;
-  padding: 0;
-}
-
-#modal-toolbar-left {
-  flex: 0 0 210px;
-  border-right: 1px solid var(--border);
-  padding: 10px 12px;
-  background: #f9fafb;
-}
-
-#modal-toolbar-right {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 8px 16px;
+  padding: .55rem 1.25rem;
   flex-wrap: wrap;
 }
 
-#indicator-filter-panel {
-  margin-top: 8px;
-}
-
-/* Toolbar tabs inline */
-#modal-toolbar #drawer-tabs {
+/* Toolbar actions flush right */
+#modal-toolbar #drawer-actions {
+  margin-left: auto;
   display: flex;
   gap: 6px;
-  margin-bottom: 0;
   flex-wrap: nowrap;
 }
 
-/* Toolbar actions inline */
-#modal-toolbar #drawer-actions {
-  display: flex;
-  gap: 6px;
+/* Toolbar tabs: allow wrapping on narrow screens */
+#modal-toolbar #drawer-tabs {
   flex-wrap: wrap;
-  margin-top: 0;
-  padding-top: 0;
-  border-top: none;
-  margin-left: auto;
 }
 
 /* Modal body — scrollable content area */
