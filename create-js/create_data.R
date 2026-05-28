@@ -2,7 +2,7 @@ rm(list = ls()) # nolint: undesirable_function_linter
 source("create-js/config.R")
 options(useFancyQuotes = FALSE)
 
-source("create-js/fetch_austria_data.R")
+source("create-js/fetch_denmark_data.R")
 
 final_json <- convert_named_vectors(final_json)
 

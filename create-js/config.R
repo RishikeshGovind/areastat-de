@@ -16,16 +16,18 @@ p_load("dplyr",
        "readr",
        "tidyr",
        "tibble",
-       "purrr",
-       "eurostat")
+       "purrr")
 
 #### set-up folders & file names ####
 data_source_root <- "create-js/inputs/"
 
-#### Austrian data settings ####
-# All data is fetched freely from the Statistik Austria OGD portal.
-# No API key or registration required.
-OGD_BASE_URL <- "https://data.statistik.gv.at/data"
+#### Danish data settings ####
+# All data is fetched freely from public APIs — no API key or registration required.
+# Primary sources:
+#   DAWA (Danmarks Adressers Web API)  https://api.dataforsyningen.dk/
+#   DST  (Danmarks Statistik)          https://api.statbank.dk/v1/
+DST_BASE  <- "https://api.statbank.dk/v1/"
+DAWA_BASE <- "https://api.dataforsyningen.dk/"
 
 #### Utility functions ####
 

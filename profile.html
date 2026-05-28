@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>AreaStat AT</title>
+    <title>AreaStat DK</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -79,9 +79,8 @@
     <header id="app-header">
       <a href="./index.html" class="back-link">← Map</a>
       <div class="header-divider"></div>
-      <span class="header-title">AreaStat AT</span>
+      <span class="header-title">AreaStat DK</span>
       <span class="header-badge" data-i18n="app.badge">PhD Research Proposal</span>
-      <button id="lang-toggle">DE</button>
     </header>
 
     <!-- ── Loading / error ── -->
@@ -106,17 +105,17 @@
               <div class="category-group">
                 <button type="button" class="group-toggle" data-i18n="drawer.demographie">Demographics ▼</button>
                 <div class="group-content">
-                  <label><input type="checkbox" value="Altersstruktur" checked> <span data-i18n="dom.altersstruktur">Age Structure</span></label>
+                  <label><input type="checkbox" value="AgeStructure" checked> <span data-i18n="dom.agestructure">Age Structure</span></label>
                   <label><input type="checkbox" value="Migration" checked> <span data-i18n="dom.migration">Migration</span></label>
-                  <label><input type="checkbox" value="Haushalte" checked> <span data-i18n="dom.haushalte">Households</span></label>
+                  <label><input type="checkbox" value="Households" checked> <span data-i18n="dom.households">Households</span></label>
                 </div>
               </div>
               <div class="category-group">
-                <button type="button" class="group-toggle" data-i18n="drawer.wirtschaft">Economy ▼</button>
+                <button type="button" class="group-toggle" data-i18n="drawer.economy">Economy ▼</button>
                 <div class="group-content">
-                  <label><input type="checkbox" value="Arbeitsmarkt" checked> <span data-i18n="dom.arbeitsmarkt">Labour Market</span></label>
-                  <label><input type="checkbox" value="Wirtschaft" checked> <span data-i18n="dom.wirtschaft">Economy</span></label>
-                  <label><input type="checkbox" value="Bildung" checked> <span data-i18n="dom.bildung">Education</span></label>
+                  <label><input type="checkbox" value="LabourMarket" checked> <span data-i18n="dom.labourmarket">Labour Market</span></label>
+                  <label><input type="checkbox" value="Economy" checked> <span data-i18n="dom.economy">Economy</span></label>
+                  <label><input type="checkbox" value="Education" checked> <span data-i18n="dom.education">Education</span></label>
                 </div>
               </div>
             </form>
@@ -146,8 +145,8 @@
       <div id="cluster-summary"></div>
       <div id="cluster-profiles"></div>
       <p class="drawer-source">
-        Source: <a href="https://data.statistik.gv.at" target="_blank">Statistik Austria OGD</a>
-        · OGDEXT_AEST_GEMTAB_1 · CC BY 4.0
+        Source: <a href="https://www.dst.dk" target="_blank">Statistics Denmark (DST)</a>
+        · <a href="https://api.dataforsyningen.dk" target="_blank">DAWA</a> · CC BY 4.0
       </p>
     </div>
 
@@ -155,15 +154,14 @@
       // ══ CONFIGURATION ══════════════════════════════════════════════════════════
       // ── Read selection from localStorage (written by index.html on Open in AreaStat click)
       const selectedIds      = JSON.parse(localStorage.getItem('profile_ids')        || '[]');
-      let currentZoneType    = localStorage.getItem('profile_zone_type')              || 'gemeinde';
-      let currentLang        = localStorage.getItem('profile_lang')                   || 'en';
+      let currentZoneType    = localStorage.getItem('profile_zone_type')              || 'sogn';
       let activeSegmentation = localStorage.getItem('profile_segmentation')           || 'settlement';
       let selectedCategories = JSON.parse(localStorage.getItem('profile_categories') || JSON.stringify(DEFAULT_PROFILE_CATEGORIES));
       window.gcdNameMap      = JSON.parse(localStorage.getItem('profile_gcd_names')  || '{}');
 
-      let bezirkData          = {};
-      let gemeindeData        = {};
-      let austriaTotals       = {};
+      let kommuneData         = {};
+      let sognData            = {};
+      let denmarkTotals       = {};
       let latestAggregatedData = {};
       let currentView         = 'charts';
       window.chartInstances   = [];
@@ -220,7 +218,7 @@
           if (!z) return;
           const segVal = getScalar(z[segCfg.dataKey]);
           if (segVal && segCounts[segVal] !== undefined) segCounts[segVal]++;
-          totalPop += getScalar(z['Bevölkerung']) || 0;
+          totalPop += getScalar(z['Population']) || 0;
 
           for (const [key, value] of Object.entries(z)) {
             if (excludedKeys.includes(key) || typeof value !== 'object' || value === null) continue;
@@ -240,11 +238,11 @@
 
         const kpiRow = document.createElement('div');
         kpiRow.className = 'stats-kpi-row';
-        const isEn = currentLang === 'en';
+        const isEn = true;
 
         [
           { label: isEn ? 'Zones'      : 'Gebiete',     value: selectedIdsArray.length,          accent: '#1e3a5f' },
-          { label: isEn ? 'Population' : 'Bevölkerung', value: totalPop.toLocaleString('de-AT'), accent: '#1e3a5f' },
+          { label: 'Population', value: totalPop.toLocaleString(), accent: '#1e3a5f' },
         ].forEach(kpi => {
           const card = document.createElement('div');
           card.className = 'stats-kpi-card';
@@ -257,7 +255,7 @@
           const card = document.createElement('div');
           card.className = 'stats-kpi-card';
           card.style.borderLeftColor = c.color;
-          const label = isEn ? c.label_en : c.label_de;
+          const label = c.label_en;
           card.innerHTML = `<div class="stats-kpi-value">${segCounts[c.key] || 0}</div><div class="stats-kpi-label">${escapeHtml(label)}</div>`;
           kpiRow.appendChild(card);
         });
@@ -326,12 +324,12 @@
         container.innerHTML = '';
         container.style.display = 'block';
 
-        const bundeslandStats  = {};
-        const bundeslandTotals = {};
+        const regionStats  = {};
+        const regionTotals = {};
 
         for (const [id, z] of Object.entries(dataSource)) {
-          const bl = getScalar(z.Bundesland);
-          if (bl) bundeslandTotals[bl] = (bundeslandTotals[bl] || 0) + 1;
+          const bl = getScalar(z.Region);
+          if (bl) regionTotals[bl] = (regionTotals[bl] || 0) + 1;
         }
 
         const currentSelectionHash = selectedIdsArray.slice().sort().join(',');
@@ -342,16 +340,16 @@
         selectedIdsArray.forEach(id => {
           const z = dataSource[id];
           if (!z) return;
-          const bl     = getScalar(z.Bundesland) || 'Unbekannt';
+          const bl     = getScalar(z.Region) || 'Unbekannt';
           const segCfgS = SEGMENTATION_CONFIG[activeSegmentation];
           const status  = getScalar(z[segCfgS.dataKey]);
 
-          if (!bundeslandStats[bl]) {
-            bundeslandStats[bl] = { total: 0 };
-            segCfgS.classes.forEach(c => { bundeslandStats[bl][c.key] = 0; });
+          if (!regionStats[bl]) {
+            regionStats[bl] = { total: 0 };
+            segCfgS.classes.forEach(c => { regionStats[bl][c.key] = 0; });
           }
-          bundeslandStats[bl].total++;
-          if (status && bundeslandStats[bl][status] !== undefined) bundeslandStats[bl][status]++;
+          regionStats[bl].total++;
+          if (status && regionStats[bl][status] !== undefined) regionStats[bl][status]++;
         });
 
         const savedTitle = window.areaProfileTitle || 'Click to edit title';
@@ -388,13 +386,12 @@
         summaryList.style.textAlign     = 'left';
 
         const segCfgSummary = SEGMENTATION_CONFIG[activeSegmentation];
-        const isEnSummary   = currentLang === 'en';
-        Object.keys(bundeslandStats).sort().forEach(bl => {
-          const stats     = bundeslandStats[bl];
-          const totalInBl = bundeslandTotals[bl] || stats.total;
+        Object.keys(regionStats).sort().forEach(bl => {
+          const stats     = regionStats[bl];
+          const totalInBl = regionTotals[bl] || stats.total;
           const parts     = segCfgSummary.classes
-            .filter(c => c.key !== 'Unbekannt' && stats[c.key] > 0)
-            .map(c => `${stats[c.key]} ${isEnSummary ? c.label_en.toLowerCase() : c.label_de.toLowerCase()}`);
+            .filter(c => c.key !== 'Unknown' && stats[c.key] > 0)
+            .map(c => `${stats[c.key]} ${c.label_en.toLowerCase()}`);
           const li = document.createElement('li');
           li.innerHTML = `${escapeHtml(bl)}: <strong>${stats.total} of ${totalInBl}</strong> zones selected${parts.length ? ` (${escapeHtml(parts.join(', '))})` : ''}`;
           summaryList.appendChild(li);
@@ -414,7 +411,7 @@
         const val = document.createElement('div');
         val.id = 'totalPopulation';
         val.style.cssText = 'font-size:1.5rem;font-weight:700;line-height:1.1;letter-spacing:-.02em;';
-        val.textContent = totalPopulation.toLocaleString('de-AT');
+        val.textContent = totalPopulation.toLocaleString();
         const sublbl = document.createElement('div');
         sublbl.style.cssText = 'font-size:.68rem;opacity:.72;margin-top:.2rem;';
         sublbl.textContent = 'selected';
@@ -466,7 +463,7 @@
         tablesContainer.style.display = 'none';
         chartsContainer.style.display = 'none';
 
-        const dataSource = currentZoneType === 'gemeinde' ? gemeindeData : bezirkData;
+        const dataSource = currentZoneType === 'sogn' ? sognData : kommuneData;
 
         const domainAgg = {};
         let totalPopulation = 0;
@@ -474,7 +471,7 @@
         selectedIdsArray.forEach(id => {
           const zoneData = dataSource[id];
           if (!zoneData) return;
-          totalPopulation += getScalar(zoneData['Bevölkerung']) || 0;
+          totalPopulation += getScalar(zoneData['Population']) || 0;
 
           for (const [key, value] of Object.entries(zoneData)) {
             if (excludedKeys.includes(key)) continue;
@@ -550,7 +547,7 @@
 
           const thead = document.createElement('thead');
           const headerRow = document.createElement('tr');
-          [t('col.indicator'), t('col.selected'), t('col.austria')].forEach(text => {
+          [t('col.indicator'), t('col.selected'), t('col.denmark')].forEach(text => {
             const th = document.createElement('th');
             th.textContent = text;
             headerRow.appendChild(th);
@@ -559,7 +556,7 @@
           table.appendChild(thead);
 
           const tbody = document.createElement('tbody');
-          const atDomain = austriaTotals[domain] || {};
+          const atDomain = denmarkTotals[domain] || {};
 
           for (const [indicator, meanVal] of Object.entries(values)) {
             const row    = document.createElement('tr');
@@ -574,7 +571,7 @@
             row.appendChild(tdMean);
 
             const tdAt = document.createElement('td');
-            const atVal = comparableAustriaValue(domain, indicator, atDomain[indicator]);
+            const atVal = comparableDenmarkValue(domain, indicator, atDomain[indicator]);
             tdAt.textContent = typeof atVal === 'number' ? fmtV(atVal) : '–';
             row.appendChild(tdAt);
 
@@ -602,7 +599,7 @@
           const values = data[domain];
           if (!values) return;
 
-          const atDomain  = austriaTotals[domain] || {};
+          const atDomain  = denmarkTotals[domain] || {};
           const rawLabels = Object.keys(values);
 
           const card = document.createElement('div');
@@ -611,13 +608,13 @@
           const head = document.createElement('div');
           head.className = 'css-chart-domain-head';
           head.innerHTML = `<span class="css-chart-domain-title">${escapeHtml(tDomain(domain))}</span>
-            <span class="css-chart-at-legend"><span class="css-chart-at-swatch"></span>${escapeHtml(t('col.austria'))}</span>`;
+            <span class="css-chart-at-legend"><span class="css-chart-at-swatch"></span>${escapeHtml(t('col.denmark'))}</span>`;
           card.appendChild(head);
 
           rawLabels.forEach(rawLabel => {
             const value = values[rawLabel];
             if (typeof value !== 'number') return;
-            const atVal  = comparableAustriaValue(domain, rawLabel, atDomain[rawLabel]);
+            const atVal  = comparableDenmarkValue(domain, rawLabel, atDomain[rawLabel]);
             const fmt    = v => formatIndicatorValue(domain, rawLabel, v);
             const label  = displayIndicatorLabel(domain, rawLabel);
             const maxVal = Math.max(value, atVal ?? 0) * 1.12 || 1;
@@ -644,7 +641,7 @@
       }
 
       function aggregateUrbanRuralData(selectedIdsArray, selCategories) {
-        const dataSource = currentZoneType === 'gemeinde' ? gemeindeData : bezirkData;
+        const dataSource = currentZoneType === 'sogn' ? sognData : kommuneData;
         const segCfg     = SEGMENTATION_CONFIG[activeSegmentation];
         const classKeys  = segCfg.classes.map(c => c.key);
         const rawGroups  = {};
@@ -656,7 +653,7 @@
           const data   = dataSource[id];
           const segVal = getScalar(data?.[segCfg.dataKey]);
           if (!data || !classKeys.includes(segVal)) return;
-          groupPopulations[segVal] += Number(getScalar(data['Bevölkerung'])) || 0;
+          groupPopulations[segVal] += Number(getScalar(data['Population'])) || 0;
 
           for (const [key, value] of Object.entries(data)) {
             if (excludedKeys.includes(key) || typeof value !== 'object' || value === null) continue;
@@ -734,7 +731,7 @@
             ctx.font = '12px sans-serif';
             ctx.fillStyle = '#666666';
             ctx.textAlign = 'right';
-            ctx.fillText('Source: Statistik Austria | Gemeindegebarung', fc.width - 20, canvas.height + 25);
+            ctx.fillText('Source: Statistics Denmark (DST) · api.statbank.dk', fc.width - 20, canvas.height + 25);
             const link = document.createElement('a');
             link.download = 'fiscal-analysis.png';
             link.href = fc.toDataURL('image/png');
@@ -802,7 +799,7 @@
           ctx.font      = '12px sans-serif';
           ctx.fillStyle = '#666666';
           ctx.textAlign = 'right';
-          ctx.fillText('Datenquelle: Statistik Austria OGD | OGDEXT_AEST_GEMTAB_1', finalCanvas.width - 20, canvas.height + 25);
+          ctx.fillText('Source: Statistics Denmark (DST) · DAWA · CC BY 4.0', finalCanvas.width - 20, canvas.height + 25);
           const link = document.createElement('a');
           link.download = 'area-summary.png';
           link.href = finalCanvas.toDataURL('image/png');
@@ -817,7 +814,7 @@
         const aggregated       = window.latestAggregatedData  || {};
         const comparison       = window.urbanRuralComparisonData || {};
         const chosenCategories = window.chosenCategories || [];
-        const atTotals         = window.austriaTotals    || {};
+        const atTotals         = window.denmarkTotals    || {};
         const workbook         = XLSX.utils.book_new();
         const segCfgXlsx   = SEGMENTATION_CONFIG[activeSegmentation];
         const segGroupNames = segCfgXlsx.classes.map(c => c.key);
@@ -825,13 +822,13 @@
         (chosenCategories.length ? chosenCategories : Object.keys(aggregated)).forEach(domain => {
           const sheetData = [];
           sheetData.push([{ v: domain, t: 's' }]);
-          sheetData.push([{ v: 'Indikator', t: 's' }, { v: 'Ø Ausgewählt', t: 's' }, { v: 'Österreich Ø', t: 's' }]);
+          sheetData.push([{ v: 'Indicator', t: 's' }, { v: 'Avg Selected', t: 's' }, { v: 'Denmark Avg', t: 's' }]);
 
           const values = aggregated[domain] || {};
           const atDom  = atTotals[domain] || {};
 
           for (const [ind, meanVal] of Object.entries(values)) {
-            const atVal = comparableAustriaValue(domain, ind, atDom[ind]);
+            const atVal = comparableDenmarkValue(domain, ind, atDom[ind]);
             const isPct = ind.includes('(%)');
             sheetData.push([
               { v: displayIndicatorLabel(domain, ind), t: 's' },
@@ -846,9 +843,9 @@
             const groupDomainData = comparison[g]?.[domain];
             if (!groupDomainData || Object.keys(groupDomainData).length === 0) return;
             sheetData.push([{ v: `${domain} – ${g}`, t: 's' }]);
-            sheetData.push([{ v: 'Indikator', t: 's' }, { v: `Ø ${g}`, t: 's' }, { v: 'Österreich Ø', t: 's' }]);
+            sheetData.push([{ v: 'Indicator', t: 's' }, { v: `Ø ${g}`, t: 's' }, { v: 'Denmark Avg', t: 's' }]);
             for (const [ind, meanVal] of Object.entries(groupDomainData)) {
-              const atVal = comparableAustriaValue(domain, ind, atDom[ind]);
+              const atVal = comparableDenmarkValue(domain, ind, atDom[ind]);
               const isPct = ind.includes('(%)');
               sheetData.push([
                 { v: displayIndicatorLabel(domain, ind), t: 's' },
@@ -873,7 +870,7 @@
               safeStr(z.risk_category, ''),
               ((z.distress_probability || 0) * 100).toFixed(1),
               z.deficit_streak ?? '',
-              safeStr(z.bundesland, ''),
+              safeStr(z.region, ''),
               safeStr(z.settlement_class, '')
             ]);
           });
@@ -901,7 +898,7 @@
               z.exp_per_capita ? Math.round(z.exp_per_capita) : '',
               z.rev_per_capita ? Math.round(z.rev_per_capita) : '',
               z.national_percentile ?? '',
-              safeStr(z.bundesland, '')
+              safeStr(z.region, '')
             ]);
           });
           XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(riskRows), 'Risk Summary');
@@ -926,7 +923,7 @@
               ...SPEND_CATS_XL.map(c => ((z.spending_shares[c.key] || 0) * 100).toFixed(1)),
               z.fiscal?.deficit_ratio != null ? (z.fiscal.deficit_ratio * 100).toFixed(1) : '',
               z.risk_score ?? '',
-              safeStr(z.bundesland, '')
+              safeStr(z.region, '')
             ]);
           });
           XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(spendRows), 'Spending Profile');
@@ -948,7 +945,7 @@
           XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(trendRows), 'Fiscal Trends');
         }
 
-        XLSX.writeFile(workbook, 'austria_area_profile.xlsx');
+        XLSX.writeFile(workbook, 'denmark_area_profile.xlsx');
       }
 
       // ══ CLUSTER TYPOLOGY FUNCTIONS ════════════════════════════════════════════
@@ -1019,7 +1016,7 @@
               </div>`;
             }).join('');
           } else {
-            driverHtml = `<p class="typology-no-data">No variable notably above the Austria-wide average.</p>`;
+            driverHtml = `<p class="typology-no-data">No variable notably above the Denmark-wide average.</p>`;
           }
 
           // Narrative from drivers in summary
@@ -1035,7 +1032,7 @@
               const strength = absZ > 2.0 ? 'strong' : absZ > 1.0 ? 'moderate' : 'mild';
 
               let lead;
-              if (i === 0)      lead = `This cluster has a <strong>${escapeHtml(String(pct))}% higher</strong> share of <em>${escapeHtml(label)}</em> than the Austria-wide average.`;
+              if (i === 0)      lead = `This cluster has a <strong>${escapeHtml(String(pct))}% higher</strong> share of <em>${escapeHtml(label)}</em> than the Denmark-wide average.`;
               else if (i === 1) lead = ` It also has a <strong>${escapeHtml(String(pct))}% higher</strong> share of <em>${escapeHtml(label)}</em>.`;
               else              lead = ` Additionally, <em>${escapeHtml(label)}</em> is <strong>${escapeHtml(String(pct))}% above</strong> the national average.`;
 
@@ -1072,7 +1069,7 @@
                 </div>
               </div>
               <div class="typology-drivers-section">
-                <div class="typology-section-label">Key differentiators vs Austria average</div>
+                <div class="typology-section-label">Key differentiators vs Denmark average</div>
                 <div class="typology-driver-rows">${driverHtml}</div>
               </div>
               ${narrativeHtml}
@@ -1131,42 +1128,45 @@
           return;
         }
 
-        // Fiscal/ML panel data is municipality-level — expand any Bezirk IDs to
-        // their constituent Gemeinden using the first 3 digits of the GKZ.
-        const gemeindeIds = [...new Set(ids.flatMap(id => {
-          if (String(id).length <= 3) {
-            const prefix = String(id).padStart(3, '0');
-            return Object.keys(gemeindeData || {}).filter(k => String(k).substring(0, 3) === prefix);
+        // Expand any Kommune IDs to their constituent Sogne using the first 4 chars of the code.
+        const sognIds = [...new Set(ids.flatMap(id => {
+          if (String(id).length <= 4 && kommuneData && kommuneData[id]) {
+            return Object.keys(sognData || {}).filter(k => {
+              const z = sognData[k];
+              return z && getScalar(z.Kommune) === String(id);
+            });
           }
           return [id];
         }))];
 
-        if (gemeindeIds.length === 0) {
-          container.innerHTML = '<p style="padding:2rem;color:#666;">No municipality data found for the selected zones.</p>';
+        const analysisIds = sognIds.length > 0 ? sognIds : ids;
+
+        if (analysisIds.length === 0) {
+          container.innerHTML = '<p style="padding:2rem;color:#666;">No zone data found for the selected areas.</p>';
           return;
         }
 
         container.innerHTML = `<div class="analysis-loading" id="analysis-loading-msg">
           <div class="analysis-spinner"></div>
-          <span id="analysis-loading-text">Running fiscal analysis across ${gemeindeIds.length} zone${gemeindeIds.length > 1 ? 's' : ''}…</span>
+          <span id="analysis-loading-text">Running fiscal analysis across ${analysisIds.length} zone${analysisIds.length > 1 ? 's' : ''}…</span>
         </div>`;
 
         const warmupTimer = setTimeout(() => {
           const el = document.getElementById('analysis-loading-text');
-          if (el) el.innerHTML = `Running fiscal analysis across ${gemeindeIds.length} zone${gemeindeIds.length > 1 ? 's' : ''}…<br>
+          if (el) el.innerHTML = `Running fiscal analysis across ${analysisIds.length} zone${analysisIds.length > 1 ? 's' : ''}…<br>
             <span style="font-size:.78rem;color:#6b7280;margin-top:.4rem;display:block;">
               API is warming up — this can take up to 60 seconds on first use.
             </span>`;
         }, 8000);
 
-        const idsParam = gemeindeIds.join(',');
-        const idsBody  = JSON.stringify({ ids: gemeindeIds });
+        const idsParam = analysisIds.join(',');
+        const idsBody  = JSON.stringify({ ids: analysisIds });
 
         const TS_METRICS = [
           { key: 'deficit_ratio',      label: 'Deficit Ratio',        fmt: v => (v*100).toFixed(1)+'%' },
-          { key: 'exp_per_capita',     label: 'Expenditure / Capita', fmt: v => '€'+Math.round(v).toLocaleString('de-AT') },
-          { key: 'rev_per_capita',     label: 'Revenue / Capita',     fmt: v => '€'+Math.round(v).toLocaleString('de-AT') },
-          { key: 'balance_per_capita', label: 'Balance / Capita',     fmt: v => (v>=0?'+':'')+'€'+Math.round(v).toLocaleString('de-AT') },
+          { key: 'exp_per_capita',     label: 'Expenditure / Capita', fmt: v => '€'+Math.round(v).toLocaleString() },
+          { key: 'rev_per_capita',     label: 'Revenue / Capita',     fmt: v => '€'+Math.round(v).toLocaleString() },
+          { key: 'balance_per_capita', label: 'Balance / Capita',     fmt: v => (v>=0?'+':'')+'€'+Math.round(v).toLocaleString() },
           { key: 'exp_growth',         label: 'Expenditure Growth',   fmt: v => (v*100).toFixed(1)+'%' },
           { key: 'rev_growth',         label: 'Revenue Growth',       fmt: v => (v*100).toFixed(1)+'%' },
         ];
@@ -1204,22 +1204,15 @@
             <div style="flex:1;min-width:0;">
               <strong>Data &amp; Model Notes</strong>
               <ul style="margin:.45rem 0 0;padding-left:1.1rem;line-height:1.65;list-style:disc;">
-                <li><strong>Data source:</strong> All fiscal indicators are drawn from Statistik Austria's
-                  free <strong>OGD</strong> municipal finance release (reference year <strong>2020</strong>),
-                  the most recent complete cross-section publicly available at Gemeinde level.
-                  Richer socio-demographic indicators (age structure, sex ratios, household composition)
-                  held in <strong>STATcube</strong> (Statistik Austria's paid platform) were excluded to keep
-                  the pipeline fully reproducible without a subscription; incorporating those variables
-                  is a planned extension that is expected to meaningfully improve predictive performance.</li>
+                <li><strong>Data source:</strong> Fiscal indicators are drawn from Statistics Denmark (DST)
+                  public API (api.statbank.dk) at Kommune level (reference year <strong>2020</strong>).
+                  Socio-demographic indicators come from DST FOLK1A and related tables.</li>
                 <li><strong>Train / test split:</strong> The XGBoost distress classifier uses a
                   <strong>stratified 80 / 20 split</strong> on the 2020 cross-section
-                  (stratified by Bundesland to preserve regional representation).
-                  Model selection and hyperparameter tuning were performed on the training fold only;
+                  (stratified by Region to preserve regional representation).
                   AUC-ROC is reported on the held-out test set.</li>
-                <li><strong>Temporal scope:</strong> Because a continuous annual panel is not yet
-                  publicly available at Gemeinde level, predictions are anchored to 2020.
-                  Extending to a longitudinal panel as future OGD releases become available
-                  is a core next step of this research.</li>
+                <li><strong>Temporal scope:</strong> Predictions are anchored to 2020.
+                  Extending to a longitudinal panel is a core next step of this research.</li>
               </ul>
             </div>`;
           container.appendChild(dataNoteEl);
@@ -1406,14 +1399,14 @@
           const zRiskCat = safeStr(z.risk_category, 'Low');
           const tr = document.createElement('tr');
           tr.innerHTML = `
-            <td><strong>${escapeHtml(zoneName(z.gcd))}</strong><br><small class="arc-gcd-code">${escapeHtml(z.gcd)}</small> <small>${escapeHtml(safeStr(z.bundesland,''))}</small></td>
+            <td><strong>${escapeHtml(zoneName(z.gcd))}</strong><br><small class="arc-gcd-code">${escapeHtml(z.gcd)}</small> <small>${escapeHtml(safeStr(z.region,''))}</small></td>
             <td><span class="risk-pill risk-pill-${escapeHtml(zRiskCat.toLowerCase())}">${escapeHtml(zRiskCat)}</span></td>
             <td>${escapeHtml(z.risk_score ?? '–')}</td>
             <td class="${safeStr(z.trend_direction,'') === 'Deteriorating' ? 'trend-bad' : safeStr(z.trend_direction,'') === 'Improving' ? 'trend-good' : ''}">${escapeHtml(safeStr(z.trend_direction,'–'))}</td>
             <td>${escapeHtml(z.deficit_ratio != null ? (z.deficit_ratio * 100).toFixed(1) + '%' : '–')}</td>
             <td>${escapeHtml(z.deficit_streak ?? '–')}</td>
-            <td>${escapeHtml(z.exp_per_capita ? Math.round(z.exp_per_capita).toLocaleString('de-AT') : '–')}</td>
-            <td>${escapeHtml(z.rev_per_capita ? Math.round(z.rev_per_capita).toLocaleString('de-AT') : '–')}</td>
+            <td>${escapeHtml(z.exp_per_capita ? Math.round(z.exp_per_capita).toLocaleString() : '–')}</td>
+            <td>${escapeHtml(z.rev_per_capita ? Math.round(z.rev_per_capita).toLocaleString() : '–')}</td>
             <td>${escapeHtml(z.national_percentile != null ? z.national_percentile + 'th' : '–')}</td>
           `;
           tbody.appendChild(tr);
@@ -1476,7 +1469,7 @@
           const balColor = fis.fiscal_balance >= 0 ? '#16a34a' : '#dc2626';
           card.innerHTML += `
             <div class="spend-fiscal-footer">
-              <span>Balance: <strong style="color:${balColor}">${escapeHtml(fis.fiscal_balance >= 0 ? '+' : '')}${escapeHtml(Math.round(fis.fiscal_balance / 1000).toLocaleString('de-AT'))}k €</strong></span>
+              <span>Balance: <strong style="color:${balColor}">${escapeHtml(fis.fiscal_balance >= 0 ? '+' : '')}${escapeHtml(Math.round(fis.fiscal_balance / 1000).toLocaleString())}k €</strong></span>
               <span>Deficit ratio: ${escapeHtml((fis.deficit_ratio * 100).toFixed(1))}%</span>
               <span>Risk score: ${escapeHtml(zone.risk_score)}</span>
             </div>`;
@@ -1533,8 +1526,8 @@
 
           const kpis = [
             { label: 'Deficit ratio',  val: safeNum(fp.deficit_ratio, 100, 1) != null ? safeNum(fp.deficit_ratio, 100, 1)+'%' : '–', neg: fp.deficit_ratio > 0.3 },
-            { label: 'Exp/capita',     val: fp.exp_per_capita != null ? '€'+Math.round(fp.exp_per_capita).toLocaleString('de-AT') : '–', neg: false },
-            { label: 'Rev/capita',     val: fp.rev_per_capita != null ? '€'+Math.round(fp.rev_per_capita).toLocaleString('de-AT') : '–', neg: false },
+            { label: 'Exp/capita',     val: fp.exp_per_capita != null ? '€'+Math.round(fp.exp_per_capita).toLocaleString() : '–', neg: false },
+            { label: 'Rev/capita',     val: fp.rev_per_capita != null ? '€'+Math.round(fp.rev_per_capita).toLocaleString() : '–', neg: false },
             { label: 'Exp growth',     val: safeNum(fp.exp_growth, 100, 1) != null ? safeNum(fp.exp_growth,100,1)+'%' : '–', neg: fp.exp_growth > 0.05 },
             { label: 'Rev growth',     val: safeNum(fp.rev_growth, 100, 1) != null ? safeNum(fp.rev_growth,100,1)+'%' : '–', neg: false },
             { label: 'Deficit streak', val: fp.deficit_streak != null ? Number(fp.deficit_streak).toFixed(1)+' yrs' : '–', neg: fp.deficit_streak > 3 },
@@ -1567,18 +1560,18 @@
           const right = document.createElement('div');
           right.className = 'fcb2-right';
 
-          const blDist  = prof.bundesland_dist || {};
+          const blDist  = prof.region_dist || prof.bundesland_dist || {};
           const BL_COLORS = ['#1d6fa5','#e07520','#2ca25f','#6b2d8b','#dc2626','#0e7490','#b45309','#0f766e','#7c3aed'];
           const blEntries = Object.entries(blDist).sort((a,b) => b[1]-a[1]);
           const blSlices  = blEntries.map(([bl, cnt], j) => ({ label: bl, value: Number(cnt), color: BL_COLORS[j % BL_COLORS.length] }));
           const blTotal   = blSlices.reduce((s, d) => s + d.value, 0) || 1;
           const blLegend  = blSlices.map(s => `<div class="donut-legend-row"><span class="donut-dot" style="background:${s.color}"></span><span class="donut-lbl">${escapeHtml(s.label)}</span><span class="donut-pct">${Math.round(s.value/blTotal*100)}%</span></div>`).join('');
-          right.innerHTML = `<div class="fcb2-dist-title">Bundesland distribution</div>
+          right.innerHTML = `<div class="fcb2-dist-title">Region distribution</div>
             <div class="donut-wrap">${svgDonut(blSlices, 90)}<div class="donut-legend">${blLegend}</div></div>`;
 
           const scDist   = prof.settlement_dist || {};
-          const SC_COLORS = { Großstadt:'#6b2d8b', Kleinstadt:'#1d6fa5', Marktgemeinde:'#e07520', Dorfgemeinde:'#2ca25f' };
-          const scOrder  = ['Großstadt','Kleinstadt','Marktgemeinde','Dorfgemeinde'];
+          const SC_COLORS = { 'Large City':'#6b2d8b', 'Small City':'#1d6fa5', 'Town':'#e07520', 'Village':'#2ca25f' };
+          const scOrder  = ['Large City','Small City','Town','Village'];
           const scSlices = scOrder.filter(k => scDist[k]).map(k => ({ label: k, value: Number(scDist[k]), color: SC_COLORS[k] }));
           const scTotal  = scSlices.reduce((s, d) => s + d.value, 0) || 1;
           const scLegend = scSlices.map(s => `<div class="donut-legend-row"><span class="donut-dot" style="background:${s.color}"></span><span class="donut-lbl">${escapeHtml(s.label)}</span><span class="donut-pct">${Math.round(s.value/scTotal*100)}%</span></div>`).join('');
@@ -1604,10 +1597,10 @@
               const zName    = zoneName(safeStr(z.gcd,''));
               const zDr      = safeStr(z.deficit_ratio,'');
               const drPct    = zDr && !isNaN(Number(zDr)) ? (Number(zDr)*100).toFixed(1)+'%' : '–';
-              const expCap   = Number(z.exp_per_capita) ? '€'+Math.round(z.exp_per_capita).toLocaleString('de-AT') : '–';
+              const expCap   = Number(z.exp_per_capita) ? '€'+Math.round(z.exp_per_capita).toLocaleString() : '–';
               return `<div class="fcb2-zone-row${zi>=6?' hidden':''}">
                 <div class="fcb2-zone-name" title="${escapeHtml(safeStr(z.gcd,''))}">${escapeHtml(zName)}</div>
-                <div class="fcb2-zone-meta">${escapeHtml(safeStr(z.bundesland,''))} · ${escapeHtml(safeStr(z.settlement_class,''))}</div>
+                <div class="fcb2-zone-meta">${escapeHtml(safeStr(z.region,''))} · ${escapeHtml(safeStr(z.settlement_class,''))}</div>
                 <div class="fcb2-zone-stats">
                   <span style="color:${zRiskClr};font-weight:700">${zRisk}</span>
                   <span class="fcb2-zone-stat-lbl">risk</span>
@@ -1824,11 +1817,11 @@
 
         try {
           const data    = await fetch('./data.json').then(r => r.json());
-          bezirkData    = data['Bezirk']       || {};
-          gemeindeData  = data['Gemeinde']      || {};
-          austriaTotals = data['Austria Total'] || {};
-          window.austriaTotals = austriaTotals;
-          window.austriaPopulation = totalPopulationForData(gemeindeData);
+          kommuneData   = data['Kommune']        || {};
+          sognData      = data['Sogn']            || {};
+          denmarkTotals = data['Denmark Total']   || {};
+          window.denmarkTotals    = denmarkTotals;
+          window.denmarkPopulation = totalPopulationForData(sognData);
 
           // Show content
           document.getElementById('profile-loading').style.display    = 'none';
@@ -1918,12 +1911,6 @@
             runClusterTypologyAnalysis(selectedIds);
           });
 
-          // ── Language toggle
-          document.getElementById('lang-toggle').addEventListener('click', () => {
-            currentLang = currentLang === 'en' ? 'de' : 'en';
-            applyLang();
-            updateTables(selectedIds);
-          });
 
           // ── Group toggle accordions
           document.querySelectorAll('.group-toggle').forEach(button => {
@@ -1961,12 +1948,11 @@
   <script>
     (function () {
       const ZONE_URLS = {
-        bezirk: [
-          'https://raw.githubusercontent.com/ginseng666/GeoJSON-TopoJSON-Austria/master/2021/simplified-99.9/bezirke_999_geo.json',
-          'https://raw.githubusercontent.com/ginseng666/GeoJSON-TopoJSON-Austria/master/2021/simplified-99.5/bezirke_995_geo.json',
+        kommune: [
+          'https://api.dataforsyningen.dk/kommuner?format=geojson&srid=4326',
         ],
-        gemeinde: [
-          'https://raw.githubusercontent.com/ginseng666/GeoJSON-TopoJSON-Austria/master/2021/simplified-95/gemeinden_95_topo.json',
+        sogn: [
+          'https://api.dataforsyningen.dk/sogne?format=geojson&srid=4326',
         ],
       };
 
@@ -1979,13 +1965,11 @@
       }
 
       function getGkz(props, idx, zoneType) {
-        const candidates = [props.iso, props.GKZ, props.gkz, props.GCD, props.gcd, props.BEZ_ID, props.GEM_ID, props.id];
+        // DAWA GeoJSON uses 'kode' property (4-char zero-padded string)
+        if (props.kode != null && props.kode !== '') return String(props.kode);
+        const candidates = [props.KOMKODE, props.SOGNKODE, props.id, props.ID];
         for (const c of candidates) {
-          if (c == null || c === '') continue;
-          const n = parseInt(String(c), 10);
-          if (isNaN(n)) continue;
-          if (zoneType === 'bezirk'   && n >= 100   && n < 1000)  return String(n);
-          if (zoneType === 'gemeinde' && n >= 10000  && n < 100000) return String(n).padStart(5, '0');
+          if (c != null && c !== '') return String(c);
         }
         return null;
       }
@@ -2001,7 +1985,7 @@
         const container = document.getElementById('zone-minimap');
         if (!container || typeof maplibregl === 'undefined' || typeof topojson === 'undefined') return;
 
-        const raw = await fetchFirst(ZONE_URLS[zoneType] || ZONE_URLS.gemeinde);
+        const raw = await fetchFirst(ZONE_URLS[zoneType] || ZONE_URLS.sogn);
         if (!raw) return;
 
         const geoJSON = toGeoJSON(raw);
@@ -2023,7 +2007,7 @@
 
         const bounds = minLng < Infinity
           ? [[minLng, minLat], [maxLng, maxLat]]
-          : [[9.5, 46.4], [17.2, 49.0]];
+          : [[7.0, 54.5], [15.5, 58.1]];
 
         const map = new maplibregl.Map({
           container: 'zone-minimap',
