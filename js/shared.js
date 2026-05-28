@@ -13,7 +13,8 @@ const DEFAULT_PROFILE_CATEGORIES = [
   'Economy',
   'Education',
   'Migration',
-  'Households'
+  'Housing',
+  'Safety'
 ];
 
 const EXCLUDED_PROFILE_KEYS = [
@@ -80,7 +81,8 @@ const I18N = {
   'drawer.economy':     'Economy ▼',
   'dom.agestructure':   'Age Structure',
   'dom.migration':      'Migration',
-  'dom.households':     'Households',
+  'dom.housing':        'Housing',
+  'dom.safety':         'Safety',
   'dom.labourmarket':   'Labour Market',
   'dom.economy':        'Economy',
   'dom.education':      'Education',
@@ -101,13 +103,14 @@ const LABEL_EN = {
   'Unemployment rate (%)':  'Unemployment rate (%)',
   'Out-commuter share (%)': 'Out-commuter share (%)',
   'Employees':              'Employees',
-  'Enterprises':            'Enterprises',
+  'Avg income (DKK)':       'Avg income (DKK)',
   'Secondary education (%)':'Secondary education (%)',
   'Tertiary education (%)': 'Tertiary education (%)',
-  'Foreign background (%)': 'Foreign background (%)',
-  'Avg household size':     'Avg household size',
-  'Private households':     'Private households',
-  'Families':               'Families',
+  'Foreign citizens (%)':   'Foreign citizens (%)',
+  'Owner-occupied (%)':     'Owner-occupied (%)',
+  'Social housing (%)':     'Social housing (%)',
+  'Dwellings':              'Dwellings',
+  'Crimes per 1,000':       'Crimes per 1,000',
 };
 
 const DOMAIN_EN = {
@@ -116,11 +119,12 @@ const DOMAIN_EN = {
   'Economy':      'Economy',
   'Education':    'Education',
   'Migration':    'Migration',
-  'Households':   'Households',
+  'Housing':      'Housing',
+  'Safety':       'Safety',
 };
 
 const RATE_PER_1000_DOMAIN     = 'Economy';
-const RATE_PER_1000_INDICATORS = ['Employees', 'Enterprises'];
+const RATE_PER_1000_INDICATORS = ['Employees', 'Dwellings'];
 
 function t(key) {
   return I18N[key] ?? key;

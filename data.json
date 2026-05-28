@@ -6,10 +6,12 @@
     },
     "LabourMarket": {
       "Employment rate (%)": 75.5,
-      "Unemployment rate (%)": 1.4
+      "Unemployment rate (%)": 1.4,
+      "Out-commuter share (%)": 45.2
     },
     "Economy": {
-      "Employees": 315434
+      "Employees": 315434,
+      "Avg income (DKK)": 288156.9
     },
     "Education": {
       "Secondary education (%)": 11.1,
@@ -17,6 +19,14 @@
     },
     "Migration": {
       "Foreign citizens (%)": 11.9
+    },
+    "Housing": {
+      "Owner-occupied (%)": 63.5,
+      "Social housing (%)": 17.4,
+      "Dwellings": 1909624
+    },
+    "Safety": {
+      "Crimes per 1,000": 14.4
     }
   },
   "Region": {
@@ -32,10 +42,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 76.55,
-        "Unemployment rate (%)": 1.62
+        "Unemployment rate (%)": 1.62,
+        "Out-commuter share (%)": 58.34
       },
       "Economy": {
-        "Employees": 104959
+        "Employees": 104959,
+        "Avg income (DKK)": 322003.73
       },
       "Education": {
         "Secondary education (%)": 13,
@@ -43,6 +55,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 16.42
+      },
+      "Housing": {
+        "Owner-occupied (%)": 48.25,
+        "Social housing (%)": 22.98,
+        "Dwellings": 660806
+      },
+      "Safety": {
+        "Crimes per 1,000": 19.11
       }
     },
     "1085": {
@@ -57,10 +77,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 77.28,
-        "Unemployment rate (%)": 1.25
+        "Unemployment rate (%)": 1.25,
+        "Out-commuter share (%)": 52.09
       },
       "Economy": {
-        "Employees": 44774
+        "Employees": 44774,
+        "Avg income (DKK)": 277647.78
       },
       "Education": {
         "Secondary education (%)": 9.1,
@@ -68,6 +90,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 8.87
+      },
+      "Housing": {
+        "Owner-occupied (%)": 73.88,
+        "Social housing (%)": 13.15,
+        "Dwellings": 263854
+      },
+      "Safety": {
+        "Crimes per 1,000": 12.86
       }
     },
     "1083": {
@@ -82,10 +112,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 74.03,
-        "Unemployment rate (%)": 1.34
+        "Unemployment rate (%)": 1.34,
+        "Out-commuter share (%)": 36.51
       },
       "Economy": {
-        "Employees": 63171
+        "Employees": 63171,
+        "Avg income (DKK)": 269130.07
       },
       "Education": {
         "Secondary education (%)": 9.56,
@@ -93,6 +125,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 10.8
+      },
+      "Housing": {
+        "Owner-occupied (%)": 70.03,
+        "Social housing (%)": 15.17,
+        "Dwellings": 398794
+      },
+      "Safety": {
+        "Crimes per 1,000": 12.85
       }
     },
     "1082": {
@@ -107,10 +147,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 75.54,
-        "Unemployment rate (%)": 1.36
+        "Unemployment rate (%)": 1.36,
+        "Out-commuter share (%)": 36.56
       },
       "Economy": {
-        "Employees": 70989
+        "Employees": 70989,
+        "Avg income (DKK)": 275316.66
       },
       "Education": {
         "Secondary education (%)": 11.5,
@@ -118,6 +160,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 9.85
+      },
+      "Housing": {
+        "Owner-occupied (%)": 68.82,
+        "Social housing (%)": 15.81,
+        "Dwellings": 393446
+      },
+      "Safety": {
+        "Crimes per 1,000": 11.61
       }
     },
     "1081": {
@@ -132,10 +182,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 72.09,
-        "Unemployment rate (%)": 1.45
+        "Unemployment rate (%)": 1.45,
+        "Out-commuter share (%)": 30.15
       },
       "Economy": {
-        "Employees": 31541
+        "Employees": 31541,
+        "Avg income (DKK)": 261916.7
       },
       "Education": {
         "Secondary education (%)": 9.74,
@@ -143,6 +195,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 8.17
+      },
+      "Housing": {
+        "Owner-occupied (%)": 72.12,
+        "Social housing (%)": 13.98,
+        "Dwellings": 192724
+      },
+      "Safety": {
+        "Crimes per 1,000": 10.86
       }
     }
   },
@@ -159,10 +219,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 75.4,
-        "Unemployment rate (%)": 2.1
+        "Unemployment rate (%)": 2.1,
+        "Out-commuter share (%)": 37
       },
       "Economy": {
-        "Employees": 38538
+        "Employees": 38538,
+        "Avg income (DKK)": 295836
       },
       "Education": {
         "Secondary education (%)": 15.9,
@@ -170,6 +232,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 20.7
+      },
+      "Housing": {
+        "Owner-occupied (%)": 27.8,
+        "Social housing (%)": 17.3,
+        "Dwellings": 247378
+      },
+      "Safety": {
+        "Crimes per 1,000": 28.3
       }
     },
     "0147": {
@@ -184,10 +254,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 78,
-        "Unemployment rate (%)": 1.8
+        "Unemployment rate (%)": 1.8,
+        "Out-commuter share (%)": 82.1
       },
       "Economy": {
-        "Employees": 5636
+        "Employees": 5636,
+        "Avg income (DKK)": 344810
       },
       "Education": {
         "Secondary education (%)": 15.3,
@@ -195,6 +267,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 14.3
+      },
+      "Housing": {
+        "Owner-occupied (%)": 34.1,
+        "Social housing (%)": 8.3,
+        "Dwellings": 46496
+      },
+      "Safety": {
+        "Crimes per 1,000": 17.1
       }
     },
     "0151": {
@@ -209,10 +289,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 74.7,
-        "Unemployment rate (%)": 1.4
+        "Unemployment rate (%)": 1.4,
+        "Out-commuter share (%)": 70.4
       },
       "Economy": {
-        "Employees": 2408
+        "Employees": 2408,
+        "Avg income (DKK)": 285035
       },
       "Education": {
         "Secondary education (%)": 10.6,
@@ -220,6 +302,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 16
+      },
+      "Housing": {
+        "Owner-occupied (%)": 35.4,
+        "Social housing (%)": 62.1,
+        "Dwellings": 17282
+      },
+      "Safety": {
+        "Crimes per 1,000": 19.6
       }
     },
     "0153": {
@@ -234,10 +324,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 73,
-        "Unemployment rate (%)": 2.1
+        "Unemployment rate (%)": 2.1,
+        "Out-commuter share (%)": 78
       },
       "Economy": {
-        "Employees": 1900
+        "Employees": 1900,
+        "Avg income (DKK)": 251169
       },
       "Education": {
         "Secondary education (%)": 11.8,
@@ -245,6 +337,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 24.6
+      },
+      "Housing": {
+        "Owner-occupied (%)": 26.7,
+        "Social housing (%)": 71.7,
+        "Dwellings": 13645
+      },
+      "Safety": {
+        "Crimes per 1,000": 14.2
       }
     },
     "0155": {
@@ -259,10 +359,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 80,
-        "Unemployment rate (%)": 0.9
+        "Unemployment rate (%)": 0.9,
+        "Out-commuter share (%)": 77.3
       },
       "Economy": {
-        "Employees": 743
+        "Employees": 743,
+        "Avg income (DKK)": 375847
       },
       "Education": {
         "Secondary education (%)": 12,
@@ -270,6 +372,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 6.8
+      },
+      "Housing": {
+        "Owner-occupied (%)": 77.7,
+        "Social housing (%)": 16.4,
+        "Dwellings": 4397
+      },
+      "Safety": {
+        "Crimes per 1,000": 8.8
       }
     },
     "0157": {
@@ -284,10 +394,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 80.4,
-        "Unemployment rate (%)": 1.2
+        "Unemployment rate (%)": 1.2,
+        "Out-commuter share (%)": 71.7
       },
       "Economy": {
-        "Employees": 5258
+        "Employees": 5258,
+        "Avg income (DKK)": 570329
       },
       "Education": {
         "Secondary education (%)": 13.9,
@@ -295,6 +407,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 13
+      },
+      "Housing": {
+        "Owner-occupied (%)": 66.1,
+        "Social housing (%)": 3.4,
+        "Dwellings": 29739
+      },
+      "Safety": {
+        "Crimes per 1,000": 12.6
       }
     },
     "0159": {
@@ -309,10 +429,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 77.3,
-        "Unemployment rate (%)": 1.4
+        "Unemployment rate (%)": 1.4,
+        "Out-commuter share (%)": 73.9
       },
       "Economy": {
-        "Employees": 3085
+        "Employees": 3085,
+        "Avg income (DKK)": 310421
       },
       "Education": {
         "Secondary education (%)": 11.4,
@@ -320,6 +442,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 17.8
+      },
+      "Housing": {
+        "Owner-occupied (%)": 47.8,
+        "Social housing (%)": 38.4,
+        "Dwellings": 25217
+      },
+      "Safety": {
+        "Crimes per 1,000": 12.8
       }
     },
     "0161": {
@@ -334,10 +464,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 78.7,
-        "Unemployment rate (%)": 1.6
+        "Unemployment rate (%)": 1.6,
+        "Out-commuter share (%)": 80.8
       },
       "Economy": {
-        "Employees": 1238
+        "Employees": 1238,
+        "Avg income (DKK)": 280422
       },
       "Education": {
         "Secondary education (%)": 11.5,
@@ -345,6 +477,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 19.7
+      },
+      "Housing": {
+        "Owner-occupied (%)": 40.9,
+        "Social housing (%)": 39,
+        "Dwellings": 7941
+      },
+      "Safety": {
+        "Crimes per 1,000": 16.9
       }
     },
     "0163": {
@@ -359,10 +499,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 75.4,
-        "Unemployment rate (%)": 1.4
+        "Unemployment rate (%)": 1.4,
+        "Out-commuter share (%)": 76
       },
       "Economy": {
-        "Employees": 1757
+        "Employees": 1757,
+        "Avg income (DKK)": 291266
       },
       "Education": {
         "Secondary education (%)": 10.9,
@@ -370,6 +512,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 17.6
+      },
+      "Housing": {
+        "Owner-occupied (%)": 35.1,
+        "Social housing (%)": 58.6,
+        "Dwellings": 10708
+      },
+      "Safety": {
+        "Crimes per 1,000": 14.5
       }
     },
     "0165": {
@@ -384,10 +534,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 73.1,
-        "Unemployment rate (%)": 1.9
+        "Unemployment rate (%)": 1.9,
+        "Out-commuter share (%)": 76.3
       },
       "Economy": {
-        "Employees": 1710
+        "Employees": 1710,
+        "Avg income (DKK)": 248808
       },
       "Education": {
         "Secondary education (%)": 12.8,
@@ -395,6 +547,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 19.6
+      },
+      "Housing": {
+        "Owner-occupied (%)": 39.9,
+        "Social housing (%)": 57.7,
+        "Dwellings": 8997
+      },
+      "Safety": {
+        "Crimes per 1,000": 16.9
       }
     },
     "0167": {
@@ -409,10 +569,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 76.9,
-        "Unemployment rate (%)": 1.4
+        "Unemployment rate (%)": 1.4,
+        "Out-commuter share (%)": 75.2
       },
       "Economy": {
-        "Employees": 2552
+        "Employees": 2552,
+        "Avg income (DKK)": 284383
       },
       "Education": {
         "Secondary education (%)": 11.1,
@@ -420,6 +582,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 13.5
+      },
+      "Housing": {
+        "Owner-occupied (%)": 41.8,
+        "Social housing (%)": 42.3,
+        "Dwellings": 19720
+      },
+      "Safety": {
+        "Crimes per 1,000": 16.1
       }
     },
     "0169": {
@@ -434,10 +604,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 77.4,
-        "Unemployment rate (%)": 2
+        "Unemployment rate (%)": 2,
+        "Out-commuter share (%)": 71.1
       },
       "Economy": {
-        "Employees": 2784
+        "Employees": 2784,
+        "Avg income (DKK)": 269751
       },
       "Education": {
         "Secondary education (%)": 11.9,
@@ -445,6 +617,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 26.7
+      },
+      "Housing": {
+        "Owner-occupied (%)": 69.7,
+        "Social housing (%)": 15.6,
+        "Dwellings": 15003
+      },
+      "Safety": {
+        "Crimes per 1,000": 14.6
       }
     },
     "0173": {
@@ -459,10 +639,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 80.2,
-        "Unemployment rate (%)": 1.2
+        "Unemployment rate (%)": 1.2,
+        "Out-commuter share (%)": 71.7
       },
       "Economy": {
-        "Employees": 3312
+        "Employees": 3312,
+        "Avg income (DKK)": 401048
       },
       "Education": {
         "Secondary education (%)": 13.2,
@@ -470,6 +652,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 14.8
+      },
+      "Housing": {
+        "Owner-occupied (%)": 57,
+        "Social housing (%)": 21.6,
+        "Dwellings": 20941
+      },
+      "Safety": {
+        "Crimes per 1,000": 12.2
       }
     },
     "0175": {
@@ -484,10 +674,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 76.8,
-        "Unemployment rate (%)": 1.7
+        "Unemployment rate (%)": 1.7,
+        "Out-commuter share (%)": 79.9
       },
       "Economy": {
-        "Employees": 1994
+        "Employees": 1994,
+        "Avg income (DKK)": 282144
       },
       "Education": {
         "Secondary education (%)": 10.8,
@@ -495,6 +687,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 17.2
+      },
+      "Housing": {
+        "Owner-occupied (%)": 43,
+        "Social housing (%)": 44.3,
+        "Dwellings": 15451
+      },
+      "Safety": {
+        "Crimes per 1,000": 17
       }
     },
     "0183": {
@@ -509,10 +709,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 74.4,
-        "Unemployment rate (%)": 2.3
+        "Unemployment rate (%)": 2.3,
+        "Out-commuter share (%)": 78.8
       },
       "Economy": {
-        "Employees": 994
+        "Employees": 994,
+        "Avg income (DKK)": 248266
       },
       "Education": {
         "Secondary education (%)": 11.3,
@@ -520,6 +722,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 29.8
+      },
+      "Housing": {
+        "Owner-occupied (%)": 44.8,
+        "Social housing (%)": 51.3,
+        "Dwellings": 7845
+      },
+      "Safety": {
+        "Crimes per 1,000": 16.8
       }
     },
     "0185": {
@@ -534,10 +744,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 78.3,
-        "Unemployment rate (%)": 1.2
+        "Unemployment rate (%)": 1.2,
+        "Out-commuter share (%)": 71.1
       },
       "Economy": {
-        "Employees": 1969
+        "Employees": 1969,
+        "Avg income (DKK)": 299878
       },
       "Education": {
         "Secondary education (%)": 10.8,
@@ -545,6 +757,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 10.6
+      },
+      "Housing": {
+        "Owner-occupied (%)": 55.9,
+        "Social housing (%)": 37.8,
+        "Dwellings": 15440
+      },
+      "Safety": {
+        "Crimes per 1,000": 32.8
       }
     },
     "0187": {
@@ -559,10 +779,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 80,
-        "Unemployment rate (%)": 1.6
+        "Unemployment rate (%)": 1.6,
+        "Out-commuter share (%)": 85.5
       },
       "Economy": {
-        "Employees": 640
+        "Employees": 640,
+        "Avg income (DKK)": 298557
       },
       "Education": {
         "Secondary education (%)": 12.1,
@@ -570,6 +792,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 22.9
+      },
+      "Housing": {
+        "Owner-occupied (%)": 90.5,
+        "Social housing (%)": 4,
+        "Dwellings": 4216
+      },
+      "Safety": {
+        "Crimes per 1,000": 24.1
       }
     },
     "0190": {
@@ -584,10 +814,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": {},
-        "Unemployment rate (%)": 1.2
+        "Unemployment rate (%)": 1.2,
+        "Out-commuter share (%)": 74.5
       },
       "Economy": {
-        "Employees": 1958
+        "Employees": 1958,
+        "Avg income (DKK)": 371605
       },
       "Education": {
         "Secondary education (%)": 9.9,
@@ -595,6 +827,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 11.5
+      },
+      "Housing": {
+        "Owner-occupied (%)": 65.4,
+        "Social housing (%)": 31,
+        "Dwellings": 11459
+      },
+      "Safety": {
+        "Crimes per 1,000": 15.9
       }
     },
     "0201": {
@@ -609,10 +849,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 83.1,
-        "Unemployment rate (%)": 0.8
+        "Unemployment rate (%)": 0.8,
+        "Out-commuter share (%)": 73.6
       },
       "Economy": {
-        "Employees": 1394
+        "Employees": 1394,
+        "Avg income (DKK)": 363562
       },
       "Education": {
         "Secondary education (%)": 10.3,
@@ -620,6 +862,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 7.7
+      },
+      "Housing": {
+        "Owner-occupied (%)": 80.9,
+        "Social housing (%)": 13,
+        "Dwellings": 6647
+      },
+      "Safety": {
+        "Crimes per 1,000": 8.8
       }
     },
     "0210": {
@@ -634,10 +884,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": {},
-        "Unemployment rate (%)": 1.1
+        "Unemployment rate (%)": 1.1,
+        "Out-commuter share (%)": 71.5
       },
       "Economy": {
-        "Employees": 2116
+        "Employees": 2116,
+        "Avg income (DKK)": 344577
       },
       "Education": {
         "Secondary education (%)": 11.2,
@@ -645,6 +897,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 13.6
+      },
+      "Housing": {
+        "Owner-occupied (%)": 67.2,
+        "Social housing (%)": 28,
+        "Dwellings": 12479
+      },
+      "Safety": {
+        "Crimes per 1,000": 8.4
       }
     },
     "0217": {
@@ -659,10 +919,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 75.1,
-        "Unemployment rate (%)": 1.2
+        "Unemployment rate (%)": 1.2,
+        "Out-commuter share (%)": 52.2
       },
       "Economy": {
-        "Employees": 3742
+        "Employees": 3742,
+        "Avg income (DKK)": 310173
       },
       "Education": {
         "Secondary education (%)": 11.4,
@@ -670,6 +932,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 9
+      },
+      "Housing": {
+        "Owner-occupied (%)": 59.1,
+        "Social housing (%)": 28.7,
+        "Dwellings": 22386
+      },
+      "Safety": {
+        "Crimes per 1,000": 13.9
       }
     },
     "0219": {
@@ -684,10 +954,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 80.8,
-        "Unemployment rate (%)": 1.1
+        "Unemployment rate (%)": 1.1,
+        "Out-commuter share (%)": 56.9
       },
       "Economy": {
-        "Employees": 3030
+        "Employees": 3030,
+        "Avg income (DKK)": 320229
       },
       "Education": {
         "Secondary education (%)": 10.8,
@@ -695,6 +967,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 11.2
+      },
+      "Housing": {
+        "Owner-occupied (%)": 71,
+        "Social housing (%)": 14.5,
+        "Dwellings": 14254
+      },
+      "Safety": {
+        "Crimes per 1,000": 15.8
       }
     },
     "0223": {
@@ -709,10 +989,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 80.2,
-        "Unemployment rate (%)": 1.1
+        "Unemployment rate (%)": 1.1,
+        "Out-commuter share (%)": 72.5
       },
       "Economy": {
-        "Employees": 1694
+        "Employees": 1694,
+        "Avg income (DKK)": 452520
       },
       "Education": {
         "Secondary education (%)": 12.9,
@@ -720,6 +1002,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 9.1
+      },
+      "Housing": {
+        "Owner-occupied (%)": 66.9,
+        "Social housing (%)": 17.7,
+        "Dwellings": 7906
+      },
+      "Safety": {
+        "Crimes per 1,000": 12.5
       }
     },
     "0230": {
@@ -734,10 +1024,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": {},
-        "Unemployment rate (%)": 1.1
+        "Unemployment rate (%)": 1.1,
+        "Out-commuter share (%)": 72.7
       },
       "Economy": {
-        "Employees": 3616
+        "Employees": 3616,
+        "Avg income (DKK)": 538360
       },
       "Education": {
         "Secondary education (%)": 12.7,
@@ -745,6 +1037,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 10.4
+      },
+      "Housing": {
+        "Owner-occupied (%)": 72.1,
+        "Social housing (%)": 18.5,
+        "Dwellings": 18613
+      },
+      "Safety": {
+        "Crimes per 1,000": 10.2
       }
     },
     "0240": {
@@ -759,10 +1059,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": {},
-        "Unemployment rate (%)": 1.1
+        "Unemployment rate (%)": 1.1,
+        "Out-commuter share (%)": 78
       },
       "Economy": {
-        "Employees": 2008
+        "Employees": 2008,
+        "Avg income (DKK)": 319596
       },
       "Education": {
         "Secondary education (%)": 9.6,
@@ -770,6 +1072,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 8.5
+      },
+      "Housing": {
+        "Owner-occupied (%)": 91.3,
+        "Social housing (%)": 6.1,
+        "Dwellings": 10068
+      },
+      "Safety": {
+        "Crimes per 1,000": 7.2
       }
     },
     "0250": {
@@ -784,10 +1094,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 79,
-        "Unemployment rate (%)": 1.1
+        "Unemployment rate (%)": 1.1,
+        "Out-commuter share (%)": 60.3
       },
       "Economy": {
-        "Employees": 2391
+        "Employees": 2391,
+        "Avg income (DKK)": 284504
       },
       "Education": {
         "Secondary education (%)": 8.5,
@@ -795,6 +1107,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 8
+      },
+      "Housing": {
+        "Owner-occupied (%)": 78.4,
+        "Social housing (%)": 11.6,
+        "Dwellings": 11429
+      },
+      "Safety": {
+        "Crimes per 1,000": 10.2
       }
     },
     "0253": {
@@ -809,10 +1129,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 79,
-        "Unemployment rate (%)": 1.2
+        "Unemployment rate (%)": 1.2,
+        "Out-commuter share (%)": 74
       },
       "Economy": {
-        "Employees": 2562
+        "Employees": 2562,
+        "Avg income (DKK)": 306548
       },
       "Education": {
         "Secondary education (%)": 11.2,
@@ -820,6 +1142,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 12.5
+      },
+      "Housing": {
+        "Owner-occupied (%)": 74,
+        "Social housing (%)": 22.6,
+        "Dwellings": 13173
+      },
+      "Safety": {
+        "Crimes per 1,000": 12.2
       }
     },
     "0259": {
@@ -834,10 +1164,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 77.1,
-        "Unemployment rate (%)": 1.2
+        "Unemployment rate (%)": 1.2,
+        "Out-commuter share (%)": 59.2
       },
       "Economy": {
-        "Employees": 3472
+        "Employees": 3472,
+        "Avg income (DKK)": 291848
       },
       "Education": {
         "Secondary education (%)": 10,
@@ -845,6 +1177,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 10.5
+      },
+      "Housing": {
+        "Owner-occupied (%)": 66.5,
+        "Social housing (%)": 26.1,
+        "Dwellings": 16733
+      },
+      "Safety": {
+        "Crimes per 1,000": 14.8
       }
     },
     "0260": {
@@ -859,10 +1199,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": {},
-        "Unemployment rate (%)": 1.2
+        "Unemployment rate (%)": 1.2,
+        "Out-commuter share (%)": 55
       },
       "Economy": {
-        "Employees": 1488
+        "Employees": 1488,
+        "Avg income (DKK)": 268127
       },
       "Education": {
         "Secondary education (%)": 8.3,
@@ -870,6 +1212,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 10.9
+      },
+      "Housing": {
+        "Owner-occupied (%)": 75.4,
+        "Social housing (%)": 15.3,
+        "Dwellings": 8819
+      },
+      "Safety": {
+        "Crimes per 1,000": 9.2
       }
     },
     "0265": {
@@ -884,10 +1234,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 77.2,
-        "Unemployment rate (%)": 1.2
+        "Unemployment rate (%)": 1.2,
+        "Out-commuter share (%)": 60.6
       },
       "Economy": {
-        "Employees": 4983
+        "Employees": 4983,
+        "Avg income (DKK)": 323534
       },
       "Education": {
         "Secondary education (%)": 11.9,
@@ -895,6 +1247,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 8.6
+      },
+      "Housing": {
+        "Owner-occupied (%)": 67.4,
+        "Social housing (%)": 11.7,
+        "Dwellings": 25163
+      },
+      "Safety": {
+        "Crimes per 1,000": 12.8
       }
     },
     "0269": {
@@ -909,10 +1269,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 81.1,
-        "Unemployment rate (%)": 1
+        "Unemployment rate (%)": 1,
+        "Out-commuter share (%)": 78.9
       },
       "Economy": {
-        "Employees": 1148
+        "Employees": 1148,
+        "Avg income (DKK)": 336771
       },
       "Education": {
         "Secondary education (%)": 10.9,
@@ -920,6 +1282,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 8.1
+      },
+      "Housing": {
+        "Owner-occupied (%)": 84.4,
+        "Social housing (%)": 9.7,
+        "Dwellings": 5372
+      },
+      "Safety": {
+        "Crimes per 1,000": 10.2
       }
     },
     "0270": {
@@ -934,10 +1304,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": {},
-        "Unemployment rate (%)": 0.9
+        "Unemployment rate (%)": 0.9,
+        "Out-commuter share (%)": 58.1
       },
       "Economy": {
-        "Employees": 2694
+        "Employees": 2694,
+        "Avg income (DKK)": 292834
       },
       "Education": {
         "Secondary education (%)": 9.6,
@@ -945,6 +1317,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 7.9
+      },
+      "Housing": {
+        "Owner-occupied (%)": 90.2,
+        "Social housing (%)": 1.6,
+        "Dwellings": 10436
+      },
+      "Safety": {
+        "Crimes per 1,000": 10.2
       }
     },
     "0306": {
@@ -959,10 +1339,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": {},
-        "Unemployment rate (%)": 1.1
+        "Unemployment rate (%)": 1.1,
+        "Out-commuter share (%)": 43.7
       },
       "Economy": {
-        "Employees": 1971
+        "Employees": 1971,
+        "Avg income (DKK)": 250261
       },
       "Education": {
         "Secondary education (%)": 7.1,
@@ -970,6 +1352,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 6.3
+      },
+      "Housing": {
+        "Owner-occupied (%)": 81.8,
+        "Social housing (%)": 5.6,
+        "Dwellings": 10268
+      },
+      "Safety": {
+        "Crimes per 1,000": 13.7
       }
     },
     "0316": {
@@ -984,10 +1374,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": {},
-        "Unemployment rate (%)": 1.1
+        "Unemployment rate (%)": 1.1,
+        "Out-commuter share (%)": 50.7
       },
       "Economy": {
-        "Employees": 4026
+        "Employees": 4026,
+        "Avg income (DKK)": 277859
       },
       "Education": {
         "Secondary education (%)": 9.1,
@@ -995,6 +1387,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 8.2
+      },
+      "Housing": {
+        "Owner-occupied (%)": 71.8,
+        "Social housing (%)": 15.5,
+        "Dwellings": 21243
+      },
+      "Safety": {
+        "Crimes per 1,000": 11.8
       }
     },
     "0320": {
@@ -1009,10 +1409,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": {},
-        "Unemployment rate (%)": 1.3
+        "Unemployment rate (%)": 1.3,
+        "Out-commuter share (%)": 60.7
       },
       "Economy": {
-        "Employees": 2079
+        "Employees": 2079,
+        "Avg income (DKK)": 262570
       },
       "Education": {
         "Secondary education (%)": 8,
@@ -1020,6 +1422,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 10.1
+      },
+      "Housing": {
+        "Owner-occupied (%)": 76.6,
+        "Social housing (%)": 8,
+        "Dwellings": 10948
+      },
+      "Safety": {
+        "Crimes per 1,000": 10
       }
     },
     "0326": {
@@ -1034,10 +1444,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": {},
-        "Unemployment rate (%)": 1
+        "Unemployment rate (%)": 1,
+        "Out-commuter share (%)": 36.9
       },
       "Economy": {
-        "Employees": 2316
+        "Employees": 2316,
+        "Avg income (DKK)": 272926
       },
       "Education": {
         "Secondary education (%)": 7.1,
@@ -1045,6 +1457,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 8.5
+      },
+      "Housing": {
+        "Owner-occupied (%)": 77.1,
+        "Social housing (%)": 11.6,
+        "Dwellings": 16265
+      },
+      "Safety": {
+        "Crimes per 1,000": 10.3
       }
     },
     "0329": {
@@ -1059,10 +1479,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 77.7,
-        "Unemployment rate (%)": 1.6
+        "Unemployment rate (%)": 1.6,
+        "Out-commuter share (%)": 61
       },
       "Economy": {
-        "Employees": 1977
+        "Employees": 1977,
+        "Avg income (DKK)": 275838
       },
       "Education": {
         "Secondary education (%)": 9.3,
@@ -1070,6 +1492,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 12.6
+      },
+      "Housing": {
+        "Owner-occupied (%)": 69.9,
+        "Social housing (%)": 14.2,
+        "Dwellings": 10108
+      },
+      "Safety": {
+        "Crimes per 1,000": 12.5
       }
     },
     "0330": {
@@ -1084,10 +1514,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": {},
-        "Unemployment rate (%)": 1.5
+        "Unemployment rate (%)": 1.5,
+        "Out-commuter share (%)": 40.7
       },
       "Economy": {
-        "Employees": 3819
+        "Employees": 3819,
+        "Avg income (DKK)": 257137
       },
       "Education": {
         "Secondary education (%)": 9.5,
@@ -1095,6 +1527,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 9.1
+      },
+      "Housing": {
+        "Owner-occupied (%)": 60.7,
+        "Social housing (%)": 21.6,
+        "Dwellings": 27373
+      },
+      "Safety": {
+        "Crimes per 1,000": 16
       }
     },
     "0336": {
@@ -1109,10 +1549,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": {},
-        "Unemployment rate (%)": 1.4
+        "Unemployment rate (%)": 1.4,
+        "Out-commuter share (%)": 65.1
       },
       "Economy": {
-        "Employees": 1329
+        "Employees": 1329,
+        "Avg income (DKK)": 277295
       },
       "Education": {
         "Secondary education (%)": 7.7,
@@ -1120,6 +1562,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 7.8
+      },
+      "Housing": {
+        "Owner-occupied (%)": 86.3,
+        "Social housing (%)": 1.8,
+        "Dwellings": 6708
+      },
+      "Safety": {
+        "Crimes per 1,000": 6.6
       }
     },
     "0340": {
@@ -1134,10 +1584,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": {},
-        "Unemployment rate (%)": 1.2
+        "Unemployment rate (%)": 1.2,
+        "Out-commuter share (%)": 62.2
       },
       "Economy": {
-        "Employees": 1677
+        "Employees": 1677,
+        "Avg income (DKK)": 276440
       },
       "Education": {
         "Secondary education (%)": 7.2,
@@ -1145,6 +1597,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 6.8
+      },
+      "Housing": {
+        "Owner-occupied (%)": 78.4,
+        "Social housing (%)": 9.2,
+        "Dwellings": 9634
+      },
+      "Safety": {
+        "Crimes per 1,000": 10
       }
     },
     "0350": {
@@ -1159,10 +1619,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 71.1,
-        "Unemployment rate (%)": 1
+        "Unemployment rate (%)": 1,
+        "Out-commuter share (%)": 72.9
       },
       "Economy": {
-        "Employees": 1584
+        "Employees": 1584,
+        "Avg income (DKK)": 305283
       },
       "Education": {
         "Secondary education (%)": 8.3,
@@ -1170,6 +1632,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 7.1
+      },
+      "Housing": {
+        "Owner-occupied (%)": 91.3,
+        "Social housing (%)": 2.7,
+        "Dwellings": 7106
+      },
+      "Safety": {
+        "Crimes per 1,000": 7.1
       }
     },
     "0360": {
@@ -1184,10 +1654,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": {},
-        "Unemployment rate (%)": 1.1
+        "Unemployment rate (%)": 1.1,
+        "Out-commuter share (%)": 24.2
       },
       "Economy": {
-        "Employees": 2033
+        "Employees": 2033,
+        "Avg income (DKK)": 235450
       },
       "Education": {
         "Secondary education (%)": 6.4,
@@ -1195,6 +1667,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 10.2
+      },
+      "Housing": {
+        "Owner-occupied (%)": 80.3,
+        "Social housing (%)": 8.9,
+        "Dwellings": 16583
+      },
+      "Safety": {
+        "Crimes per 1,000": 19.9
       }
     },
     "0370": {
@@ -1209,10 +1689,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": {},
-        "Unemployment rate (%)": 1.4
+        "Unemployment rate (%)": 1.4,
+        "Out-commuter share (%)": 46.6
       },
       "Economy": {
-        "Employees": 4080
+        "Employees": 4080,
+        "Avg income (DKK)": 264921
       },
       "Education": {
         "Secondary education (%)": 9.4,
@@ -1220,6 +1702,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 7.9
+      },
+      "Housing": {
+        "Owner-occupied (%)": 74.8,
+        "Social housing (%)": 9.8,
+        "Dwellings": 27629
+      },
+      "Safety": {
+        "Crimes per 1,000": 14.3
       }
     },
     "0376": {
@@ -1234,10 +1724,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": {},
-        "Unemployment rate (%)": 1.3
+        "Unemployment rate (%)": 1.3,
+        "Out-commuter share (%)": 33.2
       },
       "Economy": {
-        "Employees": 3135
+        "Employees": 3135,
+        "Avg income (DKK)": 246113
       },
       "Education": {
         "Secondary education (%)": 7.7,
@@ -1245,6 +1737,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 7.6
+      },
+      "Housing": {
+        "Owner-occupied (%)": 78.1,
+        "Social housing (%)": 8.9,
+        "Dwellings": 23174
+      },
+      "Safety": {
+        "Crimes per 1,000": 14.5
       }
     },
     "0390": {
@@ -1259,10 +1759,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": {},
-        "Unemployment rate (%)": 1.3
+        "Unemployment rate (%)": 1.3,
+        "Out-commuter share (%)": 44.8
       },
       "Economy": {
-        "Employees": 2583
+        "Employees": 2583,
+        "Avg income (DKK)": 253932
       },
       "Education": {
         "Secondary education (%)": 8.3,
@@ -1270,6 +1772,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 7.5
+      },
+      "Housing": {
+        "Owner-occupied (%)": 76.7,
+        "Social housing (%)": 10.9,
+        "Dwellings": 16374
+      },
+      "Safety": {
+        "Crimes per 1,000": 11.8
       }
     },
     "0400": {
@@ -1284,10 +1794,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 67.4,
-        "Unemployment rate (%)": 0.9
+        "Unemployment rate (%)": 0.9,
+        "Out-commuter share (%)": 7.3
       },
       "Economy": {
-        "Employees": 2302
+        "Employees": 2302,
+        "Avg income (DKK)": 242923
       },
       "Education": {
         "Secondary education (%)": 6.8,
@@ -1295,6 +1807,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 8.2
+      },
+      "Housing": {
+        "Owner-occupied (%)": 85.3,
+        "Social housing (%)": 6.2,
+        "Dwellings": 15894
+      },
+      "Safety": {
+        "Crimes per 1,000": 8.7
       }
     },
     "0410": {
@@ -1309,10 +1829,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": {},
-        "Unemployment rate (%)": 1.1
+        "Unemployment rate (%)": 1.1,
+        "Out-commuter share (%)": 50.8
       },
       "Economy": {
-        "Employees": 2162
+        "Employees": 2162,
+        "Avg income (DKK)": 285877
       },
       "Education": {
         "Secondary education (%)": 7.2,
@@ -1320,6 +1842,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 6.4
+      },
+      "Housing": {
+        "Owner-occupied (%)": 81.9,
+        "Social housing (%)": 8.1,
+        "Dwellings": 11565
+      },
+      "Safety": {
+        "Crimes per 1,000": 9.7
       }
     },
     "0411": {
@@ -1334,10 +1864,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 69.4,
-        "Unemployment rate (%)": {}
+        "Unemployment rate (%)": {},
+        "Out-commuter share (%)": 22.2
       },
       "Economy": {
-        "Employees": 8
+        "Employees": 8,
+        "Avg income (DKK)": {}
       },
       "Education": {
         "Secondary education (%)": 1.4,
@@ -1345,6 +1877,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 9.9
+      },
+      "Housing": {
+        "Owner-occupied (%)": {},
+        "Social housing (%)": {},
+        "Dwellings": 0
+      },
+      "Safety": {
+        "Crimes per 1,000": 0
       }
     },
     "0420": {
@@ -1359,10 +1899,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 72.8,
-        "Unemployment rate (%)": 1.4
+        "Unemployment rate (%)": 1.4,
+        "Out-commuter share (%)": 51.3
       },
       "Economy": {
-        "Employees": 2102
+        "Employees": 2102,
+        "Avg income (DKK)": 252783
       },
       "Education": {
         "Secondary education (%)": 6.7,
@@ -1370,6 +1912,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 8.1
+      },
+      "Housing": {
+        "Owner-occupied (%)": 81.4,
+        "Social housing (%)": 5.4,
+        "Dwellings": 13940
+      },
+      "Safety": {
+        "Crimes per 1,000": 9.9
       }
     },
     "0430": {
@@ -1384,10 +1934,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": {},
-        "Unemployment rate (%)": 1.2
+        "Unemployment rate (%)": 1.2,
+        "Out-commuter share (%)": 54.2
       },
       "Economy": {
-        "Employees": 2829
+        "Employees": 2829,
+        "Avg income (DKK)": 254250
       },
       "Education": {
         "Secondary education (%)": 6.7,
@@ -1395,6 +1947,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 7.2
+      },
+      "Housing": {
+        "Owner-occupied (%)": 84,
+        "Social housing (%)": 5.2,
+        "Dwellings": 17257
+      },
+      "Safety": {
+        "Crimes per 1,000": 10.7
       }
     },
     "0440": {
@@ -1409,10 +1969,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": {},
-        "Unemployment rate (%)": 1.4
+        "Unemployment rate (%)": 1.4,
+        "Out-commuter share (%)": 56.9
       },
       "Economy": {
-        "Employees": 1190
+        "Employees": 1190,
+        "Avg income (DKK)": 267813
       },
       "Education": {
         "Secondary education (%)": 7.1,
@@ -1420,6 +1982,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 8.6
+      },
+      "Housing": {
+        "Owner-occupied (%)": 72.3,
+        "Social housing (%)": 8,
+        "Dwellings": 7723
+      },
+      "Safety": {
+        "Crimes per 1,000": 10.2
       }
     },
     "0450": {
@@ -1434,10 +2004,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": {},
-        "Unemployment rate (%)": 1.5
+        "Unemployment rate (%)": 1.5,
+        "Out-commuter share (%)": 52.6
       },
       "Economy": {
-        "Employees": 1396
+        "Employees": 1396,
+        "Avg income (DKK)": 256450
       },
       "Education": {
         "Secondary education (%)": 7.9,
@@ -1445,6 +2017,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 7
+      },
+      "Housing": {
+        "Owner-occupied (%)": 72,
+        "Social housing (%)": 12.7,
+        "Dwellings": 11058
+      },
+      "Safety": {
+        "Crimes per 1,000": 14.9
       }
     },
     "0461": {
@@ -1459,10 +2039,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 72.5,
-        "Unemployment rate (%)": 1.9
+        "Unemployment rate (%)": 1.9,
+        "Out-commuter share (%)": 28.5
       },
       "Economy": {
-        "Employees": 8973
+        "Employees": 8973,
+        "Avg income (DKK)": 257928
       },
       "Education": {
         "Secondary education (%)": 15,
@@ -1470,6 +2052,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 10.7
+      },
+      "Housing": {
+        "Owner-occupied (%)": 58.7,
+        "Social housing (%)": 20.9,
+        "Dwellings": 68253
+      },
+      "Safety": {
+        "Crimes per 1,000": 16.3
       }
     },
     "0479": {
@@ -1484,10 +2074,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 69.8,
-        "Unemployment rate (%)": 1.3
+        "Unemployment rate (%)": 1.3,
+        "Out-commuter share (%)": 37
       },
       "Economy": {
-        "Employees": 3081
+        "Employees": 3081,
+        "Avg income (DKK)": 263984
       },
       "Education": {
         "Secondary education (%)": 9.3,
@@ -1495,6 +2087,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 5.9
+      },
+      "Housing": {
+        "Owner-occupied (%)": 76.8,
+        "Social housing (%)": 10.5,
+        "Dwellings": 19299
+      },
+      "Safety": {
+        "Crimes per 1,000": 9.8
       }
     },
     "0480": {
@@ -1509,10 +2109,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": {},
-        "Unemployment rate (%)": 1.5
+        "Unemployment rate (%)": 1.5,
+        "Out-commuter share (%)": 56
       },
       "Economy": {
-        "Employees": 1692
+        "Employees": 1692,
+        "Avg income (DKK)": 252071
       },
       "Education": {
         "Secondary education (%)": 6.7,
@@ -1520,6 +2122,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 9.2
+      },
+      "Housing": {
+        "Owner-occupied (%)": 86.1,
+        "Social housing (%)": 4.5,
+        "Dwellings": 9448
+      },
+      "Safety": {
+        "Crimes per 1,000": 8.4
       }
     },
     "0482": {
@@ -1534,10 +2144,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": {},
-        "Unemployment rate (%)": 1.3
+        "Unemployment rate (%)": 1.3,
+        "Out-commuter share (%)": 33.4
       },
       "Economy": {
-        "Employees": 724
+        "Employees": 724,
+        "Avg income (DKK)": 229128
       },
       "Education": {
         "Secondary education (%)": 6.2,
@@ -1545,6 +2157,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 7.9
+      },
+      "Housing": {
+        "Owner-occupied (%)": 84,
+        "Social housing (%)": 5.5,
+        "Dwellings": 5070
+      },
+      "Safety": {
+        "Crimes per 1,000": 9.5
       }
     },
     "0492": {
@@ -1559,10 +2179,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 67.2,
-        "Unemployment rate (%)": 0.7
+        "Unemployment rate (%)": 0.7,
+        "Out-commuter share (%)": 16.4
       },
       "Economy": {
-        "Employees": 451
+        "Employees": 451,
+        "Avg income (DKK)": 235120
       },
       "Education": {
         "Secondary education (%)": 6.1,
@@ -1570,6 +2192,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 11.5
+      },
+      "Housing": {
+        "Owner-occupied (%)": 88.7,
+        "Social housing (%)": 6,
+        "Dwellings": 2785
+      },
+      "Safety": {
+        "Crimes per 1,000": 4.5
       }
     },
     "0510": {
@@ -1584,10 +2214,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": {},
-        "Unemployment rate (%)": 1.3
+        "Unemployment rate (%)": 1.3,
+        "Out-commuter share (%)": 40.4
       },
       "Economy": {
-        "Employees": 2803
+        "Employees": 2803,
+        "Avg income (DKK)": 251031
       },
       "Education": {
         "Secondary education (%)": 8.9,
@@ -1595,6 +2227,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 11.5
+      },
+      "Housing": {
+        "Owner-occupied (%)": 69.3,
+        "Social housing (%)": 15.2,
+        "Dwellings": 19986
+      },
+      "Safety": {
+        "Crimes per 1,000": 13
       }
     },
     "0530": {
@@ -1609,10 +2249,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": {},
-        "Unemployment rate (%)": 0.8
+        "Unemployment rate (%)": 0.8,
+        "Out-commuter share (%)": 33.1
       },
       "Economy": {
-        "Employees": 1526
+        "Employees": 1526,
+        "Avg income (DKK)": 286776
       },
       "Education": {
         "Secondary education (%)": 8.2,
@@ -1620,6 +2262,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 16.9
+      },
+      "Housing": {
+        "Owner-occupied (%)": 78.6,
+        "Social housing (%)": 11.8,
+        "Dwellings": 7244
+      },
+      "Safety": {
+        "Crimes per 1,000": 16.2
       }
     },
     "0540": {
@@ -1634,10 +2284,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": {},
-        "Unemployment rate (%)": 1.3
+        "Unemployment rate (%)": 1.3,
+        "Out-commuter share (%)": 18.8
       },
       "Economy": {
-        "Employees": 3120
+        "Employees": 3120,
+        "Avg income (DKK)": 255717
       },
       "Education": {
         "Secondary education (%)": 9.4,
@@ -1645,6 +2297,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 14.7
+      },
+      "Housing": {
+        "Owner-occupied (%)": 70.9,
+        "Social housing (%)": 20,
+        "Dwellings": 24659
+      },
+      "Safety": {
+        "Crimes per 1,000": 9.8
       }
     },
     "0550": {
@@ -1659,10 +2319,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 76.4,
-        "Unemployment rate (%)": 0.9
+        "Unemployment rate (%)": 0.9,
+        "Out-commuter share (%)": 27.5
       },
       "Economy": {
-        "Employees": 2398
+        "Employees": 2398,
+        "Avg income (DKK)": 249158
       },
       "Education": {
         "Secondary education (%)": 7.5,
@@ -1670,6 +2332,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 15
+      },
+      "Housing": {
+        "Owner-occupied (%)": 80.6,
+        "Social housing (%)": 7.1,
+        "Dwellings": 13333
+      },
+      "Safety": {
+        "Crimes per 1,000": 13.7
       }
     },
     "0561": {
@@ -1684,10 +2354,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 72.8,
-        "Unemployment rate (%)": 1.2
+        "Unemployment rate (%)": 1.2,
+        "Out-commuter share (%)": 20.7
       },
       "Economy": {
-        "Employees": 5722
+        "Employees": 5722,
+        "Avg income (DKK)": 274660
       },
       "Education": {
         "Secondary education (%)": 9.2,
@@ -1695,6 +2367,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 9.4
+      },
+      "Housing": {
+        "Owner-occupied (%)": 61.9,
+        "Social housing (%)": 22.5,
+        "Dwellings": 39101
+      },
+      "Safety": {
+        "Crimes per 1,000": 13.7
       }
     },
     "0563": {
@@ -1709,10 +2389,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 74.2,
-        "Unemployment rate (%)": 0.9
+        "Unemployment rate (%)": 0.9,
+        "Out-commuter share (%)": 48.8
       },
       "Economy": {
-        "Employees": 243
+        "Employees": 243,
+        "Avg income (DKK)": 277700
       },
       "Education": {
         "Secondary education (%)": 7.1,
@@ -1720,6 +2402,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 7.5
+      },
+      "Housing": {
+        "Owner-occupied (%)": 88.3,
+        "Social housing (%)": 1.7,
+        "Dwellings": 1107
+      },
+      "Safety": {
+        "Crimes per 1,000": 9.3
       }
     },
     "0573": {
@@ -1734,10 +2424,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 79.1,
-        "Unemployment rate (%)": 0.9
+        "Unemployment rate (%)": 0.9,
+        "Out-commuter share (%)": 39.9
       },
       "Economy": {
-        "Employees": 2953
+        "Employees": 2953,
+        "Avg income (DKK)": 268401
       },
       "Education": {
         "Secondary education (%)": 7.2,
@@ -1745,6 +2437,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 11.1
+      },
+      "Housing": {
+        "Owner-occupied (%)": 80.8,
+        "Social housing (%)": 9.2,
+        "Dwellings": 15128
+      },
+      "Safety": {
+        "Crimes per 1,000": 9.5
       }
     },
     "0575": {
@@ -1759,10 +2459,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 77.6,
-        "Unemployment rate (%)": 0.9
+        "Unemployment rate (%)": 0.9,
+        "Out-commuter share (%)": 45.6
       },
       "Economy": {
-        "Employees": 2410
+        "Employees": 2410,
+        "Avg income (DKK)": 361047
       },
       "Education": {
         "Secondary education (%)": 7.2,
@@ -1770,6 +2472,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 12.2
+      },
+      "Housing": {
+        "Owner-occupied (%)": 81.7,
+        "Social housing (%)": 8,
+        "Dwellings": 12938
+      },
+      "Safety": {
+        "Crimes per 1,000": 9
       }
     },
     "0580": {
@@ -1784,10 +2494,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": {},
-        "Unemployment rate (%)": 1.2
+        "Unemployment rate (%)": 1.2,
+        "Out-commuter share (%)": 30.2
       },
       "Economy": {
-        "Employees": 3216
+        "Employees": 3216,
+        "Avg income (DKK)": 259641
       },
       "Education": {
         "Secondary education (%)": 7.6,
@@ -1795,6 +2507,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 15.5
+      },
+      "Housing": {
+        "Owner-occupied (%)": 74.9,
+        "Social housing (%)": 13,
+        "Dwellings": 19036
+      },
+      "Safety": {
+        "Crimes per 1,000": 16.1
       }
     },
     "0607": {
@@ -1809,10 +2529,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 74.2,
-        "Unemployment rate (%)": 1.6
+        "Unemployment rate (%)": 1.6,
+        "Out-commuter share (%)": 43.9
       },
       "Economy": {
-        "Employees": 2456
+        "Employees": 2456,
+        "Avg income (DKK)": 268774
       },
       "Education": {
         "Secondary education (%)": 9.3,
@@ -1820,6 +2542,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 10.4
+      },
+      "Housing": {
+        "Owner-occupied (%)": 58.2,
+        "Social housing (%)": 27,
+        "Dwellings": 17609
+      },
+      "Safety": {
+        "Crimes per 1,000": 16.9
       }
     },
     "0615": {
@@ -1834,10 +2564,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 74.8,
-        "Unemployment rate (%)": 1.4
+        "Unemployment rate (%)": 1.4,
+        "Out-commuter share (%)": 40.8
       },
       "Economy": {
-        "Employees": 4406
+        "Employees": 4406,
+        "Avg income (DKK)": 271024
       },
       "Education": {
         "Secondary education (%)": 9.9,
@@ -1845,6 +2577,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 13.4
+      },
+      "Housing": {
+        "Owner-occupied (%)": 65.5,
+        "Social housing (%)": 13.5,
+        "Dwellings": 27085
+      },
+      "Safety": {
+        "Crimes per 1,000": 10.7
       }
     },
     "0621": {
@@ -1859,10 +2599,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 77.3,
-        "Unemployment rate (%)": 1.3
+        "Unemployment rate (%)": 1.3,
+        "Out-commuter share (%)": 36.3
       },
       "Economy": {
-        "Employees": 5276
+        "Employees": 5276,
+        "Avg income (DKK)": 275204
       },
       "Education": {
         "Secondary education (%)": 10,
@@ -1870,6 +2612,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 11.2
+      },
+      "Housing": {
+        "Owner-occupied (%)": 65.7,
+        "Social housing (%)": 15.5,
+        "Dwellings": 28435
+      },
+      "Safety": {
+        "Crimes per 1,000": 11.3
       }
     },
     "0630": {
@@ -1884,10 +2634,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": {},
-        "Unemployment rate (%)": 1.2
+        "Unemployment rate (%)": 1.2,
+        "Out-commuter share (%)": 43.6
       },
       "Economy": {
-        "Employees": 6448
+        "Employees": 6448,
+        "Avg income (DKK)": 291272
       },
       "Education": {
         "Secondary education (%)": 9.4,
@@ -1895,6 +2647,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 12.5
+      },
+      "Housing": {
+        "Owner-occupied (%)": 65.5,
+        "Social housing (%)": 17.5,
+        "Dwellings": 33820
+      },
+      "Safety": {
+        "Crimes per 1,000": 13.7
       }
     },
     "0657": {
@@ -1909,10 +2669,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 76.4,
-        "Unemployment rate (%)": 1.1
+        "Unemployment rate (%)": 1.1,
+        "Out-commuter share (%)": 33
       },
       "Economy": {
-        "Employees": 5023
+        "Employees": 5023,
+        "Avg income (DKK)": 273181
       },
       "Education": {
         "Secondary education (%)": 9.5,
@@ -1920,6 +2682,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 10.7
+      },
+      "Housing": {
+        "Owner-occupied (%)": 72.4,
+        "Social housing (%)": 13.3,
+        "Dwellings": 26301
+      },
+      "Safety": {
+        "Crimes per 1,000": 11.8
       }
     },
     "0661": {
@@ -1934,10 +2704,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 78.1,
-        "Unemployment rate (%)": 0.9
+        "Unemployment rate (%)": 0.9,
+        "Out-commuter share (%)": 36.7
       },
       "Economy": {
-        "Employees": 3041
+        "Employees": 3041,
+        "Avg income (DKK)": 269279
       },
       "Education": {
         "Secondary education (%)": 9.9,
@@ -1945,6 +2717,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 8.3
+      },
+      "Housing": {
+        "Owner-occupied (%)": 72.5,
+        "Social housing (%)": 18.3,
+        "Dwellings": 17435
+      },
+      "Safety": {
+        "Crimes per 1,000": 13.5
       }
     },
     "0665": {
@@ -1959,10 +2739,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 76.8,
-        "Unemployment rate (%)": 0.8
+        "Unemployment rate (%)": 0.8,
+        "Out-commuter share (%)": 27.8
       },
       "Economy": {
-        "Employees": 1244
+        "Employees": 1244,
+        "Avg income (DKK)": 273175
       },
       "Education": {
         "Secondary education (%)": 7.5,
@@ -1970,6 +2752,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 9.5
+      },
+      "Housing": {
+        "Owner-occupied (%)": 84.4,
+        "Social housing (%)": 6,
+        "Dwellings": 6922
+      },
+      "Safety": {
+        "Crimes per 1,000": 7.3
       }
     },
     "0671": {
@@ -1984,10 +2774,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 75.9,
-        "Unemployment rate (%)": 1.1
+        "Unemployment rate (%)": 1.1,
+        "Out-commuter share (%)": 48.7
       },
       "Economy": {
-        "Employees": 1087
+        "Employees": 1087,
+        "Avg income (DKK)": 254689
       },
       "Education": {
         "Secondary education (%)": 7.4,
@@ -1995,6 +2787,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 9.5
+      },
+      "Housing": {
+        "Owner-occupied (%)": 79.4,
+        "Social housing (%)": 11.4,
+        "Dwellings": 6980
+      },
+      "Safety": {
+        "Crimes per 1,000": 10
       }
     },
     "0706": {
@@ -2009,10 +2809,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": {},
-        "Unemployment rate (%)": 1.2
+        "Unemployment rate (%)": 1.2,
+        "Out-commuter share (%)": 54.7
       },
       "Economy": {
-        "Employees": 2651
+        "Employees": 2651,
+        "Avg income (DKK)": 271971
       },
       "Education": {
         "Secondary education (%)": 8.2,
@@ -2020,6 +2822,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 7
+      },
+      "Housing": {
+        "Owner-occupied (%)": 87.4,
+        "Social housing (%)": 4.6,
+        "Dwellings": 11412
+      },
+      "Safety": {
+        "Crimes per 1,000": 8.8
       }
     },
     "0707": {
@@ -2034,10 +2844,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 71.7,
-        "Unemployment rate (%)": 1.3
+        "Unemployment rate (%)": 1.3,
+        "Out-commuter share (%)": 35.4
       },
       "Economy": {
-        "Employees": 2111
+        "Employees": 2111,
+        "Avg income (DKK)": 249494
       },
       "Education": {
         "Secondary education (%)": 7.5,
@@ -2045,6 +2857,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 9.1
+      },
+      "Housing": {
+        "Owner-occupied (%)": 79.9,
+        "Social housing (%)": 8.6,
+        "Dwellings": 12582
+      },
+      "Safety": {
+        "Crimes per 1,000": 11.1
       }
     },
     "0710": {
@@ -2059,10 +2879,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": {},
-        "Unemployment rate (%)": 1.2
+        "Unemployment rate (%)": 1.2,
+        "Out-commuter share (%)": 63
       },
       "Economy": {
-        "Employees": 2601
+        "Employees": 2601,
+        "Avg income (DKK)": 285147
       },
       "Education": {
         "Secondary education (%)": 7.7,
@@ -2070,6 +2892,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 7.5
+      },
+      "Housing": {
+        "Owner-occupied (%)": 87.6,
+        "Social housing (%)": 3.7,
+        "Dwellings": 12173
+      },
+      "Safety": {
+        "Crimes per 1,000": 6.5
       }
     },
     "0727": {
@@ -2084,10 +2914,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 78,
-        "Unemployment rate (%)": 1.2
+        "Unemployment rate (%)": 1.2,
+        "Out-commuter share (%)": 55.4
       },
       "Economy": {
-        "Employees": 1242
+        "Employees": 1242,
+        "Avg income (DKK)": 277813
       },
       "Education": {
         "Secondary education (%)": 8.4,
@@ -2095,6 +2927,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 7.1
+      },
+      "Housing": {
+        "Owner-occupied (%)": 79.9,
+        "Social housing (%)": 8.7,
+        "Dwellings": 6203
+      },
+      "Safety": {
+        "Crimes per 1,000": 6.1
       }
     },
     "0730": {
@@ -2109,10 +2949,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": {},
-        "Unemployment rate (%)": 1.5
+        "Unemployment rate (%)": 1.5,
+        "Out-commuter share (%)": 39.8
       },
       "Economy": {
-        "Employees": 4627
+        "Employees": 4627,
+        "Avg income (DKK)": 256955
       },
       "Education": {
         "Secondary education (%)": 9.4,
@@ -2120,6 +2962,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 8.2
+      },
+      "Housing": {
+        "Owner-occupied (%)": 63,
+        "Social housing (%)": 16.6,
+        "Dwellings": 34804
+      },
+      "Safety": {
+        "Crimes per 1,000": 13.2
       }
     },
     "0740": {
@@ -2134,10 +2984,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": {},
-        "Unemployment rate (%)": 1.2
+        "Unemployment rate (%)": 1.2,
+        "Out-commuter share (%)": 44
       },
       "Economy": {
-        "Employees": 5127
+        "Employees": 5127,
+        "Avg income (DKK)": 289539
       },
       "Education": {
         "Secondary education (%)": 8.6,
@@ -2145,6 +2997,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 7.4
+      },
+      "Housing": {
+        "Owner-occupied (%)": 74.8,
+        "Social housing (%)": 15.3,
+        "Dwellings": 25273
+      },
+      "Safety": {
+        "Crimes per 1,000": 8.8
       }
     },
     "0741": {
@@ -2159,10 +3019,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 69.8,
-        "Unemployment rate (%)": 1
+        "Unemployment rate (%)": 1,
+        "Out-commuter share (%)": 15.2
       },
       "Economy": {
-        "Employees": 350
+        "Employees": 350,
+        "Avg income (DKK)": 248849
       },
       "Education": {
         "Secondary education (%)": 7.7,
@@ -2170,6 +3032,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 10
+      },
+      "Housing": {
+        "Owner-occupied (%)": 92.3,
+        "Social housing (%)": 1.4,
+        "Dwellings": 1524
+      },
+      "Safety": {
+        "Crimes per 1,000": 9.7
       }
     },
     "0746": {
@@ -2184,10 +3054,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": {},
-        "Unemployment rate (%)": 1
+        "Unemployment rate (%)": 1,
+        "Out-commuter share (%)": 59.1
       },
       "Economy": {
-        "Employees": 3493
+        "Employees": 3493,
+        "Avg income (DKK)": 307806
       },
       "Education": {
         "Secondary education (%)": 7.9,
@@ -2195,6 +3067,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 5.6
+      },
+      "Housing": {
+        "Owner-occupied (%)": 78,
+        "Social housing (%)": 11.3,
+        "Dwellings": 15222
+      },
+      "Safety": {
+        "Crimes per 1,000": 6.5
       }
     },
     "0751": {
@@ -2209,10 +3089,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 74.7,
-        "Unemployment rate (%)": 1.9
+        "Unemployment rate (%)": 1.9,
+        "Out-commuter share (%)": 23.2
       },
       "Economy": {
-        "Employees": 17704
+        "Employees": 17704,
+        "Avg income (DKK)": 281588
       },
       "Education": {
         "Secondary education (%)": 19.1,
@@ -2220,6 +3102,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 11.4
+      },
+      "Housing": {
+        "Owner-occupied (%)": 51.5,
+        "Social housing (%)": 27.1,
+        "Dwellings": 103738
+      },
+      "Safety": {
+        "Crimes per 1,000": 15
       }
     },
     "0756": {
@@ -2234,10 +3124,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": {},
-        "Unemployment rate (%)": 1.1
+        "Unemployment rate (%)": 1.1,
+        "Out-commuter share (%)": 48.6
       },
       "Economy": {
-        "Employees": 2265
+        "Employees": 2265,
+        "Avg income (DKK)": 265794
       },
       "Education": {
         "Secondary education (%)": 8.3,
@@ -2245,6 +3137,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 14.5
+      },
+      "Housing": {
+        "Owner-occupied (%)": 77.8,
+        "Social housing (%)": 11.3,
+        "Dwellings": 11714
+      },
+      "Safety": {
+        "Crimes per 1,000": 18.1
       }
     },
     "0760": {
@@ -2259,10 +3159,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 76.8,
-        "Unemployment rate (%)": 0.8
+        "Unemployment rate (%)": 0.8,
+        "Out-commuter share (%)": 23.9
       },
       "Economy": {
-        "Employees": 3358
+        "Employees": 3358,
+        "Avg income (DKK)": 270125
       },
       "Education": {
         "Secondary education (%)": 7.6,
@@ -2270,6 +3172,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 12.6
+      },
+      "Housing": {
+        "Owner-occupied (%)": 81.9,
+        "Social housing (%)": 6,
+        "Dwellings": 16765
+      },
+      "Safety": {
+        "Crimes per 1,000": 7.5
       }
     },
     "0766": {
@@ -2284,10 +3194,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": {},
-        "Unemployment rate (%)": 1.1
+        "Unemployment rate (%)": 1.1,
+        "Out-commuter share (%)": 52.8
       },
       "Economy": {
-        "Employees": 2879
+        "Employees": 2879,
+        "Avg income (DKK)": 276539
       },
       "Education": {
         "Secondary education (%)": 7.4,
@@ -2295,6 +3207,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 9.8
+      },
+      "Housing": {
+        "Owner-occupied (%)": 84.4,
+        "Social housing (%)": 6,
+        "Dwellings": 12412
+      },
+      "Safety": {
+        "Crimes per 1,000": 7.9
       }
     },
     "0773": {
@@ -2309,10 +3229,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 73.2,
-        "Unemployment rate (%)": 1
+        "Unemployment rate (%)": 1,
+        "Out-commuter share (%)": 28.4
       },
       "Economy": {
-        "Employees": 1196
+        "Employees": 1196,
+        "Avg income (DKK)": 246623
       },
       "Education": {
         "Secondary education (%)": 6.5,
@@ -2320,6 +3242,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 6.6
+      },
+      "Housing": {
+        "Owner-occupied (%)": 80.6,
+        "Social housing (%)": 8.6,
+        "Dwellings": 7519
+      },
+      "Safety": {
+        "Crimes per 1,000": 7
       }
     },
     "0779": {
@@ -2334,10 +3264,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 76.4,
-        "Unemployment rate (%)": 0.8
+        "Unemployment rate (%)": 0.8,
+        "Out-commuter share (%)": 29.3
       },
       "Economy": {
-        "Employees": 2516
+        "Employees": 2516,
+        "Avg income (DKK)": 258877
       },
       "Education": {
         "Secondary education (%)": 8.4,
@@ -2345,6 +3277,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 7.5
+      },
+      "Housing": {
+        "Owner-occupied (%)": 73.8,
+        "Social housing (%)": 11.9,
+        "Dwellings": 16270
+      },
+      "Safety": {
+        "Crimes per 1,000": 10.7
       }
     },
     "0787": {
@@ -2359,10 +3299,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 76.7,
-        "Unemployment rate (%)": 1
+        "Unemployment rate (%)": 1,
+        "Out-commuter share (%)": 15
       },
       "Economy": {
-        "Employees": 2844
+        "Employees": 2844,
+        "Avg income (DKK)": 252934
       },
       "Education": {
         "Secondary education (%)": 7.8,
@@ -2370,6 +3312,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 8.8
+      },
+      "Housing": {
+        "Owner-occupied (%)": 83.6,
+        "Social housing (%)": 6.8,
+        "Dwellings": 15133
+      },
+      "Safety": {
+        "Crimes per 1,000": 8.9
       }
     },
     "0791": {
@@ -2384,10 +3334,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 76.8,
-        "Unemployment rate (%)": 1.2
+        "Unemployment rate (%)": 1.2,
+        "Out-commuter share (%)": 31.6
       },
       "Economy": {
-        "Employees": 5264
+        "Employees": 5264,
+        "Avg income (DKK)": 268000
       },
       "Education": {
         "Secondary education (%)": 8.7,
@@ -2395,6 +3347,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 8.7
+      },
+      "Housing": {
+        "Owner-occupied (%)": 74.8,
+        "Social housing (%)": 11.3,
+        "Dwellings": 28631
+      },
+      "Safety": {
+        "Crimes per 1,000": 11.2
       }
     },
     "0810": {
@@ -2409,10 +3369,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": {},
-        "Unemployment rate (%)": 1.2
+        "Unemployment rate (%)": 1.2,
+        "Out-commuter share (%)": 56
       },
       "Economy": {
-        "Employees": 1871
+        "Employees": 1871,
+        "Avg income (DKK)": 255600
       },
       "Education": {
         "Secondary education (%)": 6.8,
@@ -2420,6 +3382,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 7.4
+      },
+      "Housing": {
+        "Owner-occupied (%)": 79.4,
+        "Social housing (%)": 9.1,
+        "Dwellings": 11658
+      },
+      "Safety": {
+        "Crimes per 1,000": 6.5
       }
     },
     "0813": {
@@ -2434,10 +3404,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 70.3,
-        "Unemployment rate (%)": 1.5
+        "Unemployment rate (%)": 1.5,
+        "Out-commuter share (%)": 25.7
       },
       "Economy": {
-        "Employees": 3062
+        "Employees": 3062,
+        "Avg income (DKK)": 258890
       },
       "Education": {
         "Secondary education (%)": 6.9,
@@ -2445,6 +3417,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 9
+      },
+      "Housing": {
+        "Owner-occupied (%)": 69.8,
+        "Social housing (%)": 20.3,
+        "Dwellings": 20434
+      },
+      "Safety": {
+        "Crimes per 1,000": 11.7
       }
     },
     "0820": {
@@ -2459,10 +3439,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": {},
-        "Unemployment rate (%)": 1.2
+        "Unemployment rate (%)": 1.2,
+        "Out-commuter share (%)": 32.8
       },
       "Economy": {
-        "Employees": 2076
+        "Employees": 2076,
+        "Avg income (DKK)": 253230
       },
       "Education": {
         "Secondary education (%)": 6.4,
@@ -2470,6 +3452,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 9.8
+      },
+      "Housing": {
+        "Owner-occupied (%)": 83.2,
+        "Social housing (%)": 3.7,
+        "Dwellings": 11987
+      },
+      "Safety": {
+        "Crimes per 1,000": 10.9
       }
     },
     "0825": {
@@ -2484,10 +3474,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 71.4,
-        "Unemployment rate (%)": 1.8
+        "Unemployment rate (%)": 1.8,
+        "Out-commuter share (%)": 13.1
       },
       "Economy": {
-        "Employees": 190
+        "Employees": 190,
+        "Avg income (DKK)": 240554
       },
       "Education": {
         "Secondary education (%)": 5.2,
@@ -2495,6 +3487,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 6.1
+      },
+      "Housing": {
+        "Owner-occupied (%)": 90.8,
+        "Social housing (%)": 3.6,
+        "Dwellings": 716
+      },
+      "Safety": {
+        "Crimes per 1,000": 9
       }
     },
     "0840": {
@@ -2509,10 +3509,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": {},
-        "Unemployment rate (%)": 1.1
+        "Unemployment rate (%)": 1.1,
+        "Out-commuter share (%)": 61.8
       },
       "Economy": {
-        "Employees": 1818
+        "Employees": 1818,
+        "Avg income (DKK)": 291879
       },
       "Education": {
         "Secondary education (%)": 6.2,
@@ -2520,6 +3522,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 5.8
+      },
+      "Housing": {
+        "Owner-occupied (%)": 91,
+        "Social housing (%)": 0.5,
+        "Dwellings": 8162
+      },
+      "Safety": {
+        "Crimes per 1,000": 6.8
       }
     },
     "0846": {
@@ -2534,10 +3544,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": {},
-        "Unemployment rate (%)": 1.3
+        "Unemployment rate (%)": 1.3,
+        "Out-commuter share (%)": 37.8
       },
       "Economy": {
-        "Employees": 2558
+        "Employees": 2558,
+        "Avg income (DKK)": 262216
       },
       "Education": {
         "Secondary education (%)": 7,
@@ -2545,6 +3557,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 8.1
+      },
+      "Housing": {
+        "Owner-occupied (%)": 78.2,
+        "Social housing (%)": 6,
+        "Dwellings": 13138
+      },
+      "Safety": {
+        "Crimes per 1,000": 9.1
       }
     },
     "0849": {
@@ -2559,10 +3579,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 76.2,
-        "Unemployment rate (%)": 1.2
+        "Unemployment rate (%)": 1.2,
+        "Out-commuter share (%)": 46.7
       },
       "Economy": {
-        "Employees": 2244
+        "Employees": 2244,
+        "Avg income (DKK)": 254538
       },
       "Education": {
         "Secondary education (%)": 6.8,
@@ -2570,6 +3592,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 6.4
+      },
+      "Housing": {
+        "Owner-occupied (%)": 89.1,
+        "Social housing (%)": 2.4,
+        "Dwellings": 11658
+      },
+      "Safety": {
+        "Crimes per 1,000": 8.1
       }
     },
     "0851": {
@@ -2584,10 +3614,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": 70.9,
-        "Unemployment rate (%)": 1.8
+        "Unemployment rate (%)": 1.8,
+        "Out-commuter share (%)": 22.2
       },
       "Economy": {
-        "Employees": 10144
+        "Employees": 10144,
+        "Avg income (DKK)": 266935
       },
       "Education": {
         "Secondary education (%)": 14.2,
@@ -2595,6 +3627,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 8.6
+      },
+      "Housing": {
+        "Owner-occupied (%)": 58,
+        "Social housing (%)": 23.2,
+        "Dwellings": 70319
+      },
+      "Safety": {
+        "Crimes per 1,000": 13.7
       }
     },
     "0860": {
@@ -2609,10 +3649,12 @@
       },
       "LabourMarket": {
         "Employment rate (%)": {},
-        "Unemployment rate (%)": 1.3
+        "Unemployment rate (%)": 1.3,
+        "Out-commuter share (%)": 26.7
       },
       "Economy": {
-        "Employees": 3538
+        "Employees": 3538,
+        "Avg income (DKK)": 255917
       },
       "Education": {
         "Secondary education (%)": 7.7,
@@ -2620,6 +3662,14 @@
       },
       "Migration": {
         "Foreign citizens (%)": 7.8
+      },
+      "Housing": {
+        "Owner-occupied (%)": 80,
+        "Social housing (%)": 9.4,
+        "Dwellings": 22000
+      },
+      "Safety": {
+        "Crimes per 1,000": 9.8
       }
     }
   }

@@ -28,10 +28,12 @@ VARIABLE_MAP <- list(
   ),
   LabourMarket = list(
     `Employment rate (%)`    = "EMP_RATE",
-    `Unemployment rate (%)`  = "UNEMP_RATE"
+    `Unemployment rate (%)`  = "UNEMP_RATE",
+    `Out-commuter share (%)` = "COMMUTER_PCT"
   ),
   Economy = list(
-    `Employees`   = "EMPLOYEES"
+    `Employees`        = "EMPLOYEES",
+    `Avg income (DKK)` = "AVG_INCOME"
   ),
   Education = list(
     `Secondary education (%)` = "EDU_SEC",
@@ -39,19 +41,33 @@ VARIABLE_MAP <- list(
   ),
   Migration = list(
     `Foreign citizens (%)` = "FOREIGN_PCT"
+  ),
+  Housing = list(
+    `Owner-occupied (%)`  = "OWNER_PCT",
+    `Social housing (%)`  = "SOCIAL_HOUSING_PCT",
+    `Dwellings`           = "DWELLINGS"
+  ),
+  Safety = list(
+    `Crimes per 1,000` = "CRIMES_PER_1K"
   )
 )
 
 AGGREGATION_TYPE <- list(
-  POPULATION  = "sum",
-  BEV_UNDER15 = "pct",
-  BEV_OVER65  = "pct",
-  FOREIGN_PCT = "pct",
-  EMP_RATE    = "pct",
-  UNEMP_RATE  = "pct",
-  EMPLOYEES   = "sum",
-  EDU_SEC     = "pct",
-  EDU_TER     = "pct"
+  POPULATION         = "sum",
+  BEV_UNDER15        = "pct",
+  BEV_OVER65         = "pct",
+  FOREIGN_PCT        = "pct",
+  EMP_RATE           = "pct",
+  UNEMP_RATE         = "pct",
+  COMMUTER_PCT       = "pct",
+  EMPLOYEES          = "sum",
+  AVG_INCOME         = "pct",
+  EDU_SEC            = "pct",
+  EDU_TER            = "pct",
+  OWNER_PCT          = "pct",
+  SOCIAL_HOUSING_PCT = "pct",
+  DWELLINGS          = "sum",
+  CRIMES_PER_1K      = "pct"
 )
 INDICATOR_COLS <- names(AGGREGATION_TYPE)
 
@@ -502,13 +518,172 @@ if (!is.null(hfudd)) {
 
 
 # ============================================================
+# 8a. PEND101 — Out-commuter share
+# ============================================================
+message("Fetching PEND101 (commuting) from DST...")
+
+commute_df <- tryCatch({
+  raw <- dst_post("PEND101", list(
+    list(code="OMRÅDE",    values=list("*")),
+    list(code="BRANCHE07", values=list("TOT")),
+    list(code="PENDLING",  values=list("NAT","UD")),
+    list(code="KØN",       values=list("M","K")),   # no TOT — sum M+K
+    list(code="Tid",       values=list(""))
+  ))
+  if (is.null(raw)) stop("null response")
+  names(raw) <- janitor::make_clean_names(names(raw))
+  area_c <- grep("omr|area",  names(raw), value=TRUE, ignore.case=TRUE)[1]
+  val_c  <- grep("indhold|value|antal", names(raw), value=TRUE, ignore.case=TRUE)[1]
+  pend_c <- grep("pendling",  names(raw), value=TRUE, ignore.case=TRUE)[1]
+
+  pend <- raw |>
+    rename(area=!!area_c, value=!!val_c, pendling=!!pend_c) |>
+    mutate(value = suppressWarnings(as.numeric(gsub(",",".",value))),
+           kommune_kode = coalesce(area_code, pad4(area))) |>
+    filter(kommune_kode %in% kommune_lookup$kommune_kode, !is.na(value))
+
+  # NAT = residents (denominator), UD = out-commuters (numerator)
+  nat <- pend |> filter(grepl("Nat|bopæl|resi", pendling, ignore.case=TRUE)) |>
+    group_by(kommune_kode) |> summarise(nat=sum(value,na.rm=TRUE),.groups="drop")
+  ud  <- pend |> filter(grepl("Udpend|out", pendling, ignore.case=TRUE)) |>
+    group_by(kommune_kode) |> summarise(ud=sum(value,na.rm=TRUE),.groups="drop")
+
+  result <- nat |> left_join(ud, by="kommune_kode") |>
+    mutate(COMMUTER_PCT = if_else(nat>0, round(ud/nat*100,1), NA_real_)) |>
+    select(kommune_kode, COMMUTER_PCT)
+  message(sprintf("  Commuting: %d kommuner", nrow(result))); result
+}, error=function(e){ message("  PEND101 failed: ",conditionMessage(e)); NULL })
+
+
+# ============================================================
+# 8b. INDKP106 — Average disposable income (DKK per person)
+# ============================================================
+message("Fetching INDKP106 (income) from DST...")
+
+income_df <- tryCatch({
+  raw <- dst_post("INDKP106", list(
+    list(code="OMRÅDE",   values=list("*")),
+    list(code="ENHED",    values=list("118")),   # avg DKK per person
+    list(code="KOEN",     values=list("MOK")),   # both sexes
+    list(code="ALDER1",   values=list("00")),    # all ages
+    list(code="INDKINTB", values=list("000")),   # all income levels
+    list(code="Tid",      values=list(""))
+  ))
+  if (is.null(raw)) stop("null response")
+  names(raw) <- janitor::make_clean_names(names(raw))
+  area_c <- grep("omr|area", names(raw), value=TRUE, ignore.case=TRUE)[1]
+  val_c  <- grep("indhold|value|antal", names(raw), value=TRUE, ignore.case=TRUE)[1]
+
+  result <- raw |>
+    rename(area=!!area_c, value=!!val_c) |>
+    mutate(value = suppressWarnings(as.numeric(gsub(",",".",value))),
+           kommune_kode = coalesce(area_code, pad4(area))) |>
+    filter(kommune_kode %in% kommune_lookup$kommune_kode, !is.na(value)) |>
+    group_by(kommune_kode) |>
+    summarise(AVG_INCOME = round(mean(value,na.rm=TRUE),0), .groups="drop")
+  message(sprintf("  Income: %d kommuner", nrow(result))); result
+}, error=function(e){ message("  INDKP106 failed: ",conditionMessage(e)); NULL })
+
+
+# ============================================================
+# 8c. BOL101 — Housing (owner-occupied %, social housing %)
+# ============================================================
+message("Fetching BOL101 (housing) from DST...")
+
+housing_df <- tryCatch({
+  # Get exact variable IDs from metadata (OPFØRELSESÅR contains special chars)
+  bol_meta <- get_table_meta("BOL101")
+  opf_id   <- names(bol_meta)[grepl("pf.*r", names(bol_meta), ignore.case=TRUE)][1]
+  if (is.na(opf_id)) opf_id <- "OPFORELSESAR"  # fallback
+  opf_vals <- if (!is.null(bol_meta[[opf_id]])) head(bol_meta[[opf_id]]$id, 8) else list("*")
+
+  # 3 types × 2 UDLFORH × 6 EJER × 8 year-bands × 99 = 28,512 cells — well under limit
+  raw <- dst_post("BOL101", list(
+    list(code="OMRÅDE",    values=list("*")),
+    list(code="BEBO",      values=list("1000")),
+    list(code="ANVENDELSE",values=list("125","130","140")),
+    list(code="UDLFORH",   values=list("EJ","LEJ")),
+    list(code="EJER",      values=list("*")),
+    list(code=opf_id,      values=as.list(opf_vals)),
+    list(code="Tid",       values=list(""))
+  ))
+  if (is.null(raw)) stop("null response")
+  names(raw) <- janitor::make_clean_names(names(raw))
+  area_c <- grep("omr|area", names(raw), value=TRUE, ignore.case=TRUE)[1]
+  val_c  <- grep("indhold|value|antal", names(raw), value=TRUE, ignore.case=TRUE)[1]
+  ejer_c <- grep("ejer|owner", names(raw), value=TRUE, ignore.case=TRUE)[1]
+
+  bol <- raw |>
+    rename(area=!!area_c, value=!!val_c, ejer=!!ejer_c) |>
+    mutate(value = suppressWarnings(as.numeric(gsub(",",".",value))),
+           kommune_kode = coalesce(area_code, pad4(area))) |>
+    filter(kommune_kode %in% kommune_lookup$kommune_kode, !is.na(value))
+
+  total_dw <- bol |>
+    group_by(kommune_kode) |> summarise(total=sum(value,na.rm=TRUE),.groups="drop")
+  # Privatpersoner = owner-occupied, Almene boligselskaber = social housing
+  owner  <- bol |> filter(grepl("Privatpersoner|private.*person|owner", ejer, ignore.case=TRUE)) |>
+    group_by(kommune_kode) |> summarise(owner=sum(value,na.rm=TRUE),.groups="drop")
+  social <- bol |> filter(grepl("Almene|social|public|almen", ejer, ignore.case=TRUE)) |>
+    group_by(kommune_kode) |> summarise(social=sum(value,na.rm=TRUE),.groups="drop")
+
+  result <- total_dw |>
+    left_join(owner,  by="kommune_kode") |>
+    left_join(social, by="kommune_kode") |>
+    mutate(
+      OWNER_PCT          = if_else(total>0, round(coalesce(owner,0)/total*100,1), NA_real_),
+      SOCIAL_HOUSING_PCT = if_else(total>0, round(coalesce(social,0)/total*100,1), NA_real_),
+      DWELLINGS          = as.integer(total)
+    ) |>
+    select(kommune_kode, OWNER_PCT, SOCIAL_HOUSING_PCT, DWELLINGS)
+  message(sprintf("  Housing: %d kommuner", nrow(result))); result
+}, error=function(e){ message("  BOL101 failed: ",conditionMessage(e)); NULL })
+
+
+# ============================================================
+# 8d. STRAF11 — Crimes per 1,000 residents
+# ============================================================
+message("Fetching STRAF11 (crime) from DST...")
+
+crime_df <- tryCatch({
+  raw <- dst_post("STRAF11", list(
+    list(code="OMRÅDE",    values=list("*")),
+    list(code="OVERTRÆD",  values=list("TOT")),
+    list(code="Tid",       values=list(""))
+  ))
+  if (is.null(raw)) stop("null response")
+  names(raw) <- janitor::make_clean_names(names(raw))
+  area_c <- grep("omr|area", names(raw), value=TRUE, ignore.case=TRUE)[1]
+  val_c  <- grep("indhold|value|antal", names(raw), value=TRUE, ignore.case=TRUE)[1]
+
+  crimes <- raw |>
+    rename(area=!!area_c, value=!!val_c) |>
+    mutate(value = suppressWarnings(as.numeric(gsub(",",".",value))),
+           kommune_kode = coalesce(area_code, pad4(area))) |>
+    filter(kommune_kode %in% kommune_lookup$kommune_kode, !is.na(value)) |>
+    group_by(kommune_kode) |>
+    summarise(total_crimes=sum(value,na.rm=TRUE), .groups="drop")
+
+  result <- crimes |>
+    left_join(if (!is.null(pop_age_df)) pop_age_df |> select(kommune_kode, POPULATION)
+              else tibble(kommune_kode=character(), POPULATION=integer()),
+              by="kommune_kode") |>
+    mutate(CRIMES_PER_1K = if_else(coalesce(POPULATION,0L)>0,
+                             round(total_crimes/POPULATION*1000, 1), NA_real_)) |>
+    select(kommune_kode, CRIMES_PER_1K)
+  message(sprintf("  Crime: %d kommuner", nrow(result))); result
+}, error=function(e){ message("  STRAF11 failed: ",conditionMessage(e)); NULL })
+
+
+# ============================================================
 # 8. Assemble kommunal indicator table
 # ============================================================
 message("Assembling kommunal indicator table...")
 
 komm_stats <- kommune_lookup |> select(kommune_kode)
 
-for (df in list(pop_age_df, foreign_df, unemp_df, emp_df, emp_local_df, edu_df)) {
+for (df in list(pop_age_df, foreign_df, unemp_df, emp_df, emp_local_df, edu_df,
+                commute_df, income_df, housing_df, crime_df)) {
   if (!is.null(df) && "kommune_kode" %in% names(df))
     komm_stats <- left_join(komm_stats, df, by="kommune_kode")
 }
