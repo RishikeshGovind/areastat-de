@@ -15,9 +15,9 @@ RUN R -e "install.packages(c('plumber','jsonlite','here','dplyr','tidyr'), repos
     R -e "library(plumber); cat('plumber OK\n')"
 
 RUN mkdir -p data && \
-    curl -fL https://github.com/RishikeshGovind/areastat-at/raw/main/data/final_json.rds \
+    curl -fL https://github.com/RishikeshGovind/areastat-de/raw/main/data/final_json.rds \
     -o data/final_json.rds && \
-    curl -fL https://github.com/RishikeshGovind/areastat-at/raw/main/data/panel_dataset.csv \
+    curl -fL https://github.com/RishikeshGovind/areastat-de/raw/main/data/panel_dataset.csv \
     -o data/panel_dataset.csv
 
 COPY plumber.R .

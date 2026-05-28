@@ -154,13 +154,13 @@
       // ══ CONFIGURATION ══════════════════════════════════════════════════════════
       // ── Read selection from localStorage (written by index.html on Open in AreaStat click)
       const selectedIds      = JSON.parse(localStorage.getItem('profile_ids')        || '[]');
-      let currentZoneType    = localStorage.getItem('profile_zone_type')              || 'sogn';
+      let currentZoneType    = localStorage.getItem('profile_zone_type')              || 'kommune';
       let activeSegmentation = localStorage.getItem('profile_segmentation')           || 'settlement';
       let selectedCategories = JSON.parse(localStorage.getItem('profile_categories') || JSON.stringify(DEFAULT_PROFILE_CATEGORIES));
       window.gcdNameMap      = JSON.parse(localStorage.getItem('profile_gcd_names')  || '{}');
 
       let kommuneData         = {};
-      let sognData            = {};
+      let regionData            = {};
       let denmarkTotals       = {};
       let latestAggregatedData = {};
       let currentView         = 'charts';
@@ -463,7 +463,7 @@
         tablesContainer.style.display = 'none';
         chartsContainer.style.display = 'none';
 
-        const dataSource = currentZoneType === 'sogn' ? sognData : kommuneData;
+        const dataSource = currentZoneType === 'region' ? regionData : kommuneData;
 
         const domainAgg = {};
         let totalPopulation = 0;
@@ -641,7 +641,7 @@
       }
 
       function aggregateUrbanRuralData(selectedIdsArray, selCategories) {
-        const dataSource = currentZoneType === 'sogn' ? sognData : kommuneData;
+        const dataSource = currentZoneType === 'region' ? regionData : kommuneData;
         const segCfg     = SEGMENTATION_CONFIG[activeSegmentation];
         const classKeys  = segCfg.classes.map(c => c.key);
         const rawGroups  = {};
@@ -1128,18 +1128,8 @@
           return;
         }
 
-        // Expand any Kommune IDs to their constituent Sogne using the first 4 chars of the code.
-        const sognIds = [...new Set(ids.flatMap(id => {
-          if (String(id).length <= 4 && kommuneData && kommuneData[id]) {
-            return Object.keys(sognData || {}).filter(k => {
-              const z = sognData[k];
-              return z && getScalar(z.Kommune) === String(id);
-            });
-          }
-          return [id];
-        }))];
-
-        const analysisIds = sognIds.length > 0 ? sognIds : ids;
+        // Use ids directly — analysis operates at komunnal level
+        const analysisIds = ids;
 
         if (analysisIds.length === 0) {
           container.innerHTML = '<p style="padding:2rem;color:#666;">No zone data found for the selected areas.</p>';
@@ -1818,10 +1808,10 @@
         try {
           const data    = await fetch('./data.json').then(r => r.json());
           kommuneData   = data['Kommune']        || {};
-          sognData      = data['Sogn']            || {};
+          regionData      = data['Region']            || {};
           denmarkTotals = data['Denmark Total']   || {};
           window.denmarkTotals    = denmarkTotals;
-          window.denmarkPopulation = totalPopulationForData(sognData);
+          window.denmarkPopulation = totalPopulationForData(kommuneData);
 
           // Show content
           document.getElementById('profile-loading').style.display    = 'none';
@@ -1952,7 +1942,7 @@
           'https://api.dataforsyningen.dk/kommuner?format=geojson&srid=4326',
         ],
         sogn: [
-          'https://api.dataforsyningen.dk/sogne?format=geojson&srid=4326',
+          'https://api.dataforsyningen.dk/regioner?format=geojson&srid=4326',
         ],
       };
 

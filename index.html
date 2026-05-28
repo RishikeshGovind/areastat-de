@@ -28,8 +28,8 @@
           <div class="mcc-section">
             <div class="mcc-label" data-i18n="card.ebene">Geographic Level</div>
             <select id="zone-selector" class="mcc-select">
-              <option value="kommune">Kommune (Municipality)</option>
-              <option value="sogn" selected>Sogn (Parish)</option>
+              <option value="region">Region</option>
+              <option value="kommune" selected>Kommune (Municipality)</option>
             </select>
           </div>
 
@@ -77,11 +77,11 @@
       const currentLang = 'en';
 
       // ── Boundary URLs — DAWA (Danmarks Adressers Web API), public, no auth required
+      const REGION_URLS = [
+        'https://api.dataforsyningen.dk/regioner?format=geojson&srid=4326',
+      ];
       const KOMMUNE_URLS = [
         'https://api.dataforsyningen.dk/kommuner?format=geojson&srid=4326',
-      ];
-      const SOGNE_URLS = [
-        'https://api.dataforsyningen.dk/sogne?format=geojson&srid=4326',
       ];
 
       async function fetchFirstWorking(urls, label) {
@@ -129,10 +129,10 @@
           maxBounds: [[7.0, 54.4], [15.5, 58.2]]
         });
 
-        let activeZone = 'sogn';
-        let currentZoneType = 'sogn';
+        let activeZone = 'kommune';
+        let currentZoneType = 'kommune';
         let kommuneData = {};
-        let sognData = {};
+        let regionData = {};
         let denmarkTotals = {};
         let selectedCategories = [...DEFAULT_PROFILE_CATEGORIES];
         let currentView = 'charts';
@@ -154,13 +154,13 @@
 
           if (sourcesReady) {
             const show = (id, vis) => map.setLayoutProperty(id, 'visibility', vis ? 'visible' : 'none');
-            const isKommune = currentZoneType === 'kommune';
-            show('kommune-fill', isKommune);
+            const isKommune = (currentZoneType === 'kommune');
+            show('kommune-fill',           isKommune);
             show('kommune-outline-default', isKommune);
-            show('kommune-outline-hover', isKommune);
-            show('sogn-fill', !isKommune);
-            show('sogn-outline-default', !isKommune);
-            show('sogn-outline-hover', !isKommune);
+            show('kommune-outline-hover',   isKommune);
+            show('region-fill',            !isKommune);
+            show('region-outline-default', !isKommune);
+            show('region-outline-hover',   !isKommune);
           }
 
           clearSelections();
@@ -171,15 +171,15 @@
 
         // ── ID maps: MapLibre generateId index → code string, and reverse
         let kommuneIdMap   = {}; // index → '0101'
-        let sognIdMap      = {}; // index → '7000'
+        let regionIdMap      = {}; // index → '7000'
         let kommuneGkzToId = {}; // '0101' → index
-        let sognGkzToId    = {}; // '7000' → index
+        let regionGkzToId    = {}; // '7000' → index
 
         // ── Load data.json then GeoJSON boundaries
         let mapLoaded = false;
         let dataLoaded = false;
         let kommunerGeoJSON = null;
-        let sogneGeoJSON    = null;
+        let regionGeoJSON    = null;
 
         map.on('load', () => {
           mapLoaded = true;
@@ -190,14 +190,14 @@
           .then(r => r.json())
           .then(data => {
             kommuneData   = data['Kommune']        || {};
-            sognData      = data['Sogn']            || {};
-            denmarkTotals = data['Denmark Total']   || {};
-            window.denmarkTotals    = denmarkTotals;
-            window.denmarkPopulation = totalPopulationForData(sognData);
+            regionData    = data['Region']         || {};
+            denmarkTotals = data['Denmark Total']  || {};
+            window.denmarkTotals     = denmarkTotals;
+            window.denmarkPopulation = totalPopulationForData(kommuneData);
 
             return Promise.all([
               fetchFirstWorking(KOMMUNE_URLS, 'Kommuner'),
-              fetchFirstWorking(SOGNE_URLS,   'Sogne')
+              fetchFirstWorking(REGION_URLS,   'Regioner')
             ]);
           })
           .then(([kgRaw, sgRaw]) => {
@@ -216,18 +216,18 @@
             });
             window.gcdNameMap = {};
             sg.features.forEach((f, idx) => {
-              const gkz = extractGkz(f.properties, idx, 'sogn');
-              sognIdMap[idx] = gkz;
+              const gkz = extractGkz(f.properties, idx, 'region');
+              regionIdMap[idx] = gkz;
               if (gkz) {
-                sognGkzToId[gkz] = idx;
+                regionGkzToId[gkz] = idx;
                 const n = f.properties.navn || f.properties.name || f.properties.NAME || null;
                 if (n) window.gcdNameMap[gkz] = n;
               }
-              annotateFeature(f, gkz && sognData[gkz] ? sognData[gkz] : null);
+              annotateFeature(f, gkz && regionData[gkz] ? regionData[gkz] : null);
             });
 
             kommunerGeoJSON = kg;
-            sogneGeoJSON    = sg;
+            regionGeoJSON    = sg;
             dataLoaded = true;
             tryAddSources();
           })
@@ -255,8 +255,8 @@
           selectedIds.forEach(gkz => {
             const kId = kommuneGkzToId[gkz];
             if (kId !== undefined) map.setFeatureState({ source: 'kommuner', id: kId }, { hovered: true });
-            const sId = sognGkzToId[gkz];
-            if (sId !== undefined) map.setFeatureState({ source: 'sogne',    id: sId }, { hovered: true });
+            const rId = regionGkzToId[gkz];
+            if (rId !== undefined) map.setFeatureState({ source: 'regioner', id: rId }, { hovered: true });
           });
         }
 
@@ -281,8 +281,8 @@
           if (map.getLayer('kommune-fill')) {
             map.setPaintProperty('kommune-fill', 'fill-color', buildFillExpression(segKey, '#c026d3'));
           }
-          if (map.getLayer('sogn-fill')) {
-            map.setPaintProperty('sogn-fill', 'fill-color', buildFillExpression(segKey, '#c026d3'));
+          if (map.getLayer('region-fill')) {
+            map.setPaintProperty('region-fill', 'fill-color', buildFillExpression(segKey, '#c026d3'));
           }
           // Update legend
           renderLegend();
@@ -312,42 +312,42 @@
             generateId: true
           });
 
-          map.addSource('sogne', {
+          map.addSource('regioner', {
             type: 'geojson',
-            data: sogneGeoJSON,
+            data: regionGeoJSON,
             generateId: true
           });
 
-          // Kommune fill (hidden by default — Sogn is default level)
+          // Kommune fill (visible by default — default level)
           map.addLayer({
             id: 'kommune-fill', type: 'fill', source: 'kommuner',
-            layout: { visibility: 'none' },
+            layout: { visibility: 'visible' },
             paint: { 'fill-color': urFillColor('#c026d3'), 'fill-opacity': 0.62 }
           });
 
-          // Sogn fill (visible by default)
+          // Region fill (hidden by default)
           map.addLayer({
-            id: 'sogn-fill', type: 'fill', source: 'sogne',
-            layout: { visibility: 'visible' },
+            id: 'region-fill', type: 'fill', source: 'regioner',
+            layout: { visibility: 'none' },
             paint: { 'fill-color': urFillColor('#c026d3'), 'fill-opacity': 0.62 }
           });
 
           // Outlines
           map.addLayer({
             id: 'kommune-outline-default', type: 'line', source: 'kommuner',
-            layout: { visibility: 'none' },
-            paint: { 'line-color': '#666666', 'line-width': 1 }
-          });
-
-          map.addLayer({
-            id: 'sogn-outline-default', type: 'line', source: 'sogne',
             layout: { visibility: 'visible' },
             paint: { 'line-color': '#666666', 'line-width': 0.5 }
           });
 
           map.addLayer({
-            id: 'kommune-outline-hover', type: 'line', source: 'kommuner',
+            id: 'region-outline-default', type: 'line', source: 'regioner',
             layout: { visibility: 'none' },
+            paint: { 'line-color': '#666666', 'line-width': 1 }
+          });
+
+          map.addLayer({
+            id: 'kommune-outline-hover', type: 'line', source: 'kommuner',
+            layout: { visibility: 'visible' },
             paint: {
               'line-color': ['case', ['boolean', ['feature-state', 'hovered'], false], '#86198f', 'rgba(0,0,0,0)'],
               'line-width': 1.5
@@ -355,8 +355,8 @@
           });
 
           map.addLayer({
-            id: 'sogn-outline-hover', type: 'line', source: 'sogne',
-            layout: { visibility: 'visible' },
+            id: 'region-outline-hover', type: 'line', source: 'regioner',
+            layout: { visibility: 'none' },
             paint: {
               'line-color': ['case', ['boolean', ['feature-state', 'hovered'], false], '#86198f', 'rgba(0,0,0,0)'],
               'line-width': 1.5
@@ -399,7 +399,7 @@
           }
 
           onHover('kommune-fill', kommuneIdMap, kommuneData);
-          onHover('sogn-fill',    sognIdMap,    sognData);
+          onHover('region-fill',    regionIdMap,    regionData);
 
           // ── Click
           function onClick(layerId, sourceId, idMap, gkzToId) {
@@ -425,7 +425,7 @@
           }
 
           onClick('kommune-fill', 'kommuner', kommuneIdMap, kommuneGkzToId);
-          onClick('sogn-fill',    'sogne',    sognIdMap,    sognGkzToId);
+          onClick('region-fill',    'regioner',    regionIdMap,    regionGkzToId);
 
           // Build / Close modal
           const buildBtn = document.getElementById('build-profile-btn');
@@ -605,7 +605,7 @@
           tablesContainer.style.display    = 'none';
           chartsContainer.style.display    = 'none';
 
-          const dataSource = currentZoneType === 'sogn' ? sognData : kommuneData;
+          const dataSource = currentZoneType === 'region' ? regionData : kommuneData;
 
           // Aggregate: mean of continuous indicators across selected zones
           const domainAgg = {}; // domain -> indicator -> { sum, count }
@@ -1003,9 +1003,9 @@
           if (sourcesReady) {
             selectedIds.forEach(gkz => {
               const kId = kommuneGkzToId[gkz];
-              const sId = sognGkzToId[gkz];
+              const sId = regionGkzToId[gkz];
               if (kId !== undefined) map.setFeatureState({ source: 'kommuner', id: kId }, { hovered: false });
-              if (sId !== undefined) map.setFeatureState({ source: 'sogne',    id: sId }, { hovered: false });
+              if (sId !== undefined) map.setFeatureState({ source: 'regioner',    id: sId }, { hovered: false });
             });
           }
 
@@ -1055,9 +1055,9 @@
           checkbox.addEventListener('change', () => {
             const regionName = checkbox.value;
             const label = document.querySelector(`label[for="${checkbox.id}"]`);
-            const dataSource = currentZoneType === 'sogn' ? sognData : kommuneData;
-            const sourceId   = currentZoneType === 'sogn' ? 'sogne' : 'kommuner';
-            const gkzToId    = currentZoneType === 'sogn' ? sognGkzToId : kommuneGkzToId;
+            const dataSource = currentZoneType === 'region' ? regionData : kommuneData;
+            const sourceId   = currentZoneType === 'region' ? 'regioner' : 'kommuner';
+            const gkzToId    = currentZoneType === 'region' ? regionGkzToId : kommuneGkzToId;
 
             if (checkbox.checked) {
               selectedRegioner.add(regionName);
@@ -1096,7 +1096,7 @@
         // ── aggregateSegmentationData
         // Returns mean indicator values grouped by the active segmentation's classes
         function aggregateUrbanRuralData(selectedIdsArray, selectedCategories) {
-          const dataSource = currentZoneType === 'sogn' ? sognData : kommuneData;
+          const dataSource = currentZoneType === 'region' ? regionData : kommuneData;
           const segCfg     = SEGMENTATION_CONFIG[activeSegmentation];
           const classKeys  = segCfg.classes.map(c => c.key);
           const rawGroups  = {};

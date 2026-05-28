@@ -2,870 +2,629 @@
 # fetch_denmark_data.R
 #
 # Builds final_json for the Danish Area Profile Builder.
-# No API key or registration required — all sources are public.
+# No API key required — all sources are public.
 #
-# Primary sources:
-#   DAWA (Danmarks Adressers Web API)       — sogne/kommune/region hierarchy
-#   DST (Danmarks Statistik) API            — socioeconomic indicators
-#     https://api.statbank.dk/v1/
+# Sources:
+#   DAWA (api.dataforsyningen.dk) — kommuner/regioner geography
+#   DST  (api.statbank.dk)        — statistics
 #
 # Geographic hierarchy:
-#   Region (5)  ←  Kommune (98)  ←  Sogn (~2,100)
+#   Region (5)  ←  Kommune (98)
 #
-# Data availability:
-#   Sogne level: population, age structure, foreign background (FOLK1A)
-#   Kommune level: labour market, education, economy, households
-#     (inherited by sogne within each kommune)
+# DST notes:
+#   - kommunekode in DST = 3-digit string, e.g. "101" for Copenhagen
+#   - kommunekode in DAWA = 4-digit zero-padded, e.g. "0101"
+#   - We normalise everything to 4-digit in data.json
 # ============================================================
 
-DST_BASE <- "https://api.statbank.dk/v1/"
+DST_BASE  <- "https://api.statbank.dk/v1/"
 DAWA_BASE <- "https://api.dataforsyningen.dk/"
 
-# ---- Variable map ----
+# ---- Domain → indicator → internal column mapping ----
 VARIABLE_MAP <- list(
   AgeStructure = list(
     `Under 15 years (%)` = "BEV_UNDER15",
     `Over 65 years (%)`  = "BEV_OVER65"
   ),
   LabourMarket = list(
-    `Employment rate (%)`     = "EMP_RATE",
-    `Unemployment rate (%)`   = "UNEMP_RATE",
-    `Out-commuter share (%)` = "COMMUTER_PCT"
+    `Employment rate (%)`    = "EMP_RATE",
+    `Unemployment rate (%)`  = "UNEMP_RATE"
   ),
   Economy = list(
-    `Employees`   = "EMPLOYEES",
-    `Enterprises` = "ENTERPRISES"
+    `Employees`   = "EMPLOYEES"
   ),
   Education = list(
     `Secondary education (%)` = "EDU_SEC",
     `Tertiary education (%)`  = "EDU_TER"
   ),
   Migration = list(
-    `Foreign background (%)` = "FOREIGN_PCT"
-  ),
-  Households = list(
-    `Avg household size` = "HH_SIZE",
-    `Private households` = "HOUSEHOLDS",
-    `Families`           = "FAMILIES"
+    `Foreign citizens (%)` = "FOREIGN_PCT"
   )
 )
 
 AGGREGATION_TYPE <- list(
-  POPULATION    = "sum",
-  BEV_UNDER15   = "pct",
-  BEV_OVER65    = "pct",
-  FOREIGN_PCT   = "pct",
-  EMP_RATE      = "pct",
-  UNEMP_RATE    = "pct",
-  COMMUTER_PCT  = "pct",
-  EMPLOYEES     = "sum",
-  ENTERPRISES   = "sum",
-  EDU_SEC       = "pct",
-  EDU_TER       = "pct",
-  HH_SIZE       = "pct",
-  HOUSEHOLDS    = "sum",
-  FAMILIES      = "sum"
+  POPULATION  = "sum",
+  BEV_UNDER15 = "pct",
+  BEV_OVER65  = "pct",
+  FOREIGN_PCT = "pct",
+  EMP_RATE    = "pct",
+  UNEMP_RATE  = "pct",
+  EMPLOYEES   = "sum",
+  EDU_SEC     = "pct",
+  EDU_TER     = "pct"
 )
-
 INDICATOR_COLS <- names(AGGREGATION_TYPE)
 
 # ============================================================
-# Helper: POST request to DST API, returns a data frame
+# Helpers
 # ============================================================
-fetch_dst <- function(table, variables, lang = "en") {
-  body <- list(
-    table     = table,
-    format    = "CSV",
-    delimiter = ";",
-    lang      = lang,
-    variables = variables
+# Caches — populated on first use per table
+.tid_cache   <- list()
+.label_cache <- list()  # table -> list of variable id -> data.frame(id, text)
+
+get_table_meta <- function(table) {
+  if (!is.null(.label_cache[[table]])) return(.label_cache[[table]])
+  r <- tryCatch(
+    httr::GET(paste0(DST_BASE, "tableinfo/", table), httr::accept_json(), httr::timeout(30)),
+    error = function(e) NULL
   )
-  resp <- tryCatch(
-    httr::POST(
-      paste0(DST_BASE, "data"),
-      httr::content_type_json(),
-      body    = jsonlite::toJSON(body, auto_unbox = TRUE),
-      httr::timeout(120)
-    ),
-    error = function(e) stop(sprintf("DST POST failed for %s: %s", table, conditionMessage(e)))
-  )
-  if (httr::http_error(resp))
-    stop(sprintf("DST API HTTP %s for table %s", httr::status_code(resp), table))
-
-  txt <- httr::content(resp, "text", encoding = "UTF-8")
-  readr::read_delim(txt, delim = ";", show_col_types = FALSE,
-                    locale = readr::locale(encoding = "UTF-8"))
-}
-
-# ============================================================
-# Helper: GET request to DAWA, returns parsed JSON
-# ============================================================
-fetch_dawa <- function(endpoint, params = list()) {
-  url  <- paste0(DAWA_BASE, endpoint)
-  resp <- tryCatch(
-    httr::GET(url, query = c(params, list(format = "json")), httr::timeout(120)),
-    error = function(e) stop(sprintf("DAWA GET failed (%s): %s", endpoint, conditionMessage(e)))
-  )
-  if (httr::http_error(resp))
-    stop(sprintf("DAWA HTTP %s for %s", httr::status_code(resp), endpoint))
-  jsonlite::fromJSON(httr::content(resp, "text", encoding = "UTF-8"), simplifyDataFrame = TRUE)
-}
-
-# ============================================================
-# 1. Geography: Region → Kommune → Sogn hierarchy from DAWA
-# ============================================================
-message("Fetching geography from DAWA...")
-
-kommuner_raw <- tryCatch(
-  fetch_dawa("kommuner"),
-  error = function(e) { message("  DAWA kommuner failed: ", conditionMessage(e)); NULL }
-)
-
-sogne_raw <- tryCatch(
-  fetch_dawa("sogne"),
-  error = function(e) { message("  DAWA sogne failed: ", conditionMessage(e)); NULL }
-)
-
-if (is.null(kommuner_raw) || is.null(sogne_raw))
-  stop("Could not fetch DAWA geography — check network and https://api.dataforsyningen.dk")
-
-# Build kommune table: kode (4-char), navn, region_kode, region_navn
-if (is.data.frame(kommuner_raw)) {
-  kommune_df <- kommuner_raw
-} else {
-  kommune_df <- as.data.frame(kommuner_raw)
-}
-
-# Normalise: DAWA returns 4-char zero-padded kommunekode
-kommune_df <- as_tibble(kommune_df) |>
-  mutate(
-    kommune_kode   = sprintf("%04d", as.integer(kode)),
-    kommune_navn   = navn
-  )
-
-# Extract region from nested structure
-if ("region" %in% names(kommune_df) && is.data.frame(kommune_df$region)) {
-  kommune_df <- kommune_df |>
-    mutate(
-      region_kode = kommune_df$region$kode,
-      region_navn = kommune_df$region$navn
-    )
-} else if ("regionkode" %in% names(kommune_df)) {
-  kommune_df <- kommune_df |>
-    rename(region_kode = regionkode) |>
-    mutate(region_navn = dplyr::recode(region_kode,
-      "1084" = "Region Nordjylland",
-      "1085" = "Region Midtjylland",
-      "1083" = "Region Syddanmark",
-      "1082" = "Region Sjælland",
-      "1081" = "Region Hovedstaden",
-      .default = NA_character_
-    ))
-}
-
-kommune_lookup <- kommune_df |>
-  select(kommune_kode, kommune_navn, region_kode, region_navn) |>
-  distinct()
-
-message(sprintf("  %d kommuner | %d regions",
-  nrow(kommune_lookup), n_distinct(kommune_lookup$region_kode)))
-
-# Build sogne table: kode (4-char), navn, kommune_kode
-if (is.data.frame(sogne_raw)) {
-  sogne_df <- as_tibble(sogne_raw)
-} else {
-  sogne_df <- as_tibble(as.data.frame(sogne_raw))
-}
-
-sogne_df <- sogne_df |>
-  mutate(sognekode = sprintf("%04d", as.integer(kode)), sognavn = navn)
-
-# Extract kommune_kode from nested structure
-if ("kommune" %in% names(sogne_df) && is.data.frame(sogne_df$kommune)) {
-  sogne_df <- sogne_df |>
-    mutate(kommune_kode = sprintf("%04d", as.integer(sogne_df$kommune$kode)))
-} else if ("kommunekode" %in% names(sogne_df)) {
-  sogne_df <- sogne_df |>
-    mutate(kommune_kode = sprintf("%04d", as.integer(kommunekode)))
-}
-
-sogne_df <- sogne_df |>
-  select(sognekode, sognavn, kommune_kode) |>
-  left_join(kommune_lookup, by = "kommune_kode") |>
-  distinct()
-
-message(sprintf("  %d sogne fetched", nrow(sogne_df)))
-
-
-# ============================================================
-# 2. FOLK1A — Population, age structure, foreign background
-#    Available at sognekode level from DST
-# ============================================================
-message("Fetching FOLK1A from DST (all areas, total + ancestry)...")
-
-folk1a_raw <- tryCatch(
-  fetch_dst("FOLK1A", list(
-    list(code = "OMRÅDE",  values = list("*")),
-    list(code = "ALDER",   values = list("IALT")),
-    list(code = "HERKOMST",values = list("TOT", "2", "3")),
-    list(code = "KØN",     values = list("TOT")),
-    list(code = "Tid",     values = list(""))
-  )),
-  error = function(e) { message("  FOLK1A failed: ", conditionMessage(e)); NULL }
-)
-
-# FOLK1A age groups — fetch once at kommunal level (smaller dataset)
-message("Fetching FOLK1A age groups at kommunal level...")
-folk1a_ages <- tryCatch(
-  fetch_dst("FOLK1A", list(
-    list(code = "OMRÅDE",  values = list("*")),
-    list(code = "ALDER",   values = as.list(c("IALT",
-      as.character(0:14),                   # under-15
-      as.character(65:99), "100PLUS"        # over-65
-    ))),
-    list(code = "HERKOMST",values = list("TOT")),
-    list(code = "KØN",     values = list("TOT")),
-    list(code = "Tid",     values = list(""))
-  )),
-  error = function(e) { message("  FOLK1A ages failed: ", conditionMessage(e)); NULL }
-)
-
-# Process FOLK1A total + ancestry
-pop_df <- NULL
-if (!is.null(folk1a_raw)) {
-  # Normalise column names (DST returns English labels when lang="en")
-  names(folk1a_raw) <- janitor::make_clean_names(names(folk1a_raw))
-
-  # Identify area and value columns (column names vary by DST version)
-  area_col  <- grep("omr|area|region|municipality|parish", names(folk1a_raw), value=TRUE, ignore.case=TRUE)[1]
-  val_col   <- grep("indhold|value|antal|count", names(folk1a_raw), value=TRUE, ignore.case=TRUE)[1]
-  anc_col   <- grep("herkomst|ancestry|origin", names(folk1a_raw), value=TRUE, ignore.case=TRUE)[1]
-  age_col   <- grep("alder|age", names(folk1a_raw), value=TRUE, ignore.case=TRUE)[1]
-
-  if (!is.na(area_col) && !is.na(val_col)) {
-    folk1a_clean <- folk1a_raw |>
-      rename(area = !!area_col, value = !!val_col) |>
-      mutate(
-        area_code = sprintf("%04d", suppressWarnings(as.integer(area))),
-        value     = suppressWarnings(as.numeric(gsub(",",".",value)))
-      ) |>
-      filter(!is.na(value))
-
-    if (!is.na(anc_col)) folk1a_clean <- folk1a_clean |> rename(ancestry = !!anc_col)
-    if (!is.na(age_col))  folk1a_clean <- folk1a_clean |> rename(age = !!age_col)
-
-    # Filter to sognekode only (match against known sogne)
-    sogne_codes <- sogne_df$sognekode
-
-    folk1a_sogne <- folk1a_clean |>
-      filter(area_code %in% sogne_codes)
-
-    # Total population per sogne
-    pop_total <- folk1a_sogne |>
-      filter(if ("age" %in% names(folk1a_sogne)) age == "IALT" | grepl("ialt|total", age, ignore.case=TRUE) else TRUE,
-             if ("ancestry" %in% names(folk1a_sogne)) grepl("TOT|total|alle", ancestry, ignore.case=TRUE) else TRUE) |>
-      group_by(area_code) |>
-      summarise(POPULATION = sum(value, na.rm=TRUE), .groups="drop")
-
-    # Foreign background (immigrants + descendants) per sogne
-    foreign_counts <- folk1a_sogne |>
-      filter(if ("age" %in% names(folk1a_sogne)) age == "IALT" | grepl("ialt|total", age, ignore.case=TRUE) else TRUE,
-             if ("ancestry" %in% names(folk1a_sogne)) grepl("^2$|^3$|immigrant|descendant", ancestry, ignore.case=TRUE) else FALSE) |>
-      group_by(area_code) |>
-      summarise(foreign_count = sum(value, na.rm=TRUE), .groups="drop")
-
-    pop_df <- pop_total |>
-      left_join(foreign_counts, by="area_code") |>
-      mutate(
-        FOREIGN_PCT = if_else(POPULATION > 0,
-                              round((foreign_count / POPULATION) * 100, 1), NA_real_)
-      ) |>
-      select(sognekode = area_code, POPULATION, FOREIGN_PCT)
-
-    message(sprintf("  FOLK1A: %d sogne with population data", nrow(pop_df)))
+  if (is.null(r) || httr::http_error(r)) return(NULL)
+  info <- jsonlite::fromJSON(httr::content(r, "text", encoding="UTF-8"))
+  meta <- list()
+  for (i in seq_len(nrow(info$variables))) {
+    var_id <- info$variables$id[i]
+    vals   <- info$variables$values[[i]]
+    if (is.data.frame(vals) && "id" %in% names(vals) && "text" %in% names(vals))
+      meta[[var_id]] <- vals[, c("id","text")]
   }
+  .label_cache[[table]] <<- meta
+  meta
 }
 
-# Age structure from kommunal level FOLK1A
-age_df <- NULL
-if (!is.null(folk1a_ages)) {
-  names(folk1a_ages) <- janitor::make_clean_names(names(folk1a_ages))
-  area_col2  <- grep("omr|area|region|municipality", names(folk1a_ages), value=TRUE, ignore.case=TRUE)[1]
-  val_col2   <- grep("indhold|value|antal|count", names(folk1a_ages), value=TRUE, ignore.case=TRUE)[1]
-  age_col2   <- grep("alder|age", names(folk1a_ages), value=TRUE, ignore.case=TRUE)[1]
-
-  if (!is.na(area_col2) && !is.na(val_col2) && !is.na(age_col2)) {
-    ages_clean <- folk1a_ages |>
-      rename(area = !!area_col2, value = !!val_col2, age = !!age_col2) |>
-      mutate(
-        area_code = sprintf("%04d", suppressWarnings(as.integer(area))),
-        value     = suppressWarnings(as.numeric(gsub(",",".",value))),
-        age_num   = suppressWarnings(as.integer(age))
-      ) |>
-      filter(!is.na(value))
-
-    # Kommunal level only (numeric area code 101-860, zero-padded = 0101-0860)
-    komm_codes_int <- sprintf("%04d", as.integer(kommune_lookup$kommune_kode))
-    ages_kommunal  <- ages_clean |>
-      filter(area_code %in% komm_codes_int)
-
-    total_per_komm <- ages_kommunal |>
-      filter(grepl("ialt|total", age, ignore.case=TRUE)) |>
-      group_by(area_code) |>
-      summarise(total = sum(value, na.rm=TRUE), .groups="drop")
-
-    under15_per_komm <- ages_kommunal |>
-      filter(!is.na(age_num), age_num >= 0, age_num <= 14) |>
-      group_by(area_code) |>
-      summarise(under15 = sum(value, na.rm=TRUE), .groups="drop")
-
-    over65_per_komm <- ages_kommunal |>
-      filter(!is.na(age_num), age_num >= 65) |>
-      group_by(area_code) |>
-      summarise(over65 = sum(value, na.rm=TRUE), .groups="drop")
-
-    age_df <- total_per_komm |>
-      left_join(under15_per_komm, by="area_code") |>
-      left_join(over65_per_komm,  by="area_code") |>
-      mutate(
-        BEV_UNDER15 = if_else(total > 0, round((under15 / total) * 100, 1), NA_real_),
-        BEV_OVER65  = if_else(total > 0, round((over65  / total) * 100, 1), NA_real_)
-      ) |>
-      select(kommune_kode = area_code, BEV_UNDER15, BEV_OVER65)
-
-    message(sprintf("  Age structure: %d kommuner", nrow(age_df)))
-  }
+latest_tid <- function(table) {
+  if (!is.null(.tid_cache[[table]])) return(.tid_cache[[table]])
+  meta <- get_table_meta(table)
+  if (is.null(meta) || !"Tid" %in% names(meta)) return(NULL)
+  val <- tail(meta$Tid$id, 1)
+  .tid_cache[[table]] <<- val
+  val
 }
 
-
-# ============================================================
-# 3. Unemployment — AUL01
-# ============================================================
-message("Fetching AUL01 (unemployment) from DST...")
-
-unemp_df <- tryCatch({
-  raw <- fetch_dst("AUL01", list(
-    list(code = "OMRÅDE",  values = list("*")),
-    list(code = "ALDER",   values = list("16-64")),
-    list(code = "KØN",     values = list("TOT")),
-    list(code = "Tid",     values = list(""))
-  ))
-  names(raw) <- janitor::make_clean_names(names(raw))
-  area_c <- grep("omr|area|municipality", names(raw), value=TRUE, ignore.case=TRUE)[1]
-  val_c  <- grep("indhold|value|antal|count|pct", names(raw), value=TRUE, ignore.case=TRUE)[1]
-
-  if (!is.na(area_c) && !is.na(val_c)) {
-    komm_int <- sprintf("%04d", as.integer(kommune_lookup$kommune_kode))
-    raw |>
-      rename(area = !!area_c, value = !!val_c) |>
-      mutate(
-        kommune_kode = sprintf("%04d", suppressWarnings(as.integer(area))),
-        UNEMP_RATE   = suppressWarnings(as.numeric(gsub(",",".",value)))
-      ) |>
-      filter(kommune_kode %in% komm_int) |>
-      select(kommune_kode, UNEMP_RATE)
-  } else NULL
-}, error = function(e) { message("  AUL01 failed: ", conditionMessage(e)); NULL })
-
-if (!is.null(unemp_df)) message(sprintf("  Unemployment: %d kommuner", nrow(unemp_df)))
-
-
-# ============================================================
-# 4. Employment rate — RAS1
-# ============================================================
-message("Fetching RAS1 (employment status) from DST...")
-
-emp_df <- tryCatch({
-  raw <- fetch_dst("RAS1", list(
-    list(code = "OMRÅDE",  values = list("*")),
-    list(code = "SOCIO13", values = list("1110")),   # employed
-    list(code = "KØN",     values = list("TOT")),
-    list(code = "ALDER",   values = list("15-64")),
-    list(code = "Tid",     values = list(""))
-  ))
-  names(raw) <- janitor::make_clean_names(names(raw))
-  area_c  <- grep("omr|area|municipality", names(raw), value=TRUE, ignore.case=TRUE)[1]
-  val_c   <- grep("indhold|value|antal|count", names(raw), value=TRUE, ignore.case=TRUE)[1]
-  komm_int <- sprintf("%04d", as.integer(kommune_lookup$kommune_kode))
-
-  if (!is.na(area_c) && !is.na(val_c)) {
-    emp_counts <- raw |>
-      rename(area = !!area_c, emp_count = !!val_c) |>
-      mutate(
-        kommune_kode = sprintf("%04d", suppressWarnings(as.integer(area))),
-        emp_count    = suppressWarnings(as.numeric(gsub(",",".",emp_count)))
-      ) |>
-      filter(kommune_kode %in% komm_int) |>
-      select(kommune_kode, emp_count)
-
-    # Population 15-64 from FOLK1A ages (if available)
-    if (!is.null(age_df)) {
-      pop_1564 <- if (!is.null(folk1a_ages)) {
-        names(folk1a_ages) <- janitor::make_clean_names(names(folk1a_ages))
-        a2 <- grep("alder|age", names(folk1a_ages), value=TRUE, ignore.case=TRUE)[1]
-        v2 <- grep("indhold|value|antal", names(folk1a_ages), value=TRUE, ignore.case=TRUE)[1]
-        ar2 <- grep("omr|area", names(folk1a_ages), value=TRUE, ignore.case=TRUE)[1]
-        if (!is.na(a2) && !is.na(v2) && !is.na(ar2)) {
-          folk1a_ages |>
-            rename(area=!!ar2, age=!!a2, value=!!v2) |>
-            mutate(
-              kommune_kode = sprintf("%04d", suppressWarnings(as.integer(area))),
-              age_num = suppressWarnings(as.integer(age)),
-              value   = suppressWarnings(as.numeric(gsub(",",".",value)))
-            ) |>
-            filter(kommune_kode %in% komm_int, !is.na(age_num), age_num >= 15, age_num <= 64) |>
-            group_by(kommune_kode) |>
-            summarise(pop_1564 = sum(value, na.rm=TRUE), .groups="drop")
-        } else NULL
-      } else NULL
-
-      if (!is.null(pop_1564)) {
-        emp_counts |>
-          left_join(pop_1564, by="kommune_kode") |>
-          mutate(EMP_RATE = if_else(pop_1564 > 0, round(emp_count/pop_1564*100, 1), NA_real_)) |>
-          select(kommune_kode, EMP_RATE)
-      } else emp_counts |> rename(EMP_RATE = emp_count) # fallback
-    } else emp_counts |> rename(EMP_RATE = emp_count)
-  } else NULL
-}, error = function(e) { message("  RAS1 failed: ", conditionMessage(e)); NULL })
-
-if (!is.null(emp_df)) message(sprintf("  Employment: %d kommuner", nrow(emp_df)))
-
-
-# ============================================================
-# 5. Education — HFUDD11
-# ============================================================
-message("Fetching HFUDD11 (education) from DST...")
-
-edu_df <- tryCatch({
-  raw <- fetch_dst("HFUDD11", list(
-    list(code = "UDDNIV",  values = list("*")),
-    list(code = "BOPKODE", values = list("*")),
-    list(code = "KØN",     values = list("TOT")),
-    list(code = "Tid",     values = list(""))
-  ))
-  names(raw) <- janitor::make_clean_names(names(raw))
-  area_c  <- grep("bop|area|municipality|omr", names(raw), value=TRUE, ignore.case=TRUE)[1]
-  val_c   <- grep("indhold|value|antal|count", names(raw), value=TRUE, ignore.case=TRUE)[1]
-  edu_c   <- grep("uddniv|educ|niveau", names(raw), value=TRUE, ignore.case=TRUE)[1]
-  komm_int <- sprintf("%04d", as.integer(kommune_lookup$kommune_kode))
-
-  if (!is.na(area_c) && !is.na(val_c) && !is.na(edu_c)) {
-    edu_clean <- raw |>
-      rename(area=!!area_c, value=!!val_c, edu_level=!!edu_c) |>
-      mutate(
-        kommune_kode = sprintf("%04d", suppressWarnings(as.integer(area))),
-        value        = suppressWarnings(as.numeric(gsub(",",".",value)))
-      ) |>
-      filter(kommune_kode %in% komm_int, !is.na(value))
-
-    # DST education levels: H10=primary, H20=secondary/vocational, H30=short higher,
-    # H35=medium higher, H40=long higher, H50=PhD, H90=unknown
-    total_edu <- edu_clean |>
-      group_by(kommune_kode) |>
-      summarise(total = sum(value, na.rm=TRUE), .groups="drop")
-
-    secondary <- edu_clean |>
-      filter(grepl("H20|H30|sekund|erhvervs|almen", edu_level, ignore.case=TRUE)) |>
-      group_by(kommune_kode) |>
-      summarise(sec_count = sum(value, na.rm=TRUE), .groups="drop")
-
-    tertiary <- edu_clean |>
-      filter(grepl("H35|H40|H50|kortere|bachelor|lang|ph|universitets", edu_level, ignore.case=TRUE)) |>
-      group_by(kommune_kode) |>
-      summarise(ter_count = sum(value, na.rm=TRUE), .groups="drop")
-
-    total_edu |>
-      left_join(secondary, by="kommune_kode") |>
-      left_join(tertiary,  by="kommune_kode") |>
-      mutate(
-        EDU_SEC = if_else(total>0, round((sec_count/total)*100, 1), NA_real_),
-        EDU_TER = if_else(total>0, round((ter_count/total)*100, 1), NA_real_)
-      ) |>
-      select(kommune_kode, EDU_SEC, EDU_TER)
-  } else NULL
-}, error = function(e) { message("  HFUDD11 failed: ", conditionMessage(e)); NULL })
-
-if (!is.null(edu_df)) message(sprintf("  Education: %d kommuner", nrow(edu_df)))
-
-
-# ============================================================
-# 6. Households — FAM44B
-# ============================================================
-message("Fetching FAM44B (households) from DST...")
-
-hh_df <- tryCatch({
-  raw <- fetch_dst("FAM44B", list(
-    list(code = "STRKODE", values = list("*")),
-    list(code = "KOMKODE", values = list("*")),
-    list(code = "Tid",     values = list(""))
-  ))
-  names(raw) <- janitor::make_clean_names(names(raw))
-  area_c <- grep("komkode|area|municipality|omr|kom", names(raw), value=TRUE, ignore.case=TRUE)[1]
-  val_c  <- grep("indhold|value|antal|count", names(raw), value=TRUE, ignore.case=TRUE)[1]
-  str_c  <- grep("strkode|size|str", names(raw), value=TRUE, ignore.case=TRUE)[1]
-  komm_int <- sprintf("%04d", as.integer(kommune_lookup$kommune_kode))
-
-  if (!is.na(area_c) && !is.na(val_c)) {
-    hh_clean <- raw |>
-      rename(area=!!area_c, value=!!val_c) |>
-      mutate(
-        kommune_kode = sprintf("%04d", suppressWarnings(as.integer(area))),
-        value        = suppressWarnings(as.numeric(gsub(",",".",value)))
-      ) |>
-      filter(kommune_kode %in% komm_int, !is.na(value))
-
-    hh_total <- hh_clean |>
-      filter(if (!is.na(str_c)) grepl("ialt|total|alle", .data[[str_c]], ignore.case=TRUE) else TRUE) |>
-      group_by(kommune_kode) |>
-      summarise(HOUSEHOLDS = sum(value, na.rm=TRUE), .groups="drop")
-
-    # Avg household size: total persons / total households
-    # Use FAMILIES as proxy for family count
-    hh_total |>
-      mutate(
-        FAMILIES = HOUSEHOLDS,    # approximate; replace if FAM55 available
-        HH_SIZE  = NA_real_       # computed in a later join if population known
-      )
-  } else NULL
-}, error = function(e) { message("  FAM44B failed: ", conditionMessage(e)); NULL })
-
-if (!is.null(hh_df)) message(sprintf("  Households: %d kommuner", nrow(hh_df)))
-
-
-# ============================================================
-# 7. Enterprises — FIRM1
-# ============================================================
-message("Fetching FIRM1 (enterprises) from DST...")
-
-firm_df <- tryCatch({
-  raw <- fetch_dst("FIRM1", list(
-    list(code = "BRANCHE07", values = list("TOT")),
-    list(code = "KOMKODE",   values = list("*")),
-    list(code = "Tid",       values = list(""))
-  ))
-  names(raw) <- janitor::make_clean_names(names(raw))
-  area_c <- grep("komkode|area|municipality|omr|kom", names(raw), value=TRUE, ignore.case=TRUE)[1]
-  val_c  <- grep("indhold|value|antal|count", names(raw), value=TRUE, ignore.case=TRUE)[1]
-  komm_int <- sprintf("%04d", as.integer(kommune_lookup$kommune_kode))
-
-  if (!is.na(area_c) && !is.na(val_c)) {
-    raw |>
-      rename(area=!!area_c, value=!!val_c) |>
-      mutate(
-        kommune_kode = sprintf("%04d", suppressWarnings(as.integer(area))),
-        ENTERPRISES  = suppressWarnings(as.numeric(gsub(",",".",value)))
-      ) |>
-      filter(kommune_kode %in% komm_int, !is.na(ENTERPRISES)) |>
-      select(kommune_kode, ENTERPRISES)
-  } else NULL
-}, error = function(e) { message("  FIRM1 failed: ", conditionMessage(e)); NULL })
-
-if (!is.null(firm_df)) message(sprintf("  Enterprises: %d kommuner", nrow(firm_df)))
-
-
-# ============================================================
-# 8. Employees — LBESK10
-# ============================================================
-message("Fetching LBESK10 (employees at local units) from DST...")
-
-emp_local_df <- tryCatch({
-  raw <- fetch_dst("LBESK10", list(
-    list(code = "BRANCHE07", values = list("TOT")),
-    list(code = "KOMKODE",   values = list("*")),
-    list(code = "Tid",       values = list(""))
-  ))
-  names(raw) <- janitor::make_clean_names(names(raw))
-  area_c <- grep("komkode|area|municipality|omr|kom", names(raw), value=TRUE, ignore.case=TRUE)[1]
-  val_c  <- grep("indhold|value|antal|count", names(raw), value=TRUE, ignore.case=TRUE)[1]
-  komm_int <- sprintf("%04d", as.integer(kommune_lookup$kommune_kode))
-
-  if (!is.na(area_c) && !is.na(val_c)) {
-    raw |>
-      rename(area=!!area_c, value=!!val_c) |>
-      mutate(
-        kommune_kode = sprintf("%04d", suppressWarnings(as.integer(area))),
-        EMPLOYEES    = suppressWarnings(as.numeric(gsub(",",".",value)))
-      ) |>
-      filter(kommune_kode %in% komm_int, !is.na(EMPLOYEES)) |>
-      select(kommune_kode, EMPLOYEES)
-  } else NULL
-}, error = function(e) { message("  LBESK10 failed: ", conditionMessage(e)); NULL })
-
-if (!is.null(emp_local_df)) message(sprintf("  Employees: %d kommuner", nrow(emp_local_df)))
-
-
-# ============================================================
-# 9. Commuting — PENDLING01
-# ============================================================
-message("Fetching PENDLING01 (out-commuters) from DST...")
-
-commute_df <- tryCatch({
-  raw <- fetch_dst("PENDLING01", list(
-    list(code = "BOPKOM",  values = list("*")),
-    list(code = "KØN",     values = list("TOT")),
-    list(code = "Tid",     values = list(""))
-  ))
-  names(raw) <- janitor::make_clean_names(names(raw))
-  area_c <- grep("bopkom|area|municipality|omr", names(raw), value=TRUE, ignore.case=TRUE)[1]
-  val_c  <- grep("indhold|value|antal|count|pct", names(raw), value=TRUE, ignore.case=TRUE)[1]
-  komm_int <- sprintf("%04d", as.integer(kommune_lookup$kommune_kode))
-
-  if (!is.na(area_c) && !is.na(val_c)) {
-    raw |>
-      rename(area=!!area_c, value=!!val_c) |>
-      mutate(
-        kommune_kode  = sprintf("%04d", suppressWarnings(as.integer(area))),
-        COMMUTER_PCT = suppressWarnings(as.numeric(gsub(",",".",value)))
-      ) |>
-      filter(kommune_kode %in% komm_int, !is.na(COMMUTER_PCT)) |>
-      select(kommune_kode, COMMUTER_PCT)
-  } else NULL
-}, error = function(e) { message("  PENDLING01 failed: ", conditionMessage(e)); NULL })
-
-if (!is.null(commute_df)) message(sprintf("  Commuting: %d kommuner", nrow(commute_df)))
-
-
-# ============================================================
-# 10. Assemble kommunal indicator table
-# ============================================================
-message("Assembling kommunal indicator table...")
-
-komm_data <- kommune_lookup |>
-  select(kommune_kode)
-
-for (df_obj in list(age_df, unemp_df, emp_df, edu_df, hh_df, firm_df, emp_local_df, commute_df)) {
-  if (!is.null(df_obj) && nrow(df_obj) > 0) {
-    key <- intersect(names(df_obj), "kommune_kode")
-    if (length(key) == 1) {
-      komm_data <- left_join(komm_data, df_obj, by = "kommune_kode")
+dst_post <- function(table, variables) {
+  # Replace any empty Tid value with the actual latest period for this table
+  variables <- lapply(variables, function(v) {
+    if (identical(v$code, "Tid") && identical(v$values, list(""))) {
+      latest <- latest_tid(table)
+      if (!is.null(latest)) v$values <- list(latest)
     }
-  }
-}
+    v
+  })
 
-# Compute avg household size = population / households (if both available)
-if ("HOUSEHOLDS" %in% names(komm_data)) {
-  # Get kommunal population from age totals
-  if (!is.null(age_df)) {
-    komm_pop <- age_df |>
-      left_join(
-        if (!is.null(folk1a_ages)) {
-          folk1a_ages |>
-            { n <- janitor::make_clean_names(names(.)); `names<-`(., n) }() |>
-            { ar <- grep("omr|area",names(.), value=TRUE, ignore.case=TRUE)[1];
-              vl <- grep("indhold|value|antal",names(.), value=TRUE, ignore.case=TRUE)[1];
-              ag <- grep("alder|age",names(.), value=TRUE, ignore.case=TRUE)[1];
-              if (!is.na(ar)&&!is.na(vl)&&!is.na(ag))
-                rename(., area=!!ar, value=!!vl, age=!!ag) |>
-                filter(grepl("ialt|total",age,ignore.case=TRUE)) |>
-                mutate(kommune_kode=sprintf("%04d",suppressWarnings(as.integer(area))),
-                       value=suppressWarnings(as.numeric(gsub(",",".",value)))) |>
-                group_by(kommune_kode) |> summarise(komm_pop=sum(value,na.rm=TRUE),.groups="drop")
-              else tibble(kommune_kode=character(),komm_pop=numeric()) }()
-        } else tibble(kommune_kode=character(),komm_pop=numeric()),
-        by = "kommune_kode"
-      )
-    if ("komm_pop" %in% names(komm_pop)) {
-      hh_size_df <- komm_pop |>
-        inner_join(komm_data |> select(kommune_kode, HOUSEHOLDS), by = "kommune_kode") |>
-        mutate(HH_SIZE = if_else(HOUSEHOLDS > 0, round(komm_pop / HOUSEHOLDS, 2), NA_real_)) |>
-        select(kommune_kode, HH_SIZE)
-      komm_data <- left_join(komm_data, hh_size_df, by = "kommune_kode", suffix = c("", ".new")) |>
-        mutate(HH_SIZE = coalesce(HH_SIZE.new, if ("HH_SIZE" %in% names(.)) HH_SIZE else NA_real_)) |>
-        select(-any_of("HH_SIZE.new"))
+  body <- list(table=table, format="CSV", delimiter=";", lang="da",
+               variables=variables)
+  resp <- tryCatch(
+    httr::POST(paste0(DST_BASE,"data"),
+               httr::content_type_json(),
+               body=jsonlite::toJSON(body, auto_unbox=TRUE),
+               httr::timeout(120)),
+    error = function(e) { message("  POST failed: ", conditionMessage(e)); NULL }
+  )
+  if (is.null(resp) || httr::http_error(resp)) {
+    errtxt <- if (!is.null(resp))
+      httr::content(resp, "text", encoding="UTF-8") else "no response"
+    message(sprintf("  %s HTTP %s: %s", table,
+      if(is.null(resp)) "?" else httr::status_code(resp),
+      substr(errtxt, 1, 120)))
+    return(NULL)
+  }
+  txt <- httr::content(resp, "text", encoding="UTF-8")
+  df  <- tryCatch(
+    readr::read_delim(txt, delim=";", show_col_types=FALSE,
+                      locale=readr::locale(encoding="UTF-8")),
+    error = function(e) { message("  Parse failed: ", conditionMessage(e)); NULL }
+  )
+  if (is.null(df)) return(NULL)
+  names(df) <- janitor::make_clean_names(names(df))
+
+  # DST returns English labels in the area column; join back to numeric codes.
+  # We attach a column `area_code` containing the padded-4-digit kommunekode.
+  meta <- get_table_meta(table)
+  area_var <- Filter(function(v) grepl("omr|area|bop|arbejdssted", v$code, ignore.case=TRUE),
+                     variables)
+  if (length(area_var) > 0 && !is.null(meta)) {
+    var_id   <- area_var[[1]]$code
+    lkp_key  <- tolower(janitor::make_clean_names(var_id))
+    area_col <- grep(lkp_key, names(df), value=TRUE, ignore.case=TRUE)[1]
+    df$area_code <- NA_character_  # always add column; fill if matching succeeds
+    if (!is.na(area_col) && var_id %in% names(meta)) {
+      lkp <- meta[[var_id]] |>
+        dplyr::mutate(label_clean = tolower(trimws(text)),
+                      area_code  = pad4(id)) |>
+        dplyr::select(label_clean, area_code)
+      df_label <- df[[area_col]] |> tolower() |> trimws()
+      df$area_code <- lkp$area_code[match(df_label, lkp$label_clean)]
     }
+  } else {
+    df$area_code <- NA_character_
   }
+  df
 }
 
-message(sprintf("  Kommunal table: %d rows × %d columns", nrow(komm_data), ncol(komm_data)))
+# 3-digit DST code → 4-digit DAWA-style code
+pad4 <- function(x) sprintf("%04d", suppressWarnings(as.integer(x)))
 
-
-# ============================================================
-# 11. Urban-rural classification (Eurostat DEGURBA thresholds)
-# ============================================================
-classify_urban_rural <- function(pop) {
-  dplyr::case_when(
-    pop >= 20000 ~ "Urban",
-    pop >=  5000 ~ "Intermediate",
-    TRUE         ~ "Rural"
-  )
+# Extract kommune_kode from a DST data frame.
+# Prefers the area_code column injected by dst_post (via label→code join);
+# falls back to pad4() of the raw area label if needed.
+extract_kommune_kode <- function(df, area_col) {
+  if ("area_code" %in% names(df)) return(df$area_code)
+  pad4(df[[area_col]])
 }
 
-classify_settlement <- function(pop) {
-  dplyr::case_when(
-    pop >= 50000 ~ "Large City",
-    pop >= 10000 ~ "Small City",
-    pop >=  2000 ~ "Town",
-    TRUE         ~ "Village"
-  )
+# Identify kommunal-level codes: 3-digit numeric in range 100-860
+is_kommunal <- function(x) {
+  n <- suppressWarnings(as.integer(x))
+  !is.na(n) & nchar(trimws(x)) == 3 & n >= 100 & n <= 860
 }
 
-classify_density <- function(dens) {
-  dplyr::case_when(
-    is.na(dens)  ~ "Unknown",
-    dens >= 1000 ~ "Very Dense",
-    dens >= 300  ~ "Dense",
-    dens >= 100  ~ "Medium",
-    TRUE         ~ "Sparse"
-  )
-}
-
-
-# ============================================================
-# 12. Build Sogn-level dataset
-#     Demographics from FOLK1A; other indicators from parent kommune
-# ============================================================
-message("Building Sogn-level dataset...")
-
-sogne_full <- sogne_df |>
-  left_join(
-    if (!is.null(pop_df)) pop_df else tibble(sognekode=character(), POPULATION=numeric(), FOREIGN_PCT=numeric()),
-    by = "sognekode"
-  ) |>
-  left_join(kommune_lookup, by = "kommune_kode", suffix = c("", ".k")) |>
-  left_join(komm_data |> select(-any_of(c("kommune_navn","region_kode","region_navn"))),
-            by = "kommune_kode") |>
-  mutate(
-    POPULATION = as.integer(coalesce(POPULATION, 0L)),
-    urban_rural_status = classify_urban_rural(POPULATION),
-    settlement_class   = classify_settlement(POPULATION),
-    density_class      = "Unknown"    # area data not available at sogne level
-  )
-
-message(sprintf("  %d sogne assembled", nrow(sogne_full)))
-
-
-# ============================================================
-# Helper: build domain-grouped indicator list for one row
-# ============================================================
 build_indicator_list <- function(row_data) {
   lapply(VARIABLE_MAP, function(domain) {
     lapply(names(domain), function(label) {
       col <- domain[[label]]
       val <- row_data[[col]]
-      if (is.null(val) || length(val) == 0 || is.na(val)) return(NULL)
-      as.numeric(val)
+      if (is.null(val) || length(val)==0 || is.na(val)) return(NULL)
+      round(as.numeric(val), 2)
     }) |> setNames(names(domain))
   })
 }
 
 
 # ============================================================
-# 13. Build Sogn entries
+# 1. Geography from DAWA
 # ============================================================
-message("Building Sogn entries...")
+message("Fetching geography from DAWA...")
 
-sogne_entries <- lapply(seq_len(nrow(sogne_full)), function(i) {
-  row <- sogne_full[i, ]
-  indicators <- build_indicator_list(row)
-  c(
-    list(
-      Urban_rural_status = row$urban_rural_status,
-      Settlement_class   = row$settlement_class,
-      Density_class      = row$density_class,
-      Kommune            = row$kommune_kode,
-      Sognavn            = row$sognavn,
-      Region             = row$region_navn,
-      Population         = as.integer(row$POPULATION)
-    ),
-    indicators
+# Kommuner (98)
+komm_raw <- jsonlite::fromJSON(
+  httr::content(httr::GET(paste0(DAWA_BASE,"kommuner?format=json"), httr::timeout(60)),
+                "text", encoding="UTF-8"),
+  simplifyDataFrame=TRUE
+)
+kommune_df <- as_tibble(as.data.frame(komm_raw)) |>
+  mutate(kommune_kode = pad4(kode), kommune_navn = as.character(navn))
+
+if ("region" %in% names(kommune_df) && is.data.frame(kommune_df$region)) {
+  kommune_df$region_kode <- as.character(kommune_df$region$kode)
+  kommune_df$region_navn <- as.character(kommune_df$region$navn)
+} else {
+  reg_map <- c("1081"="Region Hovedstaden","1082"="Region Sjælland",
+               "1083"="Region Syddanmark", "1084"="Region Midtjylland",
+               "1085"="Region Nordjylland")
+  kommune_df$region_kode <- as.character(kommune_df[["regionskode"]])
+  kommune_df$region_navn <- reg_map[kommune_df$region_kode]
+}
+
+kommune_lookup <- kommune_df |>
+  select(kommune_kode, kommune_navn, region_kode, region_navn) |>
+  distinct()
+
+message(sprintf("  %d kommuner across %d regions", nrow(kommune_lookup),
+                n_distinct(kommune_lookup$region_kode)))
+
+# Regioner (5) — for the Region level data
+region_lookup <- kommune_lookup |>
+  select(region_kode, region_navn) |>
+  distinct()
+
+# DST uses 3-digit codes (e.g. "101") — map to our 4-digit DAWA codes
+dst_to_kode <- setNames(kommune_lookup$kommune_kode,
+                        as.character(suppressWarnings(as.integer(kommune_lookup$kommune_kode))))
+
+
+# ============================================================
+# 2. FOLK1A — Population + age structure
+# ============================================================
+message("Fetching FOLK1A (population + age) from DST...")
+
+# Request total + ages 0-14 + ages 65-99 in one call
+age_codes <- c("IALT", as.character(0:14), as.character(65:99))
+
+folk1a <- dst_post("FOLK1A", list(
+  list(code="OMRÅDE", values=list("*")),
+  list(code="ALDER",  values=as.list(age_codes)),
+  list(code="KØN",    values=list("TOT")),
+  list(code="Tid",    values=list(""))
+))
+
+pop_age_df <- NULL
+if (!is.null(folk1a)) {
+  names(folk1a) <- janitor::make_clean_names(names(folk1a))
+  area_c <- grep("omr|area", names(folk1a), value=TRUE, ignore.case=TRUE)[1]
+  age_c  <- grep("alder|age", names(folk1a), value=TRUE, ignore.case=TRUE)[1]
+  val_c  <- grep("indhold|value|antal|count", names(folk1a), value=TRUE, ignore.case=TRUE)[1]
+
+  if (!is.na(area_c) && !is.na(age_c) && !is.na(val_c)) {
+    f <- folk1a |>
+      rename(area=!!area_c, age=!!age_c, value=!!val_c) |>
+      mutate(value = suppressWarnings(as.numeric(gsub(",",".",value))),
+             kommune_kode = coalesce(area_code, pad4(area))) |>
+      filter(kommune_kode %in% kommune_lookup$kommune_kode, !is.na(value))
+
+    # Danish labels: "Alder i alt" for total, "X år" for individual years
+    totals <- f |>
+      filter(grepl("i alt", age, ignore.case=TRUE)) |>
+      group_by(kommune_kode) |> summarise(POPULATION = sum(value,na.rm=TRUE),.groups="drop")
+
+    # Extract year number from "X år" pattern
+    u15 <- f |>
+      filter(!grepl("i alt", age, ignore.case=TRUE)) |>
+      mutate(age_n = suppressWarnings(as.integer(gsub("[^0-9]", "", age)))) |>
+      filter(!is.na(age_n), age_n <= 14) |>
+      group_by(kommune_kode) |> summarise(n_under15=sum(value,na.rm=TRUE),.groups="drop")
+
+    o65 <- f |>
+      filter(!grepl("i alt", age, ignore.case=TRUE)) |>
+      mutate(age_n = suppressWarnings(as.integer(gsub("[^0-9]", "", age)))) |>
+      filter(!is.na(age_n), age_n >= 65) |>
+      group_by(kommune_kode) |> summarise(n_over65=sum(value,na.rm=TRUE),.groups="drop")
+
+    pop_age_df <- totals |>
+      left_join(u15, by="kommune_kode") |>
+      left_join(o65, by="kommune_kode") |>
+      mutate(
+        BEV_UNDER15 = if_else(POPULATION>0, round(n_under15/POPULATION*100,1), NA_real_),
+        BEV_OVER65  = if_else(POPULATION>0, round(n_over65/POPULATION*100,1),  NA_real_)
+      ) |>
+      select(kommune_kode, POPULATION, BEV_UNDER15, BEV_OVER65)
+    message(sprintf("  Population data: %d kommuner", nrow(pop_age_df)))
+  }
+}
+
+
+# ============================================================
+# 3. FOLK1B — Foreign citizens (STATSB = citizenship)
+# ============================================================
+message("Fetching FOLK1B (citizenship) from DST...")
+
+folk1b <- dst_post("FOLK1B", list(
+  list(code="OMRÅDE", values=list("*")),
+  list(code="ALDER",  values=list("IALT")),
+  list(code="KØN",    values=list("TOT")),
+  list(code="STATSB", values=list("*")),
+  list(code="Tid",    values=list(""))
+))
+
+foreign_df <- NULL
+if (!is.null(folk1b)) {
+  names(folk1b) <- janitor::make_clean_names(names(folk1b))
+  area_c  <- grep("omr|area", names(folk1b), value=TRUE, ignore.case=TRUE)[1]
+  val_c   <- grep("indhold|value|antal|count", names(folk1b), value=TRUE, ignore.case=TRUE)[1]
+  stat_c  <- grep("statsb|citizenship|state", names(folk1b), value=TRUE, ignore.case=TRUE)[1]
+
+  if (!is.na(area_c) && !is.na(val_c) && !is.na(stat_c)) {
+    fb <- folk1b |>
+      rename(area=!!area_c, value=!!val_c, citizenship=!!stat_c) |>
+      mutate(value = suppressWarnings(as.numeric(gsub(",",".",value))),
+             kommune_kode = coalesce(area_code, pad4(area))) |>
+      filter(kommune_kode %in% kommune_lookup$kommune_kode, !is.na(value))
+
+    # Danish labels: "I alt" = total, "Danmark" = Danish citizens
+    total_cit <- fb |>
+      filter(grepl("^i alt$|^in all$", citizenship, ignore.case=TRUE)) |>
+      group_by(kommune_kode) |> summarise(cit_total=sum(value,na.rm=TRUE),.groups="drop")
+
+    danish_cit <- fb |>
+      filter(grepl("^Danmark$|^Denmark$", citizenship, ignore.case=TRUE)) |>
+      group_by(kommune_kode) |> summarise(cit_danish=sum(value,na.rm=TRUE),.groups="drop")
+
+    foreign_df <- total_cit |>
+      left_join(danish_cit, by="kommune_kode") |>
+      mutate(FOREIGN_PCT = if_else(cit_total>0,
+               round((cit_total-coalesce(cit_danish,0))/cit_total*100, 1), NA_real_)) |>
+      select(kommune_kode, FOREIGN_PCT)
+    message(sprintf("  Foreign citizens: %d kommuner", nrow(foreign_df)))
+  }
+}
+
+
+# ============================================================
+# 4. AUL01 — Unemployment
+# ============================================================
+message("Fetching AUL01 (unemployment) from DST...")
+
+aul01 <- dst_post("AUL01", list(
+  list(code="OMRÅDE",      values=list("*")),
+  list(code="YDELSESTYPE", values=list("TOT")),
+  list(code="ALDER",       values=list("TOT")),
+  list(code="KØN",         values=list("TOT")),
+  list(code="AKASSE",      values=list("TOT")),
+  list(code="Tid",         values=list(""))
+))
+
+unemp_df <- NULL
+if (!is.null(aul01)) {
+  names(aul01) <- janitor::make_clean_names(names(aul01))
+  area_c <- grep("omr|area", names(aul01), value=TRUE, ignore.case=TRUE)[1]
+  val_c  <- grep("indhold|value|antal|count", names(aul01), value=TRUE, ignore.case=TRUE)[1]
+
+  if (!is.na(area_c) && !is.na(val_c)) {
+    unemp_raw <- aul01 |>
+      rename(area=!!area_c, value=!!val_c) |>
+      mutate(value = suppressWarnings(as.numeric(gsub(",",".",value))),
+             kommune_kode = coalesce(area_code, pad4(area))) |>
+      filter(kommune_kode %in% kommune_lookup$kommune_kode, !is.na(value))
+
+    # AUL01 gives count of unemployed — compute rate against population
+    if (!is.null(pop_age_df)) {
+      unemp_df <- unemp_raw |>
+        group_by(kommune_kode) |> summarise(unemp_count=sum(value,na.rm=TRUE),.groups="drop") |>
+        left_join(pop_age_df |> select(kommune_kode, POPULATION), by="kommune_kode") |>
+        mutate(UNEMP_RATE = if_else(POPULATION>0,
+                             round(unemp_count/POPULATION*100, 1), NA_real_)) |>
+        select(kommune_kode, UNEMP_RATE)
+    } else {
+      unemp_df <- unemp_raw |>
+        group_by(kommune_kode) |>
+        summarise(UNEMP_RATE = round(sum(value,na.rm=TRUE), 1), .groups="drop")
+    }
+    message(sprintf("  Unemployment: %d kommuner", nrow(unemp_df)))
+  }
+}
+
+
+# ============================================================
+# 5. RAS1 — Employment rate
+# ============================================================
+message("Fetching RAS1 (employment) from DST...")
+
+ras1 <- dst_post("RAS1", list(
+  list(code="OMRÅDE", values=list("*")),
+  list(code="SOCIO",  values=list("499","500","505")),
+  list(code="IETYPE", values=list("999")),
+  list(code="ALDER",  values=list("16-19","20-24","25-29","30-34","35-39",
+                                   "40-44","45-49","50-54","55-59","60-64","65-66")),
+  list(code="KØN",    values=list("M","K")),  # RAS1 has no TOT — sum M+K
+  list(code="Tid",    values=list(""))
+))
+
+emp_df <- NULL
+if (!is.null(ras1)) {
+  names(ras1) <- janitor::make_clean_names(names(ras1))
+  area_c  <- grep("omr|area", names(ras1), value=TRUE, ignore.case=TRUE)[1]
+  val_c   <- grep("indhold|value|antal|count", names(ras1), value=TRUE, ignore.case=TRUE)[1]
+  socio_c <- grep("socio", names(ras1), value=TRUE, ignore.case=TRUE)[1]
+
+  if (!is.na(area_c) && !is.na(val_c) && !is.na(socio_c)) {
+    ras <- ras1 |>
+      rename(area=!!area_c, value=!!val_c, socio=!!socio_c) |>
+      mutate(value = suppressWarnings(as.numeric(gsub(",",".",value))),
+             kommune_kode = coalesce(area_code, pad4(area))) |>
+      filter(kommune_kode %in% kommune_lookup$kommune_kode, !is.na(value))
+
+    emp_df <- ras |>
+      group_by(kommune_kode) |>
+      summarise(
+        employed = sum(value[grepl("Besk", socio, ignore.case=TRUE)], na.rm=TRUE),
+        total    = sum(value, na.rm=TRUE),
+        .groups  = "drop"
+      ) |>
+      mutate(EMP_RATE = if_else(total>0, round(employed/total*100, 1), NA_real_)) |>
+      select(kommune_kode, EMP_RATE)
+    message(sprintf("  Employment: %d kommuner", nrow(emp_df)))
+  }
+}
+
+
+# ============================================================
+# 6. ERHV6 — Employees at local workplaces
+# ============================================================
+message("Fetching ERHV6 (employees) from DST...")
+
+erhv6 <- dst_post("ERHV6", list(
+  list(code="OMRÅDE",      values=list("*")),
+  list(code="BRANCHE0710", values=list("TOT")),
+  list(code="ARBSTRDK",    values=list("*")),
+  list(code="Tid",         values=list(""))
+))
+
+emp_local_df <- NULL
+if (!is.null(erhv6)) {
+  names(erhv6) <- janitor::make_clean_names(names(erhv6))
+  area_c <- grep("omr|area|omrade", names(erhv6), value=TRUE, ignore.case=TRUE)[1]
+  val_c  <- grep("indhold|value|antal|count", names(erhv6), value=TRUE, ignore.case=TRUE)[1]
+
+  if (!is.na(area_c) && !is.na(val_c)) {
+    emp_local_df <- erhv6 |>
+      rename(area=!!area_c, value=!!val_c) |>
+      mutate(value = suppressWarnings(as.numeric(gsub(",",".",value))),
+             kommune_kode = coalesce(area_code, pad4(area))) |>
+      filter(kommune_kode %in% kommune_lookup$kommune_kode, !is.na(value)) |>
+      group_by(kommune_kode) |>
+      summarise(EMPLOYEES=sum(value,na.rm=TRUE), .groups="drop")
+    message(sprintf("  Employees: %d kommuner", nrow(emp_local_df)))
+  }
+}
+
+
+# ============================================================
+# 7. HFUDD11 — Education level
+# ============================================================
+message("Fetching HFUDD11 (education) from DST...")
+
+hfudd <- dst_post("HFUDD11", list(
+  list(code="BOPOMR",  values=list("*")),
+  list(code="HFUDD",   values=list("TOT","H20","H30","H35","H40","H50")),
+  list(code="ALDER",   values=list("TOT")),
+  list(code="KØN",     values=list("TOT")),
+  list(code="HERKOMST",values=list("TOT")),
+  list(code="Tid",     values=list(""))
+))
+
+edu_df <- NULL
+if (!is.null(hfudd)) {
+  names(hfudd) <- janitor::make_clean_names(names(hfudd))
+  area_c <- grep("bopomr|omr|area|bop", names(hfudd), value=TRUE, ignore.case=TRUE)[1]
+  val_c  <- grep("indhold|value|antal|count", names(hfudd), value=TRUE, ignore.case=TRUE)[1]
+  edu_c  <- grep("hfudd|educ|udd", names(hfudd), value=TRUE, ignore.case=TRUE)[1]
+
+  if (!is.na(area_c) && !is.na(val_c) && !is.na(edu_c)) {
+    edu <- hfudd |>
+      rename(area=!!area_c, value=!!val_c, edu=!!edu_c) |>
+      mutate(value = suppressWarnings(as.numeric(gsub(",",".",value))),
+             kommune_kode = coalesce(area_code, pad4(area))) |>
+      filter(kommune_kode %in% kommune_lookup$kommune_kode, !is.na(value))
+
+    # Danish HFUDD labels: "I alt", "H10 Grundskole", "H20 Gymnasiale uddannelser",
+    # "H30 Korte videregående", "H35 Mellemlange videregående", "H40 Bachelor", "H50 Lang videregående"
+    edu_total <- edu |>
+      filter(grepl("^i alt$|^in all$", edu, ignore.case=TRUE)) |>
+      group_by(kommune_kode) |> summarise(edu_total=sum(value,na.rm=TRUE),.groups="drop")
+
+    edu_sec <- edu |>
+      filter(grepl("^H20", edu, ignore.case=TRUE)) |>
+      group_by(kommune_kode) |> summarise(sec=sum(value,na.rm=TRUE),.groups="drop")
+
+    edu_ter <- edu |>
+      filter(grepl("^H3|^H4|^H5", edu, ignore.case=TRUE)) |>
+      group_by(kommune_kode) |> summarise(ter=sum(value,na.rm=TRUE),.groups="drop")
+
+    edu_df <- edu_total |>
+      left_join(edu_sec, by="kommune_kode") |>
+      left_join(edu_ter, by="kommune_kode") |>
+      mutate(
+        EDU_SEC = if_else(edu_total>0, round(coalesce(sec,0)/edu_total*100,1), NA_real_),
+        EDU_TER = if_else(edu_total>0, round(coalesce(ter,0)/edu_total*100,1), NA_real_)
+      ) |>
+      select(kommune_kode, EDU_SEC, EDU_TER)
+    message(sprintf("  Education: %d kommuner", nrow(edu_df)))
+  }
+}
+
+
+# ============================================================
+# 8. Assemble kommunal indicator table
+# ============================================================
+message("Assembling kommunal indicator table...")
+
+komm_stats <- kommune_lookup |> select(kommune_kode)
+
+for (df in list(pop_age_df, foreign_df, unemp_df, emp_df, emp_local_df, edu_df)) {
+  if (!is.null(df) && "kommune_kode" %in% names(df))
+    komm_stats <- left_join(komm_stats, df, by="kommune_kode")
+}
+message(sprintf("  %d kommuner × %d indicator columns",
+  nrow(komm_stats), ncol(komm_stats)-1))
+
+
+# ============================================================
+# 9. Urban-rural classification from population
+# ============================================================
+classify_urban_rural <- function(pop) {
+  dplyr::case_when(pop >= 20000 ~ "Urban",
+                   pop >=  5000 ~ "Intermediate",
+                   TRUE         ~ "Rural")
+}
+classify_settlement <- function(pop) {
+  dplyr::case_when(pop >= 50000 ~ "Large City",
+                   pop >= 10000 ~ "Small City",
+                   pop >=  2000 ~ "Town",
+                   TRUE         ~ "Village")
+}
+
+komm_full <- kommune_lookup |>
+  left_join(komm_stats, by="kommune_kode") |>
+  mutate(
+    POPULATION = if ("POPULATION" %in% names(komm_stats))
+                   coalesce(POPULATION, 0L) else 0L,
+    urban_rural_status = classify_urban_rural(POPULATION),
+    settlement_class   = classify_settlement(POPULATION),
+    density_class      = "Unknown"
   )
-}) |> setNames(sogne_full$sognekode)
 
 
 # ============================================================
-# 14. Build Kommune entries (aggregate from sogne)
+# 10. Build Kommune entries
 # ============================================================
 message("Building Kommune entries...")
 
-build_kommune_entry <- function(kom_code, sogne_rows, kom_meta) {
-  total_pop <- sum(sogne_rows$POPULATION, na.rm = TRUE)
-
-  agg_row <- list(kommune_kode = kom_code)
-  for (col in INDICATOR_COLS) {
-    if (!col %in% names(sogne_rows)) { agg_row[[col]] <- NA_real_; next }
-    vals <- sogne_rows[[col]]
-    pops <- sogne_rows$POPULATION
-    ok   <- !is.na(vals) & !is.na(pops) & pops > 0
-
-    if (!any(ok)) {
-      # Fall back to kommunal table if available
-      agg_row[[col]] <- if (col %in% names(komm_data)) {
-        km <- komm_data |> filter(kommune_kode == kom_code)
-        if (nrow(km) > 0 && !is.na(km[[col]][1])) km[[col]][1] else NA_real_
-      } else NA_real_
-    } else if (AGGREGATION_TYPE[[col]] == "sum") {
-      agg_row[[col]] <- sum(vals[ok], na.rm = TRUE)
-    } else {
-      agg_row[[col]] <- sum(vals[ok] * pops[ok]) / sum(pops[ok])
-    }
-  }
-  agg_row <- as_tibble(agg_row)
-
-  majority_class <- function(x) {
-    t <- table(x[!is.na(x)])
-    if (length(t) == 0) return(NA_character_)
-    names(sort(t, decreasing=TRUE))[1]
-  }
-
-  indicators <- build_indicator_list(agg_row)
-  c(
-    list(
-      Urban_rural_status = majority_class(sogne_rows$urban_rural_status),
-      Settlement_class   = majority_class(sogne_rows$settlement_class),
-      Density_class      = majority_class(sogne_rows$density_class),
-      Region             = kom_meta$region_navn,
-      Population         = as.integer(total_pop)
-    ),
-    indicators
-  )
-}
-
-kommune_codes <- unique(sogne_full$kommune_kode)
-kommune_entries <- lapply(kommune_codes, function(kc) {
-  rows <- filter(sogne_full, kommune_kode == kc)
-  meta <- filter(kommune_lookup, kommune_kode == kc)
-  if (nrow(meta) == 0) meta <- tibble(region_navn = NA_character_)
-  build_kommune_entry(kc, rows, meta[1, ])
-}) |> setNames(kommune_codes)
+kommune_entries <- lapply(seq_len(nrow(komm_full)), function(i) {
+  row <- komm_full[i, ]
+  indicators <- build_indicator_list(row)
+  c(list(Urban_rural_status = row$urban_rural_status,
+         Settlement_class   = row$settlement_class,
+         Density_class      = row$density_class,
+         Region             = row$region_navn,
+         Population         = as.integer(row$POPULATION)),
+    indicators)
+}) |> setNames(komm_full$kommune_kode)
 
 
 # ============================================================
-# 15. Build Denmark Total
+# 11. Build Region entries (aggregate from kommuner)
+# ============================================================
+message("Building Region entries...")
+
+agg_weighted <- function(rows, col) {
+  vals <- rows[[col]]; pops <- rows$POPULATION
+  ok <- !is.na(vals) & !is.na(pops) & pops > 0
+  if (!any(ok)) return(NA_real_)
+  if (AGGREGATION_TYPE[[col]] == "sum") sum(vals[ok], na.rm=TRUE)
+  else sum(vals[ok]*pops[ok])/sum(pops[ok])
+}
+
+region_codes <- unique(komm_full$region_kode)
+region_entries <- lapply(region_codes, function(rc) {
+  rows <- filter(komm_full, region_kode == rc)
+  rname <- rows$region_navn[1]
+  total_pop <- sum(rows$POPULATION, na.rm=TRUE)
+
+  agg <- list()
+  for (col in INDICATOR_COLS) {
+    if (col == "POPULATION") agg[[col]] <- total_pop
+    else if (col %in% names(rows)) agg[[col]] <- agg_weighted(rows, col)
+    else agg[[col]] <- NA_real_
+  }
+  agg_row <- as_tibble(agg)
+  indicators <- build_indicator_list(agg_row)
+
+  majority <- function(x) { t<-table(x[!is.na(x)]); if(length(t)==0) NA_character_ else names(sort(t,decreasing=TRUE))[1] }
+
+  c(list(Urban_rural_status = majority(rows$urban_rural_status),
+         Settlement_class   = majority(rows$settlement_class),
+         Density_class      = majority(rows$density_class),
+         Region             = rname,
+         Population         = as.integer(total_pop)),
+    indicators)
+}) |> setNames(region_codes)
+
+
+# ============================================================
+# 12. Build Denmark Total
 # ============================================================
 message("Building Denmark Total...")
 
-total_pop <- sum(sogne_full$POPULATION, na.rm = TRUE)
-
-denmark_total_row <- list()
+total_pop <- sum(komm_full$POPULATION, na.rm=TRUE)
+dk_row <- list()
 for (col in INDICATOR_COLS) {
-  if (!col %in% names(sogne_full)) { denmark_total_row[[col]] <- NA_real_; next }
-  vals <- sogne_full[[col]]
-  pops <- sogne_full$POPULATION
+  if (col == "POPULATION") { dk_row[[col]] <- total_pop; next }
+  if (!col %in% names(komm_full)) { dk_row[[col]] <- NA_real_; next }
+  vals <- komm_full[[col]]; pops <- komm_full$POPULATION
   ok   <- !is.na(vals) & !is.na(pops) & pops > 0
-
-  if (!any(ok)) {
-    denmark_total_row[[col]] <- NA_real_
-  } else if (AGGREGATION_TYPE[[col]] == "sum") {
-    denmark_total_row[[col]] <- sum(vals[ok])
-  } else {
-    denmark_total_row[[col]] <- round(sum(vals[ok] * pops[ok]) / sum(pops[ok]), 1)
-  }
+  dk_row[[col]] <- if (!any(ok)) NA_real_
+    else if (AGGREGATION_TYPE[[col]]=="sum") sum(vals[ok])
+    else round(sum(vals[ok]*pops[ok])/sum(pops[ok]), 1)
 }
-denmark_total_row <- as_tibble(denmark_total_row)
-denmark_total     <- build_indicator_list(denmark_total_row)
+denmark_total <- build_indicator_list(as_tibble(dk_row))
 
 
 # ============================================================
-# 16. Assemble final_json
+# 13. Assemble final_json
 # ============================================================
 final_json <- list(
   "Denmark Total" = denmark_total,
-  "Kommune"       = lapply(kommune_entries, convert_to_named_list),
-  "Sogn"          = lapply(sogne_entries,   convert_to_named_list)
+  "Region"        = lapply(region_entries,  convert_to_named_list),
+  "Kommune"       = lapply(kommune_entries, convert_to_named_list)
 )
 
-message(sprintf(
-  "Done. Denmark Total + %d Kommuner + %d Sogne ready.",
-  length(kommune_entries), length(sogne_entries)
-))
+message(sprintf("Done. Denmark Total + %d Regions + %d Kommuner ready.",
+  length(region_entries), length(kommune_entries)))
