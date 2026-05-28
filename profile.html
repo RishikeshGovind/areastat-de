@@ -901,7 +901,7 @@
 
         const breakdownClone = breakdownContainer.cloneNode(true);
 
-        // Replace the WebGL mini-map with a static <img> so html2canvas can render it.
+        // Replace the WebGL mini-map with a static image so html2canvas can render it.
         // toDataURL works here because the MapLibre canvas is same-origin (no cross-origin taint).
         const miniMapInClone = breakdownClone.querySelector('#zone-minimap');
         if (miniMapInClone) {
@@ -2524,6 +2524,8 @@
           a.click();
         });
       }
+
+    </script>
 
   <!-- Chart zoom overlay -->
   <div id="chart-zoom-overlay" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(10,20,40,0.82);backdrop-filter:blur(4px);align-items:center;justify-content:center;">
