@@ -2123,15 +2123,11 @@
         });
         container.appendChild(kpiRow);
 
-        // Layout: zone list + mini-map
-        const layout = document.createElement('div');
-        layout.style.cssText = 'display:flex;gap:1.5rem;padding:0 1.5rem 1.5rem;align-items:flex-start;';
-
-        // Zone table
+        // Zone table (full width — renders instantly from loaded data, no network needed)
         const tableWrap = document.createElement('div');
-        tableWrap.style.cssText = 'flex:1;min-width:0;background:#fff;border:1px solid #e5e7eb;border-radius:8px;overflow:hidden;';
+        tableWrap.style.cssText = 'padding:0 1.5rem 1.5rem;';
         const tbl = document.createElement('table');
-        tbl.style.cssText = 'width:100%;border-collapse:collapse;font-size:.8rem;';
+        tbl.style.cssText = 'width:100%;border-collapse:collapse;font-size:.8rem;background:#fff;border:1px solid #e5e7eb;border-radius:8px;overflow:hidden;';
         tbl.innerHTML = `<thead><tr style="background:#1e3a5f;color:#fff;">
           <th style="padding:.55rem .9rem;text-align:left;font-weight:600;">Zone</th>
           <th style="padding:.55rem .9rem;text-align:left;font-weight:600;">Region</th>
@@ -2151,20 +2147,26 @@
         tbl.appendChild(tbody);
         tableWrap.appendChild(tbl);
 
-        // Mini-map placeholder (actual map rendered separately via initZoneMiniMap)
-        const mapCol = document.createElement('div');
-        mapCol.style.cssText = 'flex:0 0 280px;width:280px;';
+        // Lazy mini-map: only loads MapLibre + DAWA GeoJSON when user clicks
+        const mapToggle = document.createElement('div');
+        mapToggle.style.cssText = 'padding:.5rem 1.5rem 1.5rem;';
+        const mapBtn = document.createElement('button');
+        mapBtn.textContent = 'Show on map';
+        mapBtn.style.cssText = 'font-size:.78rem;color:#4f46e5;background:none;border:1px solid #e5e7eb;border-radius:6px;padding:.35rem .85rem;cursor:pointer;';
         const miniMapDiv = document.createElement('div');
         miniMapDiv.id = 'zone-minimap';
-        miniMapDiv.style.cssText = 'width:100%;height:220px;border-radius:8px;overflow:hidden;border:1px solid #e5e7eb;background:#f3f4f6;';
-        mapCol.appendChild(miniMapDiv);
+        miniMapDiv.style.cssText = 'display:none;width:100%;max-width:420px;height:220px;border-radius:8px;overflow:hidden;border:1px solid #e5e7eb;background:#f3f4f6;margin-top:.6rem;';
+        let mapLoaded = false;
+        mapBtn.addEventListener('click', () => {
+          miniMapDiv.style.display = 'block';
+          mapBtn.style.display = 'none';
+          if (!mapLoaded) { mapLoaded = true; window.initZoneMiniMap(selectedIds, currentZoneType); }
+        });
+        mapToggle.appendChild(mapBtn);
+        mapToggle.appendChild(miniMapDiv);
 
-        layout.appendChild(tableWrap);
-        layout.appendChild(mapCol);
-        container.appendChild(layout);
-
-        // Trigger mini-map render into the new element
-        requestAnimationFrame(() => window.initZoneMiniMap(selectedIds, currentZoneType));
+        container.appendChild(tableWrap);
+        container.appendChild(mapToggle);
       }
 
       // ══ DEMOGRAPHICS / ECONOMICS DOMAIN VIEWS ════════════════════════════════
