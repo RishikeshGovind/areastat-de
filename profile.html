@@ -17,6 +17,8 @@
     <link href="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.css" rel="stylesheet" />
     <link rel="stylesheet" href="style.css">
     <script src="js/shared.js"></script>
+    <script src="js/dst-catalogue.js"></script>
+    <script src="js/dst-explorer.js"></script>
 
     <style>
       body { display: block; height: auto; min-height: 100vh; background: #f8fafc; }
@@ -58,6 +60,104 @@
       #analysis-container { margin: 0 !important; min-height: 500px; }
       .analysis-panel-wrap { flex: none !important; overflow-y: visible !important; height: auto !important; }
       .analysis-panel { height: auto !important; overflow-y: visible !important; }
+
+      /* ── DST Explorer ────────────────────────────── */
+      #explorer-container {
+        display: flex; height: calc(100vh - 104px);
+        overflow: hidden; background: #f8fafc;
+      }
+      #explorer-sidebar {
+        width: 260px; min-width: 220px; max-width: 300px;
+        background: #fff; border-right: 1px solid #e5e7eb;
+        overflow-y: auto; flex-shrink: 0;
+        padding-bottom: 2rem;
+      }
+      .exp-sector { border-bottom: 1px solid #f0f0f0; }
+      .exp-sector-header {
+        width: 100%; background: none; border: none; cursor: pointer;
+        display: flex; align-items: center; gap: 8px;
+        padding: .55rem .85rem; font-size: .8rem; font-weight: 600;
+        color: #374151; text-align: left;
+      }
+      .exp-sector-header:hover { background: #f9fafb; }
+      .exp-sector-icon   { font-size: 1rem; flex-shrink: 0; }
+      .exp-sector-name   { flex: 1; }
+      .exp-sector-count  { font-size:.7rem; color:#9ca3af; background:#f3f4f6;
+                           border-radius:10px; padding:1px 6px; }
+      .exp-sector-chevron{ font-size:.65rem; color:#9ca3af; transition:transform .15s; }
+      .exp-sector-tables { padding: 0 0 .3rem 0; }
+      .exp-table-item {
+        width: 100%; background: none; border: none; cursor: pointer;
+        display: flex; flex-direction: column; gap: 2px;
+        padding: .42rem .85rem .42rem 2rem; text-align: left;
+        border-left: 3px solid transparent;
+      }
+      .exp-table-item:hover { background: #f3f4f6; }
+      .exp-table-item.active { border-left-color: #4f46e5; background: #eef2ff; }
+      .exp-table-id    { font-size: .68rem; font-weight: 700; color: #6b7280;
+                         font-family: 'JetBrains Mono', monospace; }
+      .exp-table-title { font-size: .77rem; color: #111827; }
+      .exp-table-item.active .exp-table-title { color: #4f46e5; font-weight: 600; }
+
+      #explorer-panel {
+        flex: 1; overflow-y: auto; padding: 1.5rem 2rem 3rem;
+        min-width: 0;
+      }
+      .exp-panel-header { margin-bottom: 1rem; }
+      .exp-panel-title  { font-size: 1.15rem; font-weight: 700; color: #111827; margin: 0 0 .25rem; }
+      .exp-panel-desc   { font-size: .83rem; color: #6b7280; margin: 0 0 .4rem; }
+      .exp-panel-meta   { font-size: .72rem; color: #9ca3af; }
+      .exp-controls     { display: flex; flex-wrap: wrap; gap: .6rem; align-items: flex-end;
+                          margin-bottom: 1.25rem; padding-bottom: 1rem;
+                          border-bottom: 1px solid #f0f0f0; }
+      .exp-var-row      { display: flex; flex-wrap: wrap; gap: .6rem; flex: 1; min-width: 0; }
+      .exp-var-control  { display: flex; flex-direction: column; gap: 3px; }
+      .exp-var-label    { font-size: .68rem; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing:.04em; }
+      .exp-var-select   { font-size: .78rem; padding: .28rem .6rem; border: 1px solid #d1d5db;
+                          border-radius: 5px; background: #fff; color: #111827;
+                          max-width: 180px; }
+      .exp-chart-toggle { display: flex; gap: .4rem; align-items: flex-end; }
+      .exp-chart-btn    { padding: .3rem .75rem; font-size: .77rem; border: 1px solid #d1d5db;
+                          border-radius: 5px; background: #fff; cursor: pointer; color: #374151; }
+      .exp-chart-btn.active { background: #4f46e5; color: #fff; border-color: #4f46e5; }
+      .exp-loading      { display: flex; align-items: center; gap: .75rem; padding: 2rem;
+                          color: #6b7280; font-size: .9rem; }
+      .exp-spinner      { width: 22px; height: 22px; border: 2px solid #e2e8f0;
+                          border-top-color: #4f46e5; border-radius: 50%;
+                          animation: profile-spin 0.7s linear infinite; flex-shrink: 0; }
+      .exp-error        { background: #fef2f2; border: 1px solid #fecaca; border-radius: 6px;
+                          padding: .9rem 1rem; color: #dc2626; font-size: .82rem; margin-bottom: 1rem; }
+      .exp-nodata       { color: #9ca3af; font-size: .85rem; padding: 1rem 0; }
+      .exp-bar-wrap, .exp-ts-wrap { background: #fff; border: 1px solid #e5e7eb;
+                                     border-radius: 8px; padding: 1.25rem; margin-bottom: 1.5rem; }
+      .exp-chart-title  { font-size: .9rem; font-weight: 600; color: #1e3a5f; margin: 0 0 .5rem; }
+      .exp-dk-legend    { display: flex; align-items: center; gap: 6px; font-size: .75rem;
+                          color: #555; margin-bottom: .75rem; }
+      .exp-dk-swatch    { display: inline-block; width: 3px; height: 14px;
+                          background: #dc2626; border-radius: 2px; }
+      .exp-chart-container { margin-bottom: 1.5rem; }
+      .exp-data-table-wrap { background: #fff; border: 1px solid #e5e7eb; border-radius: 8px;
+                              padding: 1rem; }
+      .exp-table-heading { font-size: .85rem; font-weight: 600; color: #374151;
+                           margin: 0 0 .75rem; display: flex; align-items: center; gap: .75rem; }
+      .exp-table-count   { font-size: .72rem; color: #9ca3af; font-weight: 400; }
+      .exp-dl-csv        { margin-left: auto; padding: .2rem .6rem; font-size: .72rem;
+                           border: 1px solid #d1d5db; border-radius: 4px; background: #f9fafb;
+                           cursor: pointer; color: #374151; }
+      .exp-dl-csv:hover  { background: #f3f4f6; }
+      .exp-table-scroll  { overflow-x: auto; }
+      .exp-data-table    { width: 100%; border-collapse: collapse; font-size: .78rem; }
+      .exp-data-table th { background: #1e3a5f; color: #fff; padding: .5rem .75rem;
+                           text-align: left; font-weight: 600; white-space: nowrap; }
+      .exp-data-table td { padding: .4rem .75rem; border-bottom: 1px solid #f0f0f0; }
+      .exp-data-table tr:hover td { background: #f9fafb; }
+      .exp-val-cell      { font-weight: 600; color: #1e3a5f; text-align: right; }
+      .exp-empty-state   { display: flex; flex-direction: column; align-items: center;
+                           justify-content: center; height: 60%; color: #9ca3af;
+                           gap: 1rem; text-align: center; padding: 3rem; }
+      .exp-empty-state .exp-empty-icon { font-size: 3rem; }
+      .exp-empty-state h3 { font-size: 1rem; color: #374151; margin: 0; }
+      .exp-empty-state p  { font-size: .82rem; margin: 0; }
 
       #profile-loading {
         display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -128,6 +228,7 @@
           <button class="view-tab selected" data-view="charts" data-i18n="tab.charts">Charts</button>
           <button class="view-tab" data-view="tables" data-i18n="tab.tables">Tables</button>
           <button class="view-tab analysis-tab" data-view="analysis">⚡ Analysis</button>
+          <button class="view-tab" data-view="explore">🗄️ Explore DST</button>
         </div>
         <div id="drawer-actions">
           <button onclick="downloadExcel()" data-i18n="btn.excel">⬇ Excel</button>
@@ -143,6 +244,17 @@
       <div id="charts-container"></div>
       <div id="tables-container" style="display:none;"></div>
       <div id="analysis-container" style="display:none;"></div>
+      <div id="explorer-container" style="display:none;">
+        <div id="explorer-sidebar"></div>
+        <div id="explorer-panel">
+          <div class="exp-empty-state">
+            <div class="exp-empty-icon">🗄️</div>
+            <h3>Select a table from the sidebar</h3>
+            <p>Browse 100+ Statistics Denmark tables organised by sector.<br>
+               Data will load automatically for your selected kommuner.</p>
+          </div>
+        </div>
+      </div>
       <div id="cluster-summary"></div>
       <div id="cluster-profiles"></div>
       <p class="drawer-source">
@@ -1840,16 +1952,30 @@
             charts:   document.getElementById('charts-container'),
             tables:   document.getElementById('tables-container'),
             analysis: document.getElementById('analysis-container'),
+            explore:  document.getElementById('explorer-container'),
           };
+
+          // Hide the indicator filter panel when Explore is active
+          const indicatorFilter = document.getElementById('indicator-filter');
 
           tabButtons.forEach(tab => {
             tab.addEventListener('click', () => {
               tabButtons.forEach(btn => btn.classList.remove('selected'));
               tab.classList.add('selected');
-              Object.values(views).forEach(div => div.style.display = 'none');
+              Object.values(views).forEach(div => { if (div) div.style.display = 'none'; });
 
               const view = tab.getAttribute('data-view');
               currentView = view;
+
+              if (view === 'explore') {
+                views.explore.style.display = 'flex';
+                document.getElementById('modal-body').classList.remove('analysis-active');
+                if (indicatorFilter) indicatorFilter.style.display = 'none';
+                initExplorer(new Set(selectedIds), currentZoneType);
+                return;
+              }
+
+              if (indicatorFilter) indicatorFilter.style.display = '';
 
               if (view === 'analysis') {
                 views.analysis.style.display = 'flex';
