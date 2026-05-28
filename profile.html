@@ -1944,24 +1944,61 @@
           return;
         }
 
+        // ── Tab wiring lives OUTSIDE try so closures are stable for event listeners
+        const allTabContainers = {
+          demographics: document.getElementById('demographics-container'),
+          economics:    document.getElementById('economics-container'),
+          financial:    document.getElementById('financial-container'),
+          'ml-export':  document.getElementById('ml-export-container'),
+          explore:      document.getElementById('explorer-container'),
+        };
+        const _rendered = new Set();
+
+        const showTab = (view) => {
+          document.querySelectorAll('.view-tab').forEach(btn => {
+            btn.classList.toggle('selected', btn.getAttribute('data-view') === view);
+          });
+          Object.entries(allTabContainers).forEach(([k, div]) => {
+            if (div) div.style.display = (k === view) ? (view === 'explore' ? 'flex' : 'block') : 'none';
+          });
+          currentView = view;
+          if (view === 'explore') { initExplorer(new Set(selectedIds), currentZoneType); return; }
+          if (!_rendered.has(view)) {
+            if (view === 'demographics') {
+              renderDomainView('demographics-container', DEMO_DOMAINS);
+              renderRichCharts('demographics-container', 'demo', selectedIds);
+            } else if (view === 'economics') {
+              renderDomainView('economics-container', ECON_DOMAINS);
+              renderRichCharts('economics-container', 'econ', selectedIds);
+            } else if (view === 'financial') {
+              renderFinancial(selectedIds);
+            } else if (view === 'ml-export') {
+              renderMLExport(selectedIds);
+            }
+            _rendered.add(view);
+          }
+        };
+
+        document.querySelectorAll('.view-tab').forEach(tab => {
+          tab.addEventListener('click', () => showTab(tab.getAttribute('data-view')));
+        });
+
         try {
           const data    = await fetch('./data.json').then(r => r.json());
-          kommuneData   = data['Kommune']        || {};
-          regionData      = data['Region']            || {};
-          denmarkTotals = data['Denmark Total']   || {};
-          window.denmarkTotals    = denmarkTotals;
+          kommuneData   = data['Kommune']       || {};
+          regionData    = data['Region']        || {};
+          denmarkTotals = data['Denmark Total'] || {};
+          window.denmarkTotals     = denmarkTotals;
           window.denmarkPopulation = totalPopulationForData(kommuneData);
 
-          // Show content
           document.getElementById('profile-loading').style.display = 'none';
           document.getElementById('modal-toolbar').style.display   = '';
           document.getElementById('modal-body').style.display      = '';
-          // modal-header (old breakdown bar) stays hidden — overview tab handles this
 
           window.selectedIdsExcel = new Set(selectedIds);
           window.chosenCategories = selectedCategories;
 
-          // Compute aggregated data (no rendering side-effects that would conflict with new tabs)
+          // Aggregate indicators across selected zones
           (function computeAggregated() {
             const src = currentZoneType === 'region' ? regionData : kommuneData;
             const agg = {};
@@ -1995,49 +2032,7 @@
             selectedCategories = DEFAULT_PROFILE_CATEGORIES;
           })();
 
-          // Render collapsible summary bar (persists across all tabs)
           renderSummaryBar(selectedIds);
-
-          // ── Tab bar
-          const allTabContainers = {
-            demographics: document.getElementById('demographics-container'),
-            economics:    document.getElementById('economics-container'),
-            financial:    document.getElementById('financial-container'),
-            'ml-export':  document.getElementById('ml-export-container'),
-            explore:      document.getElementById('explorer-container'),
-          };
-
-          const _rendered = new Set();
-
-          function showTab(view) {
-            document.querySelectorAll('.view-tab').forEach(btn => {
-              btn.classList.toggle('selected', btn.getAttribute('data-view') === view);
-            });
-            Object.entries(allTabContainers).forEach(([k, div]) => {
-              if (div) div.style.display = (k === view) ? (view === 'explore' ? 'flex' : 'block') : 'none';
-            });
-            currentView = view;
-
-            if (view === 'explore') { initExplorer(new Set(selectedIds), currentZoneType); return; }
-            if (!_rendered.has(view)) {
-              if (view === 'demographics') {
-                renderDomainView('demographics-container', DEMO_DOMAINS);
-                renderRichCharts('demographics-container', 'demo', selectedIds);
-              } else if (view === 'economics') {
-                renderDomainView('economics-container', ECON_DOMAINS);
-                renderRichCharts('economics-container', 'econ', selectedIds);
-              }
-              else if (view === 'financial') renderFinancial(selectedIds);
-              else if (view === 'ml-export') renderMLExport(selectedIds);
-              _rendered.add(view);
-            }
-          }
-
-          document.querySelectorAll('.view-tab').forEach(tab => {
-            tab.addEventListener('click', () => showTab(tab.getAttribute('data-view')));
-          });
-
-          // Default landing tab — called after allTabContainers and showTab are both defined
           showTab('demographics');
 
         } catch (err) {
