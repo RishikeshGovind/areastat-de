@@ -2233,6 +2233,22 @@
 
       // ══ FINANCIAL TAB — live DST NGLK fetch ══════════════════════════════════
 
+      // NGLK key figure labels (English)
+      const NGLK_LABELS = {
+        DRI: 'Operating expenses / capita',
+        ÆLD: 'Elderly care / capita (65+)',
+        FOL: 'Public school / pupil',
+        DAG: 'Day care (0-10y) / child',
+        SUN: 'Health care / capita',
+        KUL: 'Cultural spending / capita',
+        TRA: 'Transport & infrastructure / capita',
+        ARB: 'Labour market measures (16-64y)',
+        UDL: 'Equalization & grants / capita',
+        LAN: 'Long-term debt / capita',
+        SER: 'Service costs / capita',
+        ANL: 'Capital expenditures / capita',
+      };
+
       async function renderFinancial(ids) {
         const container = document.getElementById('financial-container');
         if (!container) return;
@@ -2248,111 +2264,98 @@
         </div>`;
 
         try {
-          // NGLK: Key figures for municipal general economy. KOMKODE area var.
-          // Variables: FUNKTION (line item), KOMKODE (municipality), TID (year)
-          const latest = new Date().getFullYear() - 1;
-          const koderParam = ids.map(id => id.padStart(4,'0')).join(',');
+          // NGLK uses: OMRÅDE (3-digit DST codes), BNØGLE (key figure), Tid (year)
+          // dawaToDs() converts DAWA 4-digit codes → 3-digit DST codes (from dst-explorer.js)
+          const dstCodes  = ids.map(id => dawaToDs(id));
+          const info      = await dstTableInfo('NGLK');
+          const tidVar    = info.variables.find(v => v.id === 'Tid');
+          const latestYear = latestTidValue(tidVar) || String(new Date().getFullYear() - 1);
 
-          const metaRes = await fetch('https://api.statbank.dk/v1/tableinfo/NGLK?lang=en');
-          const meta    = await metaRes.json();
+          // Fetch NET expenditures, current prices, all key figures, latest year
+          const { rows } = await dstFetch('NGLK', [
+            { code: 'OMRÅDE',      values: dstCodes },
+            { code: 'BNØGLE',      values: ['*'] },
+            { code: 'BRUTNETUDG',  values: ['NET'] },
+            { code: 'PRISENHED',   values: ['AARPRIS'] },
+            { code: 'Tid',         values: [latestYear] },
+          ]);
 
-          // Find the FUNKTION variable values
-          const funktionVar = (meta.variables || []).find(v => v.id === 'FUNKTION');
-          const tidVar      = (meta.variables || []).find(v => v.id === 'TID');
+          if (!rows.length) throw new Error('No data returned for selected municipalities');
 
-          const allFunktioner = funktionVar ? funktionVar.values.map(v => v.id) : [];
-          const latestYear    = tidVar ? tidVar.values[tidVar.values.length - 1].id : String(latest);
-          const funktionLabels = {};
-          if (funktionVar) funktionVar.values.forEach(v => { funktionLabels[v.id] = v.text; });
+          // CSV columns: "region", "key figures", "gross/net expenditures", "price unit", "time", "INDHOLD"
+          // Find the column keys (header names vary slightly)
+          const sampleRow = rows[0];
+          const areaKey   = Object.keys(sampleRow).find(k => /region|område/i.test(k));
+          const bnKey     = Object.keys(sampleRow).find(k => /key figure|bnøgle/i.test(k));
+          const valKey    = Object.keys(sampleRow).find(k => /indhold|value/i.test(k)) || 'INDHOLD';
 
-          // Fetch the data
-          const body = {
-            table: 'NGLK', format: 'JSONSTAT',
-            valuePresentation: 'Value',
-            variables: [
-              { code: 'FUNKTION', values: allFunktioner.length ? allFunktioner : ['*'] },
-              { code: 'KOMKODE',  values: ids.map(id => id.padStart(4,'0')) },
-              { code: 'TID',      values: [latestYear] },
-            ]
-          };
-          const dataRes  = await fetch('https://api.statbank.dk/v1/data', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(body)
-          });
-          const rawData = await dataRes.json();
-
-          // Parse JSONSTAT
-          const ds     = rawData.dataset || rawData;
-          const dims   = ds.dimension;
-          const values = ds.value;
-
-          if (!dims || !values) throw new Error('Unexpected NGLK response format');
-
-          const funktionIds  = dims.FUNKTION.category.index;
-          const komIds       = dims.KOMKODE.category.index;
-          const tidIds       = dims.TID.category.index;
-          const funktionLbls = dims.FUNKTION.category.label;
-          const komLbls      = dims.KOMKODE.category.label;
-
-          const nF = Object.keys(funktionIds).length;
-          const nK = Object.keys(komIds).length;
-          const nT = Object.keys(tidIds).length;
-
-          // Build lookup: komkode → funktion → value
-          const table = {};
-          Object.entries(komIds).forEach(([kom, ki]) => {
-            table[kom] = {};
-            Object.entries(funktionIds).forEach(([funk, fi]) => {
-              const idx = fi * nK * nT + ki * nT + 0;
-              table[kom][funk] = values[idx];
-            });
+          // Pivot: zoneName → bnøgle → value
+          const pivot = {};   // dstCode → { bnøgle: value }
+          const zoneNames = {};
+          rows.forEach(row => {
+            const area = row[areaKey];
+            const bn   = row[bnKey];
+            const raw  = row[valKey];
+            if (!area || !bn) return;
+            if (!pivot[area]) pivot[area] = {};
+            // Values can be strings with dots/commas — normalise
+            const num = parseFloat(String(raw).replace(/\./g, '').replace(',', '.'));
+            pivot[area][bn] = isNaN(num) ? null : num;
+            zoneNames[area] = area; // DST CSV uses municipality name as label
           });
 
-          // Render
+          // Zone name from CSV area column (it's the municipality name, not the code)
+          // Rebuild using the actual row area values (which may be names, not codes)
+          const zoneList = Object.keys(pivot);
+          const bnList   = Object.keys(NGLK_LABELS);
+
           container.innerHTML = '';
 
-          const header = document.createElement('div');
-          header.style.cssText = 'padding:1.25rem 1.5rem .5rem;';
-          header.innerHTML = `<h2 style="font-size:1rem;font-weight:700;color:#1e3a5f;margin:0 0 .25rem;">Municipal Finances — Key Figures (${escapeHtml(latestYear)})</h2>
-            <p style="font-size:.78rem;color:#6b7280;margin:0;">Source: Statistics Denmark · NGLK · DKK 1,000 · <a href="https://api.statbank.dk" target="_blank" style="color:#4f46e5;">api.statbank.dk</a></p>`;
-          container.appendChild(header);
+          const hdr = document.createElement('div');
+          hdr.style.cssText = 'padding:1.25rem 1.5rem .5rem;';
+          hdr.innerHTML = `<h2 style="font-size:1rem;font-weight:700;color:#1e3a5f;margin:0 0 .2rem;">Municipal Finances — Key Figures ${escapeHtml(latestYear)}</h2>
+            <p style="font-size:.75rem;color:#6b7280;margin:0;">Source: Statistics Denmark · NGLK · Net expenditures · Current prices (DKK) · <a href="https://api.statbank.dk" target="_blank" style="color:#4f46e5;">api.statbank.dk</a></p>`;
+          container.appendChild(hdr);
 
           const scroll = document.createElement('div');
-          scroll.style.cssText = 'overflow-x:auto;padding:0 1.5rem 1.5rem;';
+          scroll.style.cssText = 'overflow:auto;padding:0 1.5rem 2rem;max-height:70vh;';
 
           const tbl = document.createElement('table');
-          tbl.style.cssText = 'width:100%;border-collapse:collapse;font-size:.78rem;white-space:nowrap;background:#fff;border:1px solid #e5e7eb;border-radius:8px;overflow:hidden;';
+          tbl.style.cssText = 'width:100%;border-collapse:collapse;font-size:.77rem;background:#fff;border:1px solid #e5e7eb;';
 
-          const funktionList = Object.keys(funktionIds);
-
-          // Header row
+          // Header: key figures as rows, zones as columns
           const thead = document.createElement('thead');
-          const hRow = document.createElement('tr');
-          hRow.innerHTML = `<th style="background:#1e3a5f;color:#fff;padding:.5rem .9rem;text-align:left;position:sticky;left:0;z-index:1;">Municipality</th>`;
-          funktionList.forEach(fk => {
+          const hRow  = document.createElement('tr');
+          const thFirst = document.createElement('th');
+          thFirst.style.cssText = 'background:#1e3a5f;color:#fff;padding:.5rem .9rem;text-align:left;position:sticky;top:0;left:0;z-index:2;white-space:nowrap;';
+          thFirst.textContent = 'Key Figure';
+          hRow.appendChild(thFirst);
+          zoneList.forEach(zone => {
             const th = document.createElement('th');
-            th.style.cssText = 'background:#1e3a5f;color:#fff;padding:.5rem .75rem;text-align:right;max-width:130px;';
-            th.title = funktionLbls[fk] || fk;
-            th.textContent = (funktionLbls[fk] || fk).substring(0, 22);
+            th.style.cssText = 'background:#1e3a5f;color:#fff;padding:.5rem .75rem;text-align:right;position:sticky;top:0;z-index:1;white-space:nowrap;';
+            th.textContent = zone;
             hRow.appendChild(th);
           });
           thead.appendChild(hRow);
           tbl.appendChild(thead);
 
           const tbody = document.createElement('tbody');
-          Object.entries(komIds).forEach(([kom, ki], ri) => {
+          bnList.forEach((bn, ri) => {
+            // Skip if no zone has data for this key figure
+            if (!zoneList.some(z => pivot[z]?.[bn] != null)) return;
             const tr = document.createElement('tr');
             tr.style.cssText = `border-bottom:1px solid #f0f0f0;${ri%2===1?'background:#f9fafb;':''}`;
-            const nameTd = document.createElement('td');
-            nameTd.style.cssText = 'padding:.45rem .9rem;font-weight:600;color:#1e3a5f;position:sticky;left:0;background:inherit;z-index:1;';
-            nameTd.textContent = komLbls[kom] || kom;
-            tr.appendChild(nameTd);
-            funktionList.forEach(fk => {
-              const td = document.createElement('td');
-              td.style.cssText = 'padding:.45rem .75rem;text-align:right;font-family:"JetBrains Mono",monospace;color:#374151;';
-              const v = table[kom]?.[fk];
-              td.textContent = (v != null && !isNaN(v)) ? Number(v).toLocaleString() : '–';
+
+            const labelTd = document.createElement('td');
+            labelTd.style.cssText = 'padding:.42rem .9rem;font-weight:500;color:#1e3a5f;position:sticky;left:0;background:inherit;white-space:nowrap;';
+            labelTd.textContent = NGLK_LABELS[bn] || bn;
+            tr.appendChild(labelTd);
+
+            zoneList.forEach(zone => {
+              const td  = document.createElement('td');
+              td.style.cssText = 'padding:.42rem .75rem;text-align:right;font-family:"JetBrains Mono",monospace;color:#374151;';
+              const val = pivot[zone]?.[bn];
+              td.textContent = val != null ? Math.round(val).toLocaleString() : '–';
               tr.appendChild(td);
             });
             tbody.appendChild(tr);
@@ -2362,9 +2365,8 @@
           container.appendChild(scroll);
 
         } catch (err) {
-          container.innerHTML = `<div style="padding:2rem;color:#dc2626;background:#fef2f2;border-radius:8px;margin:1.5rem;">
-            <strong>Could not load financial data.</strong><br>${escapeHtml(err.message)}<br>
-            <small style="color:#6b7280;display:block;margin-top:.5rem;">Tip: Financial data requires kommuner selected (not regions), and a network connection to api.statbank.dk.</small>
+          container.innerHTML = `<div style="padding:1.5rem;color:#dc2626;background:#fef2f2;border-radius:8px;margin:1.5rem;">
+            <strong>Could not load financial data.</strong><br>${escapeHtml(err.message)}
           </div>`;
         }
       }
