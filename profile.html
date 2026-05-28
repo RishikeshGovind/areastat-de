@@ -1997,8 +1997,6 @@
 
           // Render collapsible summary bar (persists across all tabs)
           renderSummaryBar(selectedIds);
-          // Default landing tab
-          showTab('demographics');
 
           // ── Tab bar
           const allTabContainers = {
@@ -2038,6 +2036,9 @@
           document.querySelectorAll('.view-tab').forEach(tab => {
             tab.addEventListener('click', () => showTab(tab.getAttribute('data-view')));
           });
+
+          // Default landing tab — called after allTabContainers and showTab are both defined
+          showTab('demographics');
 
         } catch (err) {
           document.getElementById('profile-loading').style.display = 'none';
