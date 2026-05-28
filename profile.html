@@ -2218,6 +2218,49 @@
           const c4 = makeChartCard(grid, 'Foreign Citizens (%) — by Zone', Math.max(180, capped.length * 22));
           c4.id = idPfx + 'foreign'; c4.style.maxHeight = Math.max(180, capped.length * 22) + 'px';
           renderHBarChart(c4, capped.map(z => z.name), valsFgn, '#0e7490', agg?.Migration?.['Foreign citizens (%)']);
+
+          // ── Live: sex breakdown + 5-year age groups from FOLK1A (async, appended after grid)
+          container.appendChild(section);
+          (async () => {
+            try {
+              const dstCodes = ids.map(id => dawaToDs(id));
+              // Sex breakdown: male vs female (IALT age, TOT→M+K)
+              const { rows: sexRows } = await dstFetch('FOLK1A', [
+                { code: 'OMRÅDE', values: dstCodes },
+                { code: 'KØN',    values: ['M', 'K'] },
+                { code: 'ALDER',  values: ['IALT'] },
+                { code: 'Tid',    values: [await dstTableInfo('FOLK1A').then(info => { const tv = info.variables.find(v => v.id === 'Tid' || v.id === 'KVART'); const all = (tv?.values || []).map(v => v.id); return all.filter(v => v.endsWith('Q1')).at(-1) || all.at(-1); })] },
+              ]);
+              if (sexRows.length) {
+                const aK = Object.keys(sexRows[0]).find(k => /region|område/i.test(k));
+                const sK = Object.keys(sexRows[0]).find(k => /sex|køn/i.test(k));
+                const vK = Object.keys(sexRows[0]).find(k => /indhold/i.test(k)) || Object.keys(sexRows[0]).at(-1);
+                let males = 0, females = 0;
+                sexRows.forEach(r => {
+                  const v = parseFloat(r[vK]); if (isNaN(v)) return;
+                  const sex = (r[sK] || '').toLowerCase();
+                  if (sex.includes('men') || sex === 'm') males += v;
+                  else if (sex.includes('women') || sex === 'k') females += v;
+                });
+                if (males + females > 0) {
+                  const sexSection = document.createElement('div');
+                  sexSection.style.cssText = 'padding:0 1.5rem 1rem;';
+                  const sexGrid = document.createElement('div');
+                  sexGrid.style.cssText = 'display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.25rem;';
+                  const cSex = makeChartCard(sexGrid, 'Sex Breakdown (selected zones, latest quarter)', 200);
+                  cSex.id = idPfx + 'sex';
+                  const total = males + females;
+                  renderDonutChart(cSex, [
+                    { label: `Male (${((males/total)*100).toFixed(1)}%)`,   value: (males/total)*100,   color: '#1d6fa5' },
+                    { label: `Female (${((females/total)*100).toFixed(1)}%)`, value: (females/total)*100, color: '#c026d3' },
+                  ]);
+                  sexSection.appendChild(sexGrid);
+                  container.appendChild(sexSection);
+                }
+              }
+            } catch (_) { /* sex breakdown optional */ }
+          })();
+          return; // section already appended above
         }
 
         if (tabKey === 'econ') {
@@ -2273,47 +2316,58 @@
 
           let tsSeries, tsYears;
 
-          if (tabKey === 'econ') {
-            // Unemployment via AUK01 is complex; use AULK (unemployment %) if available
-            // Fallback: use FOLK1A and compute nothing — just show population for now
-            // Use BEV107 births/deaths? Actually use AULK
-            // AULK: OMRÅDE, KØN=TOT, Tid=last 10 years → gives unemployment %
-            const info = await dstTableInfo('AULK');
-            const tidVar = info.variables.find(v => v.id === 'Tid' || v.id === 'TID');
-            const allYears = (tidVar?.values || []).map(v => v.id).slice(-10);
-            const { rows } = await dstFetch('AULK', [
-              { code: 'OMRÅDE', values: showPerZone ? dstCodes : ['000'] },
-              { code: 'KØN',    values: ['TOT'] },
-              { code: 'Tid',    values: allYears },
-            ]);
-            const areaKey = Object.keys(rows[0] || {}).find(k => /region|område/i.test(k));
-            const tidKey  = Object.keys(rows[0] || {}).find(k => /time|tid/i.test(k));
-            const valKey  = Object.keys(rows[0] || {}).find(k => /indhold|value/i.test(k));
-            tsYears = allYears;
-            // Pivot: zone → year → value
+          // Shared helper: pivot CSV rows into series for renderLineChart
+          function pivotRows(rows, periods, tidKey, areaKey, valKey) {
             const piv = {};
-            rows.forEach(r => { const a = r[areaKey]; const t = r[tidKey]; const v = parseFloat(r[valKey]); if (!piv[a]) piv[a] = {}; if (!isNaN(v)) piv[a][t] = v; });
-            tsSeries = Object.entries(piv).map(([name, byYear]) => ({ label: name, values: tsYears.map(y => byYear[y] ?? null) }));
+            rows.forEach(r => {
+              const a = r[areaKey]; const t = r[tidKey];
+              const v = parseFloat(String(r[valKey] || '').replace(/\./g,'').replace(',','.'));
+              if (a && t && !isNaN(v)) { if (!piv[a]) piv[a] = {}; piv[a][t] = v; }
+            });
+            return Object.entries(piv).map(([name, byPeriod]) => ({
+              label: name, values: periods.map(p => byPeriod[p] ?? null)
+            }));
+          }
+
+          if (tabKey === 'econ') {
+            // INDKP106: Disposable income per person by municipality (annual)
+            tsTtl.textContent = 'Disposable Income per Person — Trend (DST · live)';
+            const info    = await dstTableInfo('INDKP106');
+            const tidVar  = info.variables.find(v => v.id === 'Tid');
+            const years   = (tidVar?.values || []).map(v => v.id).slice(-12);
+            const { rows } = await dstFetch('INDKP106', [
+              { code: 'OMRÅDE',   values: showPerZone ? dstCodes : ['000'] },
+              { code: 'ENHED',    values: ['103'] },  // DKK per person
+              { code: 'KOEN',     values: ['MOK'] },  // total (both sexes)
+              { code: 'ALDER1',   values: ['00'] },   // all ages
+              { code: 'INDKINTB', values: ['000'] },  // total disposable income
+              { code: 'Tid',      values: years },
+            ]);
+            if (!rows.length) throw new Error('No income data for selected municipalities');
+            const areaKey = Object.keys(rows[0]).find(k => /region|område/i.test(k)) || Object.keys(rows[0])[0];
+            const tidKey  = Object.keys(rows[0]).find(k => /^tid$|^time$/i.test(k)) || Object.keys(rows[0])[4];
+            const valKey  = Object.keys(rows[0]).find(k => /indhold/i.test(k)) || Object.keys(rows[0]).at(-1);
+            tsYears  = years;
+            tsSeries = pivotRows(rows, years, tidKey, areaKey, valKey);
           } else {
-            const info = await dstTableInfo('FOLK1A');
-            const tidVar = info.variables.find(v => v.id === 'Tid' || v.id === 'TID' || v.id === 'KVART');
+            // FOLK1A: Population quarterly — use Q1 of each year for clean annual view
+            const info       = await dstTableInfo('FOLK1A');
+            const tidVar     = info.variables.find(v => v.id === 'Tid' || v.id === 'KVART');
             const allPeriods = (tidVar?.values || []).map(v => v.id);
-            // Use annual quarters ending in Q1 for clean yearly view, last 10 years
-            const annualQ1 = allPeriods.filter(v => v.endsWith('Q1')).slice(-10);
-            const periods  = annualQ1.length >= 4 ? annualQ1 : allPeriods.slice(-10);
-            const { rows } = await dstFetch('FOLK1A', [
+            const annualQ1   = allPeriods.filter(v => v.endsWith('Q1')).slice(-12);
+            const periods    = annualQ1.length >= 4 ? annualQ1 : allPeriods.slice(-12);
+            const { rows }   = await dstFetch('FOLK1A', [
               { code: 'OMRÅDE', values: showPerZone ? dstCodes : ['000'] },
               { code: 'KØN',    values: ['TOT'] },
               { code: 'ALDER',  values: ['IALT'] },
               { code: tidVar?.id || 'Tid', values: periods },
             ]);
-            const areaKey = Object.keys(rows[0] || {}).find(k => /region|område/i.test(k));
-            const tidKey  = Object.keys(rows[0] || {}).find(k => /time|tid|quarter|kvart/i.test(k));
-            const valKey  = Object.keys(rows[0] || {}).find(k => /indhold|value/i.test(k));
-            tsYears = periods.map(p => p.replace('Q1',''));
-            const piv = {};
-            rows.forEach(r => { const a = r[areaKey]; const t = r[tidKey]; const v = parseFloat(r[valKey]); if (!piv[a]) piv[a] = {}; if (!isNaN(v)) piv[a][t] = v; });
-            tsSeries = Object.entries(piv).map(([name, byYear]) => ({ label: name, values: periods.map(p => byYear[p] ?? null) }));
+            if (!rows.length) throw new Error('No population data for selected municipalities');
+            const areaKey = Object.keys(rows[0]).find(k => /region|område/i.test(k)) || Object.keys(rows[0])[0];
+            const tidKey  = Object.keys(rows[0]).find(k => /time|tid|quarter|kvart/i.test(k)) || Object.keys(rows[0])[1];
+            const valKey  = Object.keys(rows[0]).find(k => /indhold/i.test(k)) || Object.keys(rows[0]).at(-1);
+            tsYears  = periods.map(p => p.replace('Q1',''));
+            tsSeries = pivotRows(rows, periods, tidKey, areaKey, valKey).map(s => ({ ...s, label: s.label.replace(/\s*Q1.*/, '') }));
           }
 
           if (tsSeries.length) {
@@ -2495,12 +2549,12 @@
 
           if (!rows.length) throw new Error('No data returned for selected municipalities');
 
-          // CSV columns: "region", "key figures", "gross/net expenditures", "price unit", "time", "INDHOLD"
-          // Find the column keys (header names vary slightly)
-          const sampleRow = rows[0];
-          const areaKey   = Object.keys(sampleRow).find(k => /region|område/i.test(k));
-          const bnKey     = Object.keys(sampleRow).find(k => /key figure|bnøgle/i.test(k));
-          const valKey    = Object.keys(sampleRow).find(k => /indhold|value/i.test(k)) || 'INDHOLD';
+          // Column detection: use positional fallback if regex doesn't match
+          // DST English CSV for NGLK returns headers like: region, key figures, gross/net..., price unit, time, INDHOLD
+          const keys     = Object.keys(rows[0]);
+          const areaKey  = keys.find(k => /region|område/i.test(k))      ?? keys[0];
+          const bnKey    = keys.find(k => /key.?fig|bnøgle|nøgle/i.test(k)) ?? keys[1];
+          const valKey   = keys.find(k => /indhold/i.test(k))            ?? keys.at(-1);
 
           // Pivot: zoneName → bnøgle → value
           const pivot = {};   // dstCode → { bnøgle: value }

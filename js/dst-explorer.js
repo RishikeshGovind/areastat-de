@@ -418,16 +418,20 @@ function renderExplorerBarChart(aggregated, catEntry, kommunerDST) {
 
   const labels = entries.map(([k]) => window.gcdNameMap?.[k.padStart(4,'0')] || k);
   const values = entries.map(([, v]) => v);
-  const maxVal = Math.max(...values, dk ?? 0) * 1.15 || 1;
+  const zoneMax = Math.max(...values) || 1;
+  // Exclude Denmark reference from axis scale if it dwarfs zone values (e.g. national total vs municipal)
+  const dkScaleOk = dk !== null && Math.abs(dk) < zoneMax * 5 && Math.abs(dk) > zoneMax / 5;
+  const maxVal = Math.max(...values, dkScaleOk ? dk : 0) * 1.15 || 1;
 
   const wrap = document.createElement('div');
   wrap.className = 'exp-bar-wrap';
   wrap.innerHTML = `<h3 class="exp-chart-title">${escapeHtml(catEntry?.title || '')} — ${escapeHtml(unit)}</h3>`;
 
   if (dk !== null) {
-    wrap.innerHTML += `<div class="exp-dk-legend">
-      <span class="exp-dk-swatch"></span> Denmark avg: <strong>${formatExpValue(dk, unit)}</strong>
-    </div>`;
+    const dkLabel = dkScaleOk
+      ? `Denmark avg: <strong>${formatExpValue(dk, unit)}</strong>`
+      : `Denmark total: <strong>${formatExpValue(dk, unit)}</strong> <em style="color:#9ca3af;font-size:.72rem;">(not shown on chart — national scale)</em>`;
+    wrap.innerHTML += `<div class="exp-dk-legend"><span class="exp-dk-swatch"></span> ${dkLabel}</div>`;
   }
 
   const canvasWrap = document.createElement('div');
@@ -475,7 +479,7 @@ function renderExplorerBarChart(aggregated, catEntry, kommunerDST) {
     plugins: [{
       id: 'dkLine',
       afterDatasetsDraw(ch) {
-        if (dk === null) return;
+        if (dk === null || !dkScaleOk) return;
         const x = ch.scales.x.getPixelForValue(dk);
         const { top, bottom } = ch.chartArea;
         const ctx = ch.ctx;
@@ -535,19 +539,26 @@ function renderExplorerTimeSeries(series, periods, catEntry, kommunerDST) {
     spanGaps: true
   }));
 
-  // Denmark reference line
+  // Denmark reference line — only if its scale is comparable to zone values
   if (dkKey) {
-    datasets.push({
-      label: 'Denmark',
-      data: periods.map(p => series[dkKey][p] ?? null),
-      borderColor: '#94a3b8',
-      backgroundColor: 'transparent',
-      borderWidth: 1.5,
-      borderDash: [6, 4],
-      pointRadius: 0,
-      fill: false,
-      spanGaps: true
-    });
+    const dkVals = periods.map(p => series[dkKey][p]).filter(v => v != null);
+    const zVals  = kommuneEntries.flatMap(([, v]) => periods.map(p => v[p])).filter(v => v != null);
+    const dkMed  = dkVals.length ? dkVals.reduce((a,b) => a+b, 0) / dkVals.length : 0;
+    const zMed   = zVals.length  ? zVals.reduce((a,b) => a+b, 0)  / zVals.length  : 0;
+    const scaleOk = zMed > 0 && dkMed / zMed < 5 && dkMed / zMed > 0.2;
+    if (scaleOk) {
+      datasets.push({
+        label: 'Denmark',
+        data: periods.map(p => series[dkKey][p] ?? null),
+        borderColor: '#94a3b8',
+        backgroundColor: 'transparent',
+        borderWidth: 1.5,
+        borderDash: [6, 4],
+        pointRadius: 0,
+        fill: false,
+        spanGaps: true
+      });
+    }
   }
 
   const chart = new Chart(canvas, {
