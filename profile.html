@@ -2022,8 +2022,13 @@
 
             if (view === 'explore') { initExplorer(new Set(selectedIds), currentZoneType); return; }
             if (!_rendered.has(view)) {
-              if (view === 'demographics') renderDomainView('demographics-container', DEMO_DOMAINS);
-              else if (view === 'economics') renderDomainView('economics-container', ECON_DOMAINS);
+              if (view === 'demographics') {
+                renderDomainView('demographics-container', DEMO_DOMAINS);
+                renderRichCharts('demographics-container', 'demo', selectedIds);
+              } else if (view === 'economics') {
+                renderDomainView('economics-container', ECON_DOMAINS);
+                renderRichCharts('economics-container', 'econ', selectedIds);
+              }
               else if (view === 'financial') renderFinancial(selectedIds);
               else if (view === 'ml-export') renderMLExport(selectedIds);
               _rendered.add(view);
@@ -2041,6 +2046,291 @@
           errDiv.innerHTML = `<strong>Error loading data:</strong> ${escapeHtml(err.message)}<br><br><a href="./index.html">← Return to map</a>`;
         }
       });
+
+      // ══ RICH CHARTS (Chart.js) ═══════════════════════════════════════════════════
+
+      const _chartInstMap = {}; // id → Chart instance, for cleanup
+
+      function destroyChart(id) {
+        if (_chartInstMap[id]) { _chartInstMap[id].destroy(); delete _chartInstMap[id]; }
+      }
+
+      function makeChartCard(parent, title, height = 240) {
+        const wrap = document.createElement('div');
+        wrap.style.cssText = 'background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:1.1rem 1.1rem .85rem;display:flex;flex-direction:column;';
+        const ttl = document.createElement('div');
+        ttl.style.cssText = 'font-size:.82rem;font-weight:700;color:#1e3a5f;margin-bottom:.75rem;';
+        ttl.textContent = title;
+        const canvas = document.createElement('canvas');
+        canvas.style.cssText = `max-height:${height}px;`;
+        wrap.appendChild(ttl);
+        wrap.appendChild(canvas);
+        parent.appendChild(wrap);
+        return canvas;
+      }
+
+      function renderDonutChart(canvas, segments) {
+        destroyChart(canvas.id);
+        _chartInstMap[canvas.id] = new Chart(canvas, {
+          type: 'doughnut',
+          data: {
+            labels: segments.map(s => s.label),
+            datasets: [{ data: segments.map(s => Math.max(0, s.value)), backgroundColor: segments.map(s => s.color), borderWidth: 2, borderColor: '#fff', hoverOffset: 6 }]
+          },
+          options: {
+            responsive: true, maintainAspectRatio: true, cutout: '62%',
+            plugins: {
+              legend: { position: 'bottom', labels: { font: { size: 11 }, boxWidth: 12, padding: 10 } },
+              tooltip: { callbacks: { label: ctx => `${ctx.label}: ${ctx.parsed.toFixed(1)}%` } }
+            }
+          }
+        });
+      }
+
+      function renderHBarChart(canvas, labels, values, color, dkAvg) {
+        destroyChart(canvas.id);
+        const maxVal = Math.max(...values, dkAvg ?? 0) * 1.15 || 1;
+        _chartInstMap[canvas.id] = new Chart(canvas, {
+          type: 'bar',
+          data: {
+            labels,
+            datasets: [{ data: values, backgroundColor: color + 'cc', borderColor: color, borderWidth: 1, borderRadius: 3 }]
+          },
+          options: {
+            indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              tooltip: { callbacks: { label: ctx => ' ' + (typeof ctx.parsed.x === 'number' ? ctx.parsed.x.toLocaleString() : ctx.parsed.x) } },
+              annotation: dkAvg != null ? {
+                annotations: { dkLine: { type: 'line', xMin: dkAvg, xMax: dkAvg, borderColor: '#dc2626', borderWidth: 1.5, borderDash: [4,3], label: { display: true, content: 'DK avg', position: 'start', font: { size: 10 }, color: '#dc2626', backgroundColor: 'transparent' } } }
+              } : {}
+            },
+            scales: {
+              x: { max: maxVal, grid: { color: '#f0f0f0' }, ticks: { font: { size: 10 } } },
+              y: { ticks: { font: { size: 10 }, maxRotation: 0 }, grid: { display: false } }
+            }
+          }
+        });
+      }
+
+      function renderScatterChart(canvas, points, xLabel, yLabel) {
+        destroyChart(canvas.id);
+        _chartInstMap[canvas.id] = new Chart(canvas, {
+          type: 'scatter',
+          data: { datasets: [{ data: points.map(p => ({ x: p.x, y: p.y })), backgroundColor: points.map(p => p.color), pointRadius: 6, pointHoverRadius: 8 }] },
+          options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              tooltip: { callbacks: { label: ctx => { const p = points[ctx.dataIndex]; return `${p.label}: ${xLabel.includes('DKK') ? p.x.toLocaleString() + ' DKK' : p.x.toFixed(1) + '%'} / ${p.y.toFixed(1)}%`; } } }
+            },
+            scales: {
+              x: { title: { display: true, text: xLabel, font: { size: 10 } }, grid: { color: '#f0f0f0' }, ticks: { font: { size: 10 } } },
+              y: { title: { display: true, text: yLabel, font: { size: 10 } }, grid: { color: '#f0f0f0' }, ticks: { font: { size: 10 } } }
+            }
+          }
+        });
+      }
+
+      function renderLineChart(canvas, datasets, years) {
+        destroyChart(canvas.id);
+        _chartInstMap[canvas.id] = new Chart(canvas, {
+          type: 'line',
+          data: {
+            labels: years,
+            datasets: datasets.map((ds, i) => ({
+              label: ds.label,
+              data: ds.values,
+              borderColor: ZONE_PALETTE[i % ZONE_PALETTE.length],
+              backgroundColor: 'transparent',
+              borderWidth: 2, pointRadius: 3, tension: 0.3
+            }))
+          },
+          options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { position: 'bottom', labels: { font: { size: 10 }, boxWidth: 10, padding: 8 } } },
+            scales: {
+              x: { grid: { color: '#f0f0f0' }, ticks: { font: { size: 10 } } },
+              y: { grid: { color: '#f0f0f0' }, ticks: { font: { size: 10 } } }
+            }
+          }
+        });
+      }
+
+      async function renderRichCharts(containerId, tabKey, ids) {
+        const container = document.getElementById(containerId);
+        if (!container || !ids.length) return;
+
+        const src = currentZoneType === 'region' ? regionData : kommuneData;
+        const agg = latestAggregatedData;
+
+        // Build per-zone arrays (cap at 30 zones to keep charts readable)
+        const zones = ids.map(id => ({ id, name: zoneName(id), d: src[id] || {} }))
+          .filter(z => Object.keys(z.d).length);
+        const capped = zones.length > 30 ? zones.slice(0, 30) : zones;
+
+        const sv = (z, domain, key) => {
+          const raw = z.d[domain]?.[key];
+          return typeof raw === 'number' ? raw : (Array.isArray(raw) ? raw[0] : null);
+        };
+
+        // ── Section wrapper
+        const section = document.createElement('div');
+        section.style.cssText = 'border-top:2px solid #e5e7eb;margin-top:.5rem;padding:1.25rem 1.5rem 2rem;';
+        const secTitle = document.createElement('div');
+        secTitle.style.cssText = 'font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#9ca3af;margin-bottom:1rem;';
+        secTitle.textContent = 'Visual Analysis';
+        section.appendChild(secTitle);
+        const grid = document.createElement('div');
+        grid.style.cssText = 'display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:1.25rem;';
+        section.appendChild(grid);
+        container.appendChild(section);
+
+        const idPfx = tabKey + '_';
+
+        if (tabKey === 'demo') {
+          // ── Donut: Age structure
+          const c1 = makeChartCard(grid, 'Age Composition (average of selected)', 200);
+          c1.id = idPfx + 'age';
+          const u15 = agg?.AgeStructure?.['Under 15 years (%)'] ?? 0;
+          const o65 = agg?.AgeStructure?.['Over 65 years (%)'] ?? 0;
+          renderDonutChart(c1, [
+            { label: 'Under 15',  value: u15,                    color: '#4f46e5' },
+            { label: '15–64',     value: 100 - u15 - o65,       color: '#2ca25f' },
+            { label: 'Over 65',   value: o65,                    color: '#e07520' },
+          ]);
+
+          // ── Donut: Housing type
+          const c2 = makeChartCard(grid, 'Housing Composition', 200);
+          c2.id = idPfx + 'housing';
+          const own = agg?.Housing?.['Owner-occupied (%)'] ?? 0;
+          const soc = agg?.Housing?.['Social housing (%)'] ?? 0;
+          renderDonutChart(c2, [
+            { label: 'Owner-occupied', value: own,           color: '#1d6fa5' },
+            { label: 'Social housing', value: soc,           color: '#6b2d8b' },
+            { label: 'Other',          value: 100 - own - soc, color: '#d1d5db' },
+          ]);
+
+          // ── Bar: % over 65 per zone
+          const vals65 = capped.map(z => sv(z, 'AgeStructure', 'Over 65 years (%)') ?? 0);
+          const c3 = makeChartCard(grid, '% Over 65 — by Zone', Math.max(180, capped.length * 22));
+          c3.id = idPfx + 'over65'; c3.style.maxHeight = Math.max(180, capped.length * 22) + 'px';
+          renderHBarChart(c3, capped.map(z => z.name), vals65, '#e07520', agg?.AgeStructure?.['Over 65 years (%)']);
+
+          // ── Bar: % foreign citizens per zone
+          const valsFgn = capped.map(z => sv(z, 'Migration', 'Foreign citizens (%)') ?? 0);
+          const c4 = makeChartCard(grid, 'Foreign Citizens (%) — by Zone', Math.max(180, capped.length * 22));
+          c4.id = idPfx + 'foreign'; c4.style.maxHeight = Math.max(180, capped.length * 22) + 'px';
+          renderHBarChart(c4, capped.map(z => z.name), valsFgn, '#0e7490', agg?.Migration?.['Foreign citizens (%)']);
+        }
+
+        if (tabKey === 'econ') {
+          // ── Scatter: income vs employment rate
+          const c1 = makeChartCard(grid, 'Income vs Employment Rate (each dot = one zone)', 260);
+          c1.id = idPfx + 'scatter'; c1.style.maxHeight = '260px';
+          renderScatterChart(c1,
+            zones.map((z, i) => ({
+              label: z.name,
+              x: sv(z, 'Economy', 'Avg income (DKK)') ?? 0,
+              y: sv(z, 'LabourMarket', 'Employment rate (%)') ?? 0,
+              color: ZONE_PALETTE[i % ZONE_PALETTE.length] + 'cc',
+            })),
+            'Avg Income (DKK)', 'Employment Rate (%)'
+          );
+
+          // ── Bar: income per zone
+          const incVals = capped.map(z => sv(z, 'Economy', 'Avg income (DKK)') ?? 0);
+          const sorted = capped.map((z,i) => ({ name: z.name, val: incVals[i] })).sort((a,b) => b.val - a.val);
+          const c2 = makeChartCard(grid, 'Avg Income (DKK) — by Zone', Math.max(180, capped.length * 22));
+          c2.id = idPfx + 'income'; c2.style.maxHeight = Math.max(180, capped.length * 22) + 'px';
+          renderHBarChart(c2, sorted.map(s => s.name), sorted.map(s => s.val), '#2ca25f', agg?.Economy?.['Avg income (DKK)']);
+
+          // ── Bar: unemployment per zone
+          const unempVals = capped.map(z => sv(z, 'LabourMarket', 'Unemployment rate (%)') ?? 0);
+          const c3 = makeChartCard(grid, 'Unemployment Rate (%) — by Zone', Math.max(180, capped.length * 22));
+          c3.id = idPfx + 'unemp'; c3.style.maxHeight = Math.max(180, capped.length * 22) + 'px';
+          renderHBarChart(c3, capped.map(z => z.name), unempVals, '#dc2626', agg?.LabourMarket?.['Unemployment rate (%)']);
+        }
+
+        // ── Time series: population trend (both tabs)
+        const tsWrap = document.createElement('div');
+        tsWrap.style.cssText = 'grid-column:1/-1;background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:1.1rem;';
+        const tsTtl = document.createElement('div');
+        tsTtl.style.cssText = 'font-size:.82rem;font-weight:700;color:#1e3a5f;margin-bottom:.6rem;';
+        tsTtl.textContent = tabKey === 'econ' ? 'Unemployment Rate Trend (DST · live)' : 'Population Trend (DST · live)';
+        const tsLoading = document.createElement('div');
+        tsLoading.style.cssText = 'font-size:.78rem;color:#9ca3af;padding:.5rem 0;';
+        tsLoading.textContent = 'Loading time series…';
+        const tsCanvas = document.createElement('canvas');
+        tsCanvas.id = idPfx + 'trend';
+        tsCanvas.style.cssText = 'max-height:220px;display:none;';
+        tsWrap.appendChild(tsTtl);
+        tsWrap.appendChild(tsLoading);
+        tsWrap.appendChild(tsCanvas);
+        grid.appendChild(tsWrap);
+
+        try {
+          // Limit to 8 zones for readable line chart; if more, show aggregate only
+          const dstCodes = ids.map(id => dawaToDs(id));
+          const showPerZone = zones.length <= 8;
+          const fetchCodes = showPerZone ? dstCodes : ['000']; // '000' = All Denmark as fallback
+
+          let tsSeries, tsYears;
+
+          if (tabKey === 'econ') {
+            // Unemployment via AUK01 is complex; use AULK (unemployment %) if available
+            // Fallback: use FOLK1A and compute nothing — just show population for now
+            // Use BEV107 births/deaths? Actually use AULK
+            // AULK: OMRÅDE, KØN=TOT, Tid=last 10 years → gives unemployment %
+            const info = await dstTableInfo('AULK');
+            const tidVar = info.variables.find(v => v.id === 'Tid' || v.id === 'TID');
+            const allYears = (tidVar?.values || []).map(v => v.id).slice(-10);
+            const { rows } = await dstFetch('AULK', [
+              { code: 'OMRÅDE', values: showPerZone ? dstCodes : ['000'] },
+              { code: 'KØN',    values: ['TOT'] },
+              { code: 'Tid',    values: allYears },
+            ]);
+            const areaKey = Object.keys(rows[0] || {}).find(k => /region|område/i.test(k));
+            const tidKey  = Object.keys(rows[0] || {}).find(k => /time|tid/i.test(k));
+            const valKey  = Object.keys(rows[0] || {}).find(k => /indhold|value/i.test(k));
+            tsYears = allYears;
+            // Pivot: zone → year → value
+            const piv = {};
+            rows.forEach(r => { const a = r[areaKey]; const t = r[tidKey]; const v = parseFloat(r[valKey]); if (!piv[a]) piv[a] = {}; if (!isNaN(v)) piv[a][t] = v; });
+            tsSeries = Object.entries(piv).map(([name, byYear]) => ({ label: name, values: tsYears.map(y => byYear[y] ?? null) }));
+          } else {
+            const info = await dstTableInfo('FOLK1A');
+            const tidVar = info.variables.find(v => v.id === 'Tid' || v.id === 'TID' || v.id === 'KVART');
+            const allPeriods = (tidVar?.values || []).map(v => v.id);
+            // Use annual quarters ending in Q1 for clean yearly view, last 10 years
+            const annualQ1 = allPeriods.filter(v => v.endsWith('Q1')).slice(-10);
+            const periods  = annualQ1.length >= 4 ? annualQ1 : allPeriods.slice(-10);
+            const { rows } = await dstFetch('FOLK1A', [
+              { code: 'OMRÅDE', values: showPerZone ? dstCodes : ['000'] },
+              { code: 'KØN',    values: ['TOT'] },
+              { code: 'ALDER',  values: ['IALT'] },
+              { code: tidVar?.id || 'Tid', values: periods },
+            ]);
+            const areaKey = Object.keys(rows[0] || {}).find(k => /region|område/i.test(k));
+            const tidKey  = Object.keys(rows[0] || {}).find(k => /time|tid|quarter|kvart/i.test(k));
+            const valKey  = Object.keys(rows[0] || {}).find(k => /indhold|value/i.test(k));
+            tsYears = periods.map(p => p.replace('Q1',''));
+            const piv = {};
+            rows.forEach(r => { const a = r[areaKey]; const t = r[tidKey]; const v = parseFloat(r[valKey]); if (!piv[a]) piv[a] = {}; if (!isNaN(v)) piv[a][t] = v; });
+            tsSeries = Object.entries(piv).map(([name, byYear]) => ({ label: name, values: periods.map(p => byYear[p] ?? null) }));
+          }
+
+          if (tsSeries.length) {
+            tsLoading.style.display = 'none';
+            tsCanvas.style.display = '';
+            renderLineChart(tsCanvas, tsSeries, tsYears);
+          } else {
+            tsLoading.textContent = 'No time series data returned.';
+          }
+        } catch (e) {
+          tsLoading.textContent = 'Time series unavailable: ' + e.message;
+        }
+      }
 
       // ══ SUMMARY BAR — collapsible, sits above all domain tabs ══════════════════
 
