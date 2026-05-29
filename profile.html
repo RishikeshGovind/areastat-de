@@ -2110,7 +2110,8 @@
           kommuneData   = data['Kommune']       || {};
           regionData    = data['Region']        || {};
           denmarkTotals = data['Denmark Total'] || {};
-          window.timeseriesData = data['timeseries'] || {};
+          window.timeseriesData  = data['timeseries']     || {};
+          window.sfcTimeseries   = data['sfc_timeseries'] || {};
           window.denmarkTotals     = denmarkTotals;
           window.denmarkPopulation = totalPopulationForData(kommuneData);
 
@@ -2792,8 +2793,161 @@
         scroll.appendChild(tbl);
         container.appendChild(scroll);
 
-        // ── SFC Accounts Panel ───────────────────────────────────────────────
+        // ── SFC Accounts Panel (per-zone cards) ─────────────────────────────
         renderSFCPanel(container, zoneRows);
+        // ── SFC Flow Diagram (aggregated Sankey-style) ──────────────────────
+        renderSFCFlowDiagram(container, zoneRows);
+        // ── SFC Debt Dynamics (time-series line chart) ───────────────────────
+        renderSFCDebtChart(container, ids);
+      }
+
+      function renderSFCDebtChart(container, ids) {
+        const sfcTs   = window.sfcTimeseries || {};
+        const lanTs   = sfcTs.lan || {};
+        const years   = lanTs.years || [];
+        if (!years.length) return;
+
+        const src = currentZoneType === 'region' ? regionData : kommuneData;
+        const datasets = ids.map((id, i) => {
+          const vals = years.map((_, yi) => {
+            const v = lanTs[id]?.[yi];
+            return typeof v === 'number' ? v : (Array.isArray(v) ? v[0] : null);
+          });
+          return { label: zoneName(id), values: vals };
+        });
+        // Add DK avg
+        datasets.push({
+          label: 'Denmark avg',
+          values: years.map((_, yi) => {
+            const v = lanTs['000']?.[yi];
+            return typeof v === 'number' ? v : (Array.isArray(v) ? v[0] : null);
+          }),
+        });
+
+        const wrap = document.createElement('div');
+        wrap.style.cssText = 'margin:1.5rem 1.5rem 0;';
+        const hdr = document.createElement('div');
+        hdr.style.cssText = 'font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#9ca3af;margin-bottom:.6rem;';
+        hdr.textContent = 'SFC Debt Dynamics — Long-term Debt / Capita (DKK)';
+        wrap.appendChild(hdr);
+        const sub = document.createElement('div');
+        sub.style.cssText = 'font-size:.7rem;color:#9ca3af;margin-bottom:.75rem;';
+        sub.textContent = 'ΔL(t) ≈ −(T − G − I) · Debt stock accumulates when expenditure exceeds revenue';
+        wrap.appendChild(sub);
+
+        const canvas = document.createElement('canvas');
+        canvas.id = 'sfc_debt_ts';
+        canvas.style.maxHeight = '220px';
+        wrap.appendChild(canvas);
+        container.appendChild(wrap);
+
+        renderLineChart(canvas,
+          datasets.map((ds, i) => ({
+            label: ds.label,
+            values: ds.values,
+          })),
+          years.map ? years.map(String) : Object.values(years).map(String)
+        );
+      }
+
+      function renderSFCFlowDiagram(container, zoneRows) {
+        if (!zoneRows.length) return;
+        const src = currentZoneType === 'region' ? regionData : kommuneData;
+
+        const fin = (z, key) => {
+          const v = z.fin?.[key];
+          return typeof v === 'number' ? v : (Array.isArray(v) ? v[0] : null);
+        };
+        const pop = id => src[id]?.Population || 0;
+
+        // Aggregate across all selected zones
+        let totals = { tax:0, grants:0, ops:0, health:0, edu:0, elderly:0, daycare:0, capital:0 };
+        zoneRows.forEach(z => {
+          const p = pop(z.id);
+          if (!p) return;
+          const taxRate   = src[z.id]?.FiscalPolicy?.['Municipal income tax rate (%)'];
+          const avgIncome = src[z.id]?.Economy?.['Avg income (DKK)'];
+          const empRate   = src[z.id]?.LabourMarket?.['Employment rate (%)'];
+          const employed  = (empRate != null) ? p * empRate / 100 : 0;
+          totals.tax     += (taxRate != null && avgIncome != null) ? taxRate/100 * avgIncome * employed : 0;
+          totals.grants  += (fin(z,'Equalization grants/capita (DKK)') ?? 0) * p;
+          totals.ops     += (fin(z,'Operating expenses/capita (DKK)')  ?? 0) * p;
+          totals.health  += (fin(z,'Health care/capita (DKK)')          ?? 0) * p;
+          totals.edu     += (fin(z,'Education spending/pupil (DKK)')    ?? 0) * p;
+          totals.elderly += (fin(z,'Elderly care/capita (DKK)')         ?? 0) * p;
+          totals.daycare += (fin(z,'Day care/child (DKK)')              ?? 0) * p;
+          totals.capital += (fin(z,'Capital expenditures/capita (DKK)') ?? 0) * p;
+        });
+
+        const totalRev = totals.tax + totals.grants;
+        const totalExp = totals.ops + totals.capital;
+        if (!totalRev && !totalExp) return;
+        const scale = Math.max(totalRev, totalExp) || 1;
+        const pct   = v => Math.max(2, Math.round(v / scale * 100));
+        const fmtB  = v => v >= 1e9 ? (v/1e9).toFixed(1)+'B' : v >= 1e6 ? (v/1e6).toFixed(0)+'M' : Math.round(v/1e3)+'K';
+
+        const wrap = document.createElement('div');
+        wrap.style.cssText = 'margin:1.5rem 1.5rem 1.5rem;';
+        const hdr = document.createElement('div');
+        hdr.style.cssText = 'font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#9ca3af;margin-bottom:.75rem;';
+        hdr.textContent = 'SFC Flow Diagram — Government Sector (aggregated, DKK)';
+        wrap.appendChild(hdr);
+
+        const rows = [
+          { label: 'REVENUE', items: [
+            { label: '~Tax revenue',    val: totals.tax,    color: '#0891b2' },
+            { label: 'Grants (UDL)',    val: totals.grants, color: '#2563eb' },
+          ]},
+          { label: 'EXPENDITURE', items: [
+            { label: 'Operations',      val: totals.ops,     color: '#374151' },
+            { label: 'Health',          val: totals.health,  color: '#dc2626' },
+            { label: 'Education',       val: totals.edu,     color: '#7c3aed' },
+            { label: 'Elderly care',    val: totals.elderly, color: '#d97706' },
+            { label: 'Day care',        val: totals.daycare, color: '#f59e0b' },
+            { label: 'Capital (I)',     val: totals.capital, color: '#6b7280' },
+          ]},
+        ];
+
+        rows.forEach(row => {
+          const rowDiv = document.createElement('div');
+          rowDiv.style.cssText = 'margin-bottom:1rem;';
+          const rowLabel = document.createElement('div');
+          rowLabel.style.cssText = 'font-size:.68rem;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.35rem;';
+          const rowTotal = row.items.reduce((s,i)=>s+i.val,0);
+          rowLabel.textContent = `${row.label}  •  ${fmtB(rowTotal)} DKK`;
+          rowDiv.appendChild(rowLabel);
+
+          const barRow = document.createElement('div');
+          barRow.style.cssText = 'display:flex;height:28px;border-radius:6px;overflow:hidden;gap:1px;';
+          row.items.filter(i=>i.val>0).forEach(item => {
+            const seg = document.createElement('div');
+            seg.style.cssText = `flex:${pct(item.val)};background:${item.color};position:relative;cursor:default;min-width:4px;transition:opacity .2s;`;
+            seg.title = `${item.label}: ${fmtB(item.val)} DKK`;
+            seg.onmouseenter = () => seg.style.opacity = '.75';
+            seg.onmouseleave = () => seg.style.opacity = '1';
+            barRow.appendChild(seg);
+          });
+          rowDiv.appendChild(barRow);
+
+          const legend = document.createElement('div');
+          legend.style.cssText = 'display:flex;flex-wrap:wrap;gap:.3rem .75rem;margin-top:.35rem;';
+          row.items.filter(i=>i.val>0).forEach(item => {
+            const chip = document.createElement('span');
+            chip.style.cssText = 'display:flex;align-items:center;gap:.25rem;font-size:.68rem;color:#6b7280;';
+            chip.innerHTML = `<span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:${item.color};flex-shrink:0;"></span>${escapeHtml(item.label)} <strong style="color:#374151;">${escapeHtml(fmtB(item.val))}</strong>`;
+            legend.appendChild(chip);
+          });
+          rowDiv.appendChild(legend);
+          wrap.appendChild(rowDiv);
+        });
+
+        // Fiscal balance bar
+        const balance = totals.tax + totals.grants - totals.ops - totals.capital;
+        const balDiv  = document.createElement('div');
+        balDiv.style.cssText = `margin-top:.25rem;padding:.5rem .75rem;border-radius:6px;background:${balance>=0?'#dcfce7':'#fee2e2'};display:flex;justify-content:space-between;align-items:center;`;
+        balDiv.innerHTML = `<span style="font-size:.75rem;font-weight:600;color:${balance>=0?'#16a34a':'#dc2626'};">Fiscal balance (T − G − I)</span><span style="font-size:.82rem;font-weight:700;font-family:monospace;color:${balance>=0?'#16a34a':'#dc2626'};">${balance>=0?'+':''}${escapeHtml(fmtB(balance))} DKK</span>`;
+        wrap.appendChild(balDiv);
+        container.appendChild(wrap);
       }
 
       function renderSFCPanel(container, zoneRows) {

@@ -1780,6 +1780,73 @@ income_ts <- tryCatch({
 
 
 # ============================================================
+# Phase 2c. NGLK time-series — SFC debt & fiscal dynamics
+# ============================================================
+message("Fetching NGLK time series (SFC debt dynamics)...")
+
+SFC_TS_YEARS <- as.character(2012:2024)
+SFC_CODES    <- c("LAN","DRI","UDL","ANL","SER")  # debt, operating, grants, capital, service
+
+sfc_timeseries <- tryCatch({
+  raw <- dst_post("NGLK", list(
+    list(code="OMRÅDE",     values=list("*")),
+    list(code="BNØGLE",     values=as.list(SFC_CODES)),
+    list(code="BRUTNETUDG", values=list("NET")),
+    list(code="PRISENHED",  values=list("AARPRIS")),
+    list(code="Tid",        values=as.list(SFC_TS_YEARS))
+  ))
+  if (is.null(raw)) stop("null")
+  names(raw) <- janitor::make_clean_names(names(raw))
+  area_c <- grep("omr|area",           names(raw), value=TRUE, ignore.case=TRUE)[1]
+  bn_c   <- grep("bnøgle|n.gle|noegle|key", names(raw), value=TRUE, ignore.case=TRUE)[1]
+  tid_c  <- grep("tid|time",           names(raw), value=TRUE, ignore.case=TRUE)[1]
+  val_c  <- grep("indhold|value|antal", names(raw), value=TRUE, ignore.case=TRUE)[1]
+
+  df <- raw |>
+    rename(area=!!area_c, bnoegle=!!bn_c, tid=!!tid_c, value=!!val_c) |>
+    mutate(value        = suppressWarnings(as.numeric(gsub("[. ]","",gsub(",",".",value)))),
+           kommune_kode = coalesce(area_code, pad4(area)))
+
+  # Map Danish labels → codes
+  nglk_meta <- get_table_meta("NGLK")
+  if (!is.null(nglk_meta$`BNØGLE`)) {
+    lkp <- nglk_meta$`BNØGLE` |> mutate(lc=tolower(trimws(text)))
+    df$bn_code <- lkp$id[match(tolower(trimws(df$bnoegle)), lkp$lc)]
+  } else {
+    df$bn_code <- df$bnoegle
+  }
+  # Map Danish year labels → numeric year
+  tid_meta <- get_table_meta("NGLK")
+  if (!is.null(tid_meta$Tid)) {
+    tlkp <- tid_meta$Tid |> mutate(lc=tolower(trimws(text)))
+    df$year_id <- tlkp$id[match(tolower(trimws(df$tid)), tlkp$lc)]
+  } else {
+    df$year_id <- df$tid
+  }
+
+  df <- df |>
+    filter(kommune_kode %in% kommune_lookup$kommune_kode,
+           bn_code %in% SFC_CODES,
+           year_id %in% SFC_TS_YEARS,
+           !is.na(value))
+
+  # Build one ts_make-style list per BNØGLE code
+  result <- lapply(setNames(SFC_CODES, tolower(SFC_CODES)), function(code) {
+    sub <- df |> filter(bn_code == code)
+    wide <- sub |>
+      group_by(kommune_kode, year_id) |>
+      summarise(value=mean(value, na.rm=TRUE), .groups="drop") |>
+      tidyr::pivot_wider(names_from=year_id, values_from=value)
+    for (y in SFC_TS_YEARS) if (!y %in% names(wide)) wide[[y]] <- NA_real_
+    dk_row <- wide |> summarise(across(all_of(SFC_TS_YEARS), ~mean(.x,na.rm=TRUE)))
+    ts_make(wide, dk_row, SFC_TS_YEARS, SFC_TS_YEARS)
+  })
+  message(sprintf("  SFC time series: %d codes × %d years", length(SFC_CODES), length(SFC_TS_YEARS)))
+  result
+}, error=function(e){ message("  SFC TS failed: ", conditionMessage(e)); NULL })
+
+
+# ============================================================
 # 14. Assemble final_json
 # ============================================================
 final_json <- list(
@@ -1787,12 +1854,13 @@ final_json <- list(
   "Region"        = lapply(region_entries,  convert_to_named_list),
   "Kommune"       = lapply(kommune_entries, convert_to_named_list),
   "timeseries"    = list(
-    income           = income_ts,
-    population       = pop_ts,
-    foreign_pct      = foreign_ts,
+    income            = income_ts,
+    population        = pop_ts,
+    foreign_pct       = foreign_ts,
     unemployment_rate = unemp_ts,
     crime_rate        = crime_ts
-  )
+  ),
+  "sfc_timeseries" = if (!is.null(sfc_timeseries)) sfc_timeseries else list()
 )
 
 message(sprintf("Done. Denmark Total + %d Regions + %d Kommuner ready.",
