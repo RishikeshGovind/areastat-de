@@ -1772,18 +1772,24 @@
         const src = currentZoneType === 'region' ? regionData : kommuneData;
         const sec = makeSection('Socioeconomic Profile', 'Key indicators per zone · sourced from DST data.json');
 
+        // Safe number formatter — handles strings, arrays, nulls
+        const n = (v, dec = 1) => {
+          const num = parseFloat(Array.isArray(v) ? v[0] : v);
+          return isNaN(num) ? '–' : num.toFixed(dec);
+        };
+
         const COLS = [
-          { label: 'Population',     fn: z => z.Population ? Math.round(z.Population).toLocaleString() : '–' },
-          { label: 'Unemp %',        fn: z => z.LabourMarket?.['Unemployment rate (%)']?.toFixed(1) ?? '–' },
-          { label: 'Emp %',          fn: z => z.LabourMarket?.['Employment rate (%)']?.toFixed(1) ?? '–' },
-          { label: 'Avg Income',     fn: z => z.Economy?.['Avg income (DKK)'] ? 'DKK ' + Math.round(z.Economy['Avg income (DKK)']).toLocaleString() : '–' },
-          { label: 'Tertiary %',     fn: z => z.Education?.['Tertiary education (%)']?.toFixed(1) ?? '–' },
-          { label: 'Foreign %',      fn: z => z.Migration?.['Foreign citizens (%)']?.toFixed(1) ?? '–' },
-          { label: 'Welfare dep %',  fn: z => z.Welfare?.['Welfare dependency (%)']?.toFixed(1) ?? '–' },
-          { label: 'Crime / 1k',     fn: z => z.Safety?.['Crimes per 1,000']?.toFixed(1) ?? '–' },
-          { label: 'GP util %',      fn: z => z.Health?.['GP utilization (%)']?.toFixed(1) ?? '–' },
-          { label: 'Cars / 1k',      fn: z => z.Vehicles?.['Cars per 1,000']?.toFixed(0) ?? '–' },
-          { label: 'Urban type',     fn: z => z.Urban_rural_status ?? '–' },
+          { label: 'Population',    fn: z => { const v = parseFloat(z.Population); return isNaN(v) ? '–' : Math.round(v).toLocaleString(); } },
+          { label: 'Unemp %',       fn: z => n(z.LabourMarket?.['Unemployment rate (%)']) },
+          { label: 'Emp %',         fn: z => n(z.LabourMarket?.['Employment rate (%)']) },
+          { label: 'Avg Income',    fn: z => { const v = parseFloat(z.Economy?.['Avg income (DKK)']); return isNaN(v) ? '–' : 'DKK ' + Math.round(v).toLocaleString(); } },
+          { label: 'Tertiary %',    fn: z => n(z.Education?.['Tertiary education (%)']) },
+          { label: 'Foreign %',     fn: z => n(z.Migration?.['Foreign citizens (%)']) },
+          { label: 'Welfare dep %', fn: z => n(z.Welfare?.['Welfare dependency (%)']) },
+          { label: 'Crime / 1k',    fn: z => n(z.Safety?.['Crimes per 1,000']) },
+          { label: 'GP util %',     fn: z => n(z.Health?.['GP utilization (%)']) },
+          { label: 'Cars / 1k',     fn: z => n(z.Vehicles?.['Cars per 1,000'], 0) },
+          { label: 'Urban type',    fn: z => String(z.Urban_rural_status ?? '–') },
         ];
 
         const tbl = document.createElement('table');
