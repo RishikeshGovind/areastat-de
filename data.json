@@ -64,6 +64,32 @@
     },
     "Vehicles": {
       "Cars per 1,000": 487.2
+    },
+    "IndustrySectors": {
+      "Agriculture, forestry & fishing (%)": {},
+      "Manufacturing & utilities (%)": {},
+      "Construction (%)": {},
+      "Trade & transport (%)": {},
+      "ICT (%)": {},
+      "Finance & insurance (%)": {},
+      "Public admin, edu & health (%)": {}
+    },
+    "GreenEnergy": {
+      "Onshore wind capacity (MW)": 4908.17,
+      "Solar capacity (MW)": 5228.92,
+      "Offshore wind capacity (MW)": 2647.9,
+      "Total renewable capacity (MW)": 12784.99,
+      "Renewable capacity (MW per 1,000)": 2.1
+    },
+    "ClimateBaseline": {
+      "Mean annual temperature (°C)": 9.9,
+      "Summer days per year (>25°C)": 10.8,
+      "Annual precipitation (mm)": 863,
+      "Heating degree days": 2685.2
+    },
+    "GreenTransition": {
+      "Fossil-linked sector share (%)": {},
+      "Renewable intensity (MW/1,000)": 2.1
     }
   },
   "Region": {
@@ -137,6 +163,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 387.66
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 65.69,
+        "Solar capacity (MW)": 298.31,
+        "Offshore wind capacity (MW)": 50.8,
+        "Total renewable capacity (MW)": 414.8,
+        "Renewable capacity (MW per 1,000)": 0.21
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 10.22,
+        "Summer days per year (>25°C)": 14.98,
+        "Annual precipitation (mm)": 748.46,
+        "Heating degree days": 2599.06
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 0.21
       }
     },
     "1085": {
@@ -209,6 +261,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 542.86
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 679.45,
+        "Solar capacity (MW)": 1151.42,
+        "Offshore wind capacity (MW)": 993.8,
+        "Total renewable capacity (MW)": 2824.67,
+        "Renewable capacity (MW per 1,000)": 3.29
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 10.03,
+        "Summer days per year (>25°C)": 10.69,
+        "Annual precipitation (mm)": 738.44,
+        "Heating degree days": 2648.46
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 3.29
       }
     },
     "1083": {
@@ -281,6 +359,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 542.24
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 981.44,
+        "Solar capacity (MW)": 1743.02,
+        "Offshore wind capacity (MW)": 776,
+        "Total renewable capacity (MW)": 3500.46,
+        "Renewable capacity (MW per 1,000)": 2.81
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 10.08,
+        "Summer days per year (>25°C)": 10.93,
+        "Annual precipitation (mm)": 1048.08,
+        "Heating degree days": 2612.34
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 2.81
       }
     },
     "1082": {
@@ -353,6 +457,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 521.25
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 1929.22,
+        "Solar capacity (MW)": 1594.26,
+        "Offshore wind capacity (MW)": 819.7,
+        "Total renewable capacity (MW)": 4343.18,
+        "Renewable capacity (MW per 1,000)": 3.14
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 9.42,
+        "Summer days per year (>25°C)": 7.05,
+        "Annual precipitation (mm)": 952.9,
+        "Heating degree days": 2828.36
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 3.14
       }
     },
     "1081": {
@@ -425,6 +555,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 539.23
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 1252.37,
+        "Solar capacity (MW)": 441.91,
+        "Offshore wind capacity (MW)": 7.6,
+        "Total renewable capacity (MW)": 1701.88,
+        "Renewable capacity (MW per 1,000)": 2.87
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 9.39,
+        "Summer days per year (>25°C)": 5.93,
+        "Annual precipitation (mm)": 822.28,
+        "Heating degree days": 2839.93
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 2.87
       }
     }
   },
@@ -499,6 +655,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 238
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 10.65,
+        "Solar capacity (MW)": 34.44,
+        "Offshore wind capacity (MW)": 40,
+        "Total renewable capacity (MW)": 85.09,
+        "Renewable capacity (MW per 1,000)": 0.13
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 10.5,
+        "Summer days per year (>25°C)": 16.33,
+        "Annual precipitation (mm)": 728,
+        "Heating degree days": 2519.2
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 0.13
       }
     },
     "0147": {
@@ -571,6 +753,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 276.4
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 0,
+        "Solar capacity (MW)": 3.25,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 3.25,
+        "Renewable capacity (MW per 1,000)": 0.03
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 10.6,
+        "Summer days per year (>25°C)": 16.81,
+        "Annual precipitation (mm)": 769.8,
+        "Heating degree days": 2491.4
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 0.03
       }
     },
     "0151": {
@@ -643,6 +851,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 460.4
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 0,
+        "Solar capacity (MW)": 12.13,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 12.13,
+        "Renewable capacity (MW per 1,000)": 0.22
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 10,
+        "Summer days per year (>25°C)": 15.61,
+        "Annual precipitation (mm)": 738.4,
+        "Heating degree days": 2650.6
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 0.22
       }
     },
     "0153": {
@@ -715,6 +949,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 525.3
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 0,
+        "Solar capacity (MW)": 7.07,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 7.07,
+        "Renewable capacity (MW per 1,000)": 0.17
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 10.3,
+        "Summer days per year (>25°C)": 15.99,
+        "Annual precipitation (mm)": 721.7,
+        "Heating degree days": 2569
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 0.17
       }
     },
     "0155": {
@@ -787,6 +1047,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 483.1
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 0,
+        "Solar capacity (MW)": 2.29,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 2.29,
+        "Renewable capacity (MW per 1,000)": 0.16
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 10.4,
+        "Summer days per year (>25°C)": 13.91,
+        "Annual precipitation (mm)": 650.9,
+        "Heating degree days": 2561.7
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 0.16
       }
     },
     "0157": {
@@ -859,6 +1145,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 440.7
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 0,
+        "Solar capacity (MW)": 6.46,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 6.46,
+        "Renewable capacity (MW per 1,000)": 0.09
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 10.1,
+        "Summer days per year (>25°C)": 16.15,
+        "Annual precipitation (mm)": 759.6,
+        "Heating degree days": 2626.2
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 0.09
       }
     },
     "0159": {
@@ -931,6 +1243,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 424.6
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 0,
+        "Solar capacity (MW)": 8.66,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 8.66,
+        "Renewable capacity (MW per 1,000)": 0.12
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 10.1,
+        "Summer days per year (>25°C)": 16.15,
+        "Annual precipitation (mm)": 737.4,
+        "Heating degree days": 2626.9
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 0.12
       }
     },
     "0161": {
@@ -1003,6 +1341,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 442.4
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 0.9,
+        "Solar capacity (MW)": 4.87,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 5.77,
+        "Renewable capacity (MW per 1,000)": 0.22
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 10.2,
+        "Summer days per year (>25°C)": 15.58,
+        "Annual precipitation (mm)": 770.1,
+        "Heating degree days": 2599
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 0.22
       }
     },
     "0163": {
@@ -1075,6 +1439,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 441.9
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 0,
+        "Solar capacity (MW)": 6.86,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 6.86,
+        "Renewable capacity (MW per 1,000)": 0.21
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 10.1,
+        "Summer days per year (>25°C)": 16.12,
+        "Annual precipitation (mm)": 729.3,
+        "Heating degree days": 2624.1
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 0.21
       }
     },
     "0165": {
@@ -1147,6 +1537,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 537
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 0,
+        "Solar capacity (MW)": 6.01,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 6.01,
+        "Renewable capacity (MW per 1,000)": 0.2
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 10.1,
+        "Summer days per year (>25°C)": 14.94,
+        "Annual precipitation (mm)": 764.1,
+        "Heating degree days": 2640.6
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 0.2
       }
     },
     "0167": {
@@ -1219,6 +1635,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 400.2
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 1.98,
+        "Solar capacity (MW)": 10.11,
+        "Offshore wind capacity (MW)": 10.8,
+        "Total renewable capacity (MW)": 22.89,
+        "Renewable capacity (MW per 1,000)": 0.42
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 10.4,
+        "Summer days per year (>25°C)": 15.96,
+        "Annual precipitation (mm)": 686,
+        "Heating degree days": 2536.6
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 0.42
       }
     },
     "0169": {
@@ -1291,6 +1733,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 462
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 0.85,
+        "Solar capacity (MW)": 15.01,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 15.86,
+        "Renewable capacity (MW per 1,000)": 0.26
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 9.8,
+        "Summer days per year (>25°C)": 10.3,
+        "Annual precipitation (mm)": 772.6,
+        "Heating degree days": 2728.3
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 0.26
       }
     },
     "0173": {
@@ -1363,6 +1831,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 430.2
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 0,
+        "Solar capacity (MW)": 5.86,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 5.86,
+        "Renewable capacity (MW per 1,000)": 0.1
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 10,
+        "Summer days per year (>25°C)": 16,
+        "Annual precipitation (mm)": 758.8,
+        "Heating degree days": 2654.9
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 0.1
       }
     },
     "0175": {
@@ -1435,6 +1929,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 385.5
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 0,
+        "Solar capacity (MW)": 4.88,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 4.88,
+        "Renewable capacity (MW per 1,000)": 0.11
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 10.3,
+        "Summer days per year (>25°C)": 16.22,
+        "Annual precipitation (mm)": 752.9,
+        "Heating degree days": 2562.2
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 0.11
       }
     },
     "0183": {
@@ -1507,6 +2027,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 407.5
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 0,
+        "Solar capacity (MW)": 4.76,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 4.76,
+        "Renewable capacity (MW per 1,000)": 0.19
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 10,
+        "Summer days per year (>25°C)": 13.07,
+        "Annual precipitation (mm)": 735.3,
+        "Heating degree days": 2660.2
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 0.19
       }
     },
     "0185": {
@@ -1579,6 +2125,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 450.9
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 0,
+        "Solar capacity (MW)": 13.52,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 13.52,
+        "Renewable capacity (MW per 1,000)": 0.31
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 10.4,
+        "Summer days per year (>25°C)": 14.36,
+        "Annual precipitation (mm)": 674.6,
+        "Heating degree days": 2558
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 0.31
       }
     },
     "0187": {
@@ -1651,6 +2223,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 447.3
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 0,
+        "Solar capacity (MW)": 2.17,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 2.17,
+        "Renewable capacity (MW per 1,000)": 0.12
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 10.2,
+        "Summer days per year (>25°C)": 15.82,
+        "Annual precipitation (mm)": 722.1,
+        "Heating degree days": 2595.6
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 0.12
       }
     },
     "0190": {
@@ -1723,6 +2321,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 479.5
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 0,
+        "Solar capacity (MW)": 7.66,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 7.66,
+        "Renewable capacity (MW per 1,000)": 0.18
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 9.9,
+        "Summer days per year (>25°C)": 15.64,
+        "Annual precipitation (mm)": 766.5,
+        "Heating degree days": 2699.8
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 0.18
       }
     },
     "0201": {
@@ -1795,6 +2419,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 522.5
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 2.72,
+        "Solar capacity (MW)": 8.18,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 10.9,
+        "Renewable capacity (MW per 1,000)": 0.41
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 9.8,
+        "Summer days per year (>25°C)": 14.14,
+        "Annual precipitation (mm)": 842,
+        "Heating degree days": 2732.1
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 0.41
       }
     },
     "0210": {
@@ -1867,6 +2517,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 510.5
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 0.03,
+        "Solar capacity (MW)": 7.78,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 7.81,
+        "Renewable capacity (MW per 1,000)": 0.18
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 9.8,
+        "Summer days per year (>25°C)": 13.51,
+        "Annual precipitation (mm)": 817.9,
+        "Heating degree days": 2723.9
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 0.18
       }
     },
     "0217": {
@@ -1939,6 +2615,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 496.4
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 0,
+        "Solar capacity (MW)": 11.31,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 11.31,
+        "Renewable capacity (MW per 1,000)": 0.18
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 9.8,
+        "Summer days per year (>25°C)": 11.45,
+        "Annual precipitation (mm)": 798.1,
+        "Heating degree days": 2704.3
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 0.18
       }
     },
     "0219": {
@@ -2011,6 +2713,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 502.9
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 4.02,
+        "Solar capacity (MW)": 13.96,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 17.98,
+        "Renewable capacity (MW per 1,000)": 0.32
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 9.8,
+        "Summer days per year (>25°C)": 13.78,
+        "Annual precipitation (mm)": 820.3,
+        "Heating degree days": 2729.6
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 0.32
       }
     },
     "0223": {
@@ -2083,6 +2811,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 607
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 0,
+        "Solar capacity (MW)": 3.9,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 3.9,
+        "Renewable capacity (MW per 1,000)": 0.15
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 9.8,
+        "Summer days per year (>25°C)": 13.74,
+        "Annual precipitation (mm)": 804.8,
+        "Heating degree days": 2714.2
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 0.15
       }
     },
     "0230": {
@@ -2155,6 +2909,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 523.3
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 0,
+        "Solar capacity (MW)": 9.89,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 9.89,
+        "Renewable capacity (MW per 1,000)": 0.17
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 9.9,
+        "Summer days per year (>25°C)": 15.41,
+        "Annual precipitation (mm)": 790.9,
+        "Heating degree days": 2692.5
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 0.17
       }
     },
     "0240": {
@@ -2227,6 +3007,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 527.4
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 0.13,
+        "Solar capacity (MW)": 12.09,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 12.22,
+        "Renewable capacity (MW per 1,000)": 0.26
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 9.9,
+        "Summer days per year (>25°C)": 14.34,
+        "Annual precipitation (mm)": 740.1,
+        "Heating degree days": 2709.2
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 0.26
       }
     },
     "0250": {
@@ -2299,6 +3105,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 572
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 2.98,
+        "Solar capacity (MW)": 20.13,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 23.11,
+        "Renewable capacity (MW per 1,000)": 0.48
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 9.9,
+        "Summer days per year (>25°C)": 12.53,
+        "Annual precipitation (mm)": 754.2,
+        "Heating degree days": 2685.6
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 0.48
       }
     },
     "0253": {
@@ -2371,6 +3203,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 509.2
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 0.36,
+        "Solar capacity (MW)": 16.38,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 16.74,
+        "Renewable capacity (MW per 1,000)": 0.31
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 9.8,
+        "Summer days per year (>25°C)": 10.26,
+        "Annual precipitation (mm)": 722.7,
+        "Heating degree days": 2714.7
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 0.31
       }
     },
     "0259": {
@@ -2443,6 +3301,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 511.5
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 3.95,
+        "Solar capacity (MW)": 25.46,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 29.41,
+        "Renewable capacity (MW per 1,000)": 0.46
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 9.9,
+        "Summer days per year (>25°C)": 10.33,
+        "Annual precipitation (mm)": 736.3,
+        "Heating degree days": 2697.6
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 0.46
       }
     },
     "0260": {
@@ -2515,6 +3399,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 571.1
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 4.15,
+        "Solar capacity (MW)": 9.09,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 13.24,
+        "Renewable capacity (MW per 1,000)": 0.42
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 9.9,
+        "Summer days per year (>25°C)": 10.34,
+        "Annual precipitation (mm)": 784,
+        "Heating degree days": 2669.7
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 0.42
       }
     },
     "0265": {
@@ -2587,6 +3497,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 493.3
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 7.46,
+        "Solar capacity (MW)": 27.08,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 34.54,
+        "Renewable capacity (MW per 1,000)": 0.37
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 9.7,
+        "Summer days per year (>25°C)": 8.59,
+        "Annual precipitation (mm)": 740.9,
+        "Heating degree days": 2754.6
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 0.37
       }
     },
     "0269": {
@@ -2659,6 +3595,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 503.6
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 0.3,
+        "Solar capacity (MW)": 5.84,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 6.14,
+        "Renewable capacity (MW per 1,000)": 0.24
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 9.7,
+        "Summer days per year (>25°C)": 8.53,
+        "Annual precipitation (mm)": 704.2,
+        "Heating degree days": 2740.5
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 0.24
       }
     },
     "0270": {
@@ -2731,6 +3693,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 608.1
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 0.6,
+        "Solar capacity (MW)": 14.36,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 14.96,
+        "Renewable capacity (MW per 1,000)": 0.36
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 9.8,
+        "Summer days per year (>25°C)": 11.17,
+        "Annual precipitation (mm)": 781.4,
+        "Heating degree days": 2711.7
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 0.36
       }
     },
     "0306": {
@@ -2803,6 +3791,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 600.3
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 4.67,
+        "Solar capacity (MW)": 12.61,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 17.28,
+        "Renewable capacity (MW per 1,000)": 0.54
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 10.2,
+        "Summer days per year (>25°C)": 11.8,
+        "Annual precipitation (mm)": 752.4,
+        "Heating degree days": 2599.9
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 0.54
       }
     },
     "0316": {
@@ -2875,6 +3889,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 555.1
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 59.05,
+        "Solar capacity (MW)": 51.83,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 110.88,
+        "Renewable capacity (MW per 1,000)": 1.48
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 10,
+        "Summer days per year (>25°C)": 15.37,
+        "Annual precipitation (mm)": 746.9,
+        "Heating degree days": 2656.4
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 1.48
       }
     },
     "0320": {
@@ -2947,6 +3987,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 586.5
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 35.11,
+        "Solar capacity (MW)": 142.06,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 177.17,
+        "Renewable capacity (MW per 1,000)": 4.64
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 10,
+        "Summer days per year (>25°C)": 9.21,
+        "Annual precipitation (mm)": 749.6,
+        "Heating degree days": 2676.1
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 4.64
       }
     },
     "0326": {
@@ -3019,6 +4085,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 582.1
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 80.28,
+        "Solar capacity (MW)": 61.56,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 141.84,
+        "Renewable capacity (MW per 1,000)": 2.96
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 10.2,
+        "Summer days per year (>25°C)": 11.29,
+        "Annual precipitation (mm)": 739.1,
+        "Heating degree days": 2580.5
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 2.96
       }
     },
     "0329": {
@@ -3091,6 +4183,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 535.3
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 8.99,
+        "Solar capacity (MW)": 12.5,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 21.49,
+        "Renewable capacity (MW per 1,000)": 0.6
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 9.9,
+        "Summer days per year (>25°C)": 10.41,
+        "Annual precipitation (mm)": 742,
+        "Heating degree days": 2696.4
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 0.6
       }
     },
     "0330": {
@@ -3163,6 +4281,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 522.1
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 42.42,
+        "Solar capacity (MW)": 73.67,
+        "Offshore wind capacity (MW)": 21,
+        "Total renewable capacity (MW)": 137.09,
+        "Renewable capacity (MW per 1,000)": 1.7
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 10.2,
+        "Summer days per year (>25°C)": 14.56,
+        "Annual precipitation (mm)": 724.9,
+        "Heating degree days": 2584.9
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 1.7
       }
     },
     "0336": {
@@ -3235,6 +4379,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 583.5
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 9.8,
+        "Solar capacity (MW)": 8.63,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 18.43,
+        "Renewable capacity (MW per 1,000)": 0.77
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 10.1,
+        "Summer days per year (>25°C)": 9.71,
+        "Annual precipitation (mm)": 706.7,
+        "Heating degree days": 2651.3
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 0.77
       }
     },
     "0340": {
@@ -3307,6 +4477,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 566
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 6.8,
+        "Solar capacity (MW)": 99.16,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 105.96,
+        "Renewable capacity (MW per 1,000)": 3.43
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 10,
+        "Summer days per year (>25°C)": 14.82,
+        "Annual precipitation (mm)": 751,
+        "Heating degree days": 2661.4
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 3.43
       }
     },
     "0350": {
@@ -3379,6 +4575,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 562.4
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 5.42,
+        "Solar capacity (MW)": 11.18,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 16.6,
+        "Renewable capacity (MW per 1,000)": 0.55
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 9.8,
+        "Summer days per year (>25°C)": 10.08,
+        "Annual precipitation (mm)": 747.5,
+        "Heating degree days": 2721.9
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 0.55
       }
     },
     "0360": {
@@ -3451,6 +4673,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 542.6
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 270.52,
+        "Solar capacity (MW)": 301.95,
+        "Offshore wind capacity (MW)": 368,
+        "Total renewable capacity (MW)": 940.47,
+        "Renewable capacity (MW per 1,000)": 24.48
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 10.5,
+        "Summer days per year (>25°C)": 14.37,
+        "Annual precipitation (mm)": 765.1,
+        "Heating degree days": 2488.9
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 24.48
       }
     },
     "0370": {
@@ -3523,6 +4771,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 541.5
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 68.55,
+        "Solar capacity (MW)": 143.81,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 212.36,
+        "Renewable capacity (MW per 1,000)": 2.49
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 10,
+        "Summer days per year (>25°C)": 11.22,
+        "Annual precipitation (mm)": 751.6,
+        "Heating degree days": 2662.2
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 2.49
       }
     },
     "0376": {
@@ -3595,6 +4869,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 574.2
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 58.05,
+        "Solar capacity (MW)": 57.77,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 115.82,
+        "Renewable capacity (MW per 1,000)": 1.96
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 10.4,
+        "Summer days per year (>25°C)": 5.1,
+        "Annual precipitation (mm)": 744,
+        "Heating degree days": 2531
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 1.96
       }
     },
     "0390": {
@@ -3667,6 +4967,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 567.1
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 17.72,
+        "Solar capacity (MW)": 99.93,
+        "Offshore wind capacity (MW)": 604.8,
+        "Total renewable capacity (MW)": 722.45,
+        "Renewable capacity (MW per 1,000)": 16.12
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 10.3,
+        "Summer days per year (>25°C)": 3.77,
+        "Annual precipitation (mm)": 708.9,
+        "Heating degree days": 2578.4
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 16.12
       }
     },
     "0400": {
@@ -3739,6 +5065,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 533.5
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 36.68,
+        "Solar capacity (MW)": 31.61,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 68.29,
+        "Renewable capacity (MW per 1,000)": 1.77
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 10.2,
+        "Summer days per year (>25°C)": 4.63,
+        "Annual precipitation (mm)": 739.2,
+        "Heating degree days": 2618.7
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 1.77
       }
     },
     "0410": {
@@ -3811,6 +5163,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 586
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 13.6,
+        "Solar capacity (MW)": 31.82,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 45.42,
+        "Renewable capacity (MW per 1,000)": 1.12
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 10.3,
+        "Summer days per year (>25°C)": 10.26,
+        "Annual precipitation (mm)": 994.8,
+        "Heating degree days": 2556
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 1.12
       }
     },
     "0411": {
@@ -3883,6 +5261,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 252.7
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": {},
+        "Solar capacity (MW)": {},
+        "Offshore wind capacity (MW)": {},
+        "Total renewable capacity (MW)": {},
+        "Renewable capacity (MW per 1,000)": {}
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": {},
+        "Summer days per year (>25°C)": {},
+        "Annual precipitation (mm)": {},
+        "Heating degree days": {}
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": {}
       }
     },
     "0420": {
@@ -3955,6 +5359,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 599.7
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 30.86,
+        "Solar capacity (MW)": 63.74,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 94.6,
+        "Renewable capacity (MW per 1,000)": 2.35
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 10.3,
+        "Summer days per year (>25°C)": 11.56,
+        "Annual precipitation (mm)": 944.8,
+        "Heating degree days": 2540.6
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 2.35
       }
     },
     "0430": {
@@ -4027,6 +5457,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 585.8
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 15.68,
+        "Solar capacity (MW)": 17.69,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 33.37,
+        "Renewable capacity (MW per 1,000)": 0.64
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 10.3,
+        "Summer days per year (>25°C)": 12.28,
+        "Annual precipitation (mm)": 903,
+        "Heating degree days": 2563.9
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 0.64
       }
     },
     "0440": {
@@ -4099,6 +5555,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 572.2
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 24.95,
+        "Solar capacity (MW)": 5.98,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 30.93,
+        "Renewable capacity (MW per 1,000)": 1.27
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 10.2,
+        "Summer days per year (>25°C)": 11.24,
+        "Annual precipitation (mm)": 831.3,
+        "Heating degree days": 2587.2
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 1.27
       }
     },
     "0450": {
@@ -4171,6 +5653,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 541.5
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 28.98,
+        "Solar capacity (MW)": 7.42,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 36.4,
+        "Renewable capacity (MW per 1,000)": 1.12
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 10.3,
+        "Summer days per year (>25°C)": 12.07,
+        "Annual precipitation (mm)": 824.2,
+        "Heating degree days": 2554.6
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 1.12
       }
     },
     "0461": {
@@ -4243,6 +5751,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 433.9
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 11.13,
+        "Solar capacity (MW)": 122.03,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 133.16,
+        "Renewable capacity (MW per 1,000)": 0.62
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 10,
+        "Summer days per year (>25°C)": 14.7,
+        "Annual precipitation (mm)": 931.7,
+        "Heating degree days": 2632.4
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 0.62
       }
     },
     "0479": {
@@ -4315,6 +5849,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 517.9
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 34.53,
+        "Solar capacity (MW)": 52.68,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 87.21,
+        "Renewable capacity (MW per 1,000)": 1.45
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 10.5,
+        "Summer days per year (>25°C)": 13.72,
+        "Annual precipitation (mm)": 896.8,
+        "Heating degree days": 2500.4
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 1.45
       }
     },
     "0480": {
@@ -4387,6 +5947,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 595.5
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 26.3,
+        "Solar capacity (MW)": 12.54,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 38.84,
+        "Renewable capacity (MW per 1,000)": 1.33
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 10,
+        "Summer days per year (>25°C)": 12.76,
+        "Annual precipitation (mm)": 875.8,
+        "Heating degree days": 2634.8
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 1.33
       }
     },
     "0482": {
@@ -4459,6 +6045,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 572.6
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 43.62,
+        "Solar capacity (MW)": 4.42,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 48.04,
+        "Renewable capacity (MW per 1,000)": 4.07
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 10.7,
+        "Summer days per year (>25°C)": 13,
+        "Annual precipitation (mm)": 739.2,
+        "Heating degree days": 2447.9
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 4.07
       }
     },
     "0492": {
@@ -4531,6 +6143,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 495.3
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 12,
+        "Solar capacity (MW)": 2.44,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 14.44,
+        "Renewable capacity (MW per 1,000)": 2.51
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 10.6,
+        "Summer days per year (>25°C)": 7.95,
+        "Annual precipitation (mm)": 751.1,
+        "Heating degree days": 2460.9
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 2.51
       }
     },
     "0510": {
@@ -4603,6 +6241,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 583.6
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 40.57,
+        "Solar capacity (MW)": 19.44,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 60.01,
+        "Renewable capacity (MW per 1,000)": 1.09
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 10,
+        "Summer days per year (>25°C)": 8.51,
+        "Annual precipitation (mm)": 1093.9,
+        "Heating degree days": 2646.4
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 1.09
       }
     },
     "0530": {
@@ -4675,6 +6339,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 617.3
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 93.92,
+        "Solar capacity (MW)": 66.47,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 160.39,
+        "Renewable capacity (MW per 1,000)": 5.89
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 9.6,
+        "Summer days per year (>25°C)": 10.42,
+        "Annual precipitation (mm)": 1194.6,
+        "Heating degree days": 2774.2
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 5.89
       }
     },
     "0540": {
@@ -4747,6 +6437,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 554.6
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 13.85,
+        "Solar capacity (MW)": 102.19,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 116.04,
+        "Renewable capacity (MW per 1,000)": 1.57
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 10.6,
+        "Summer days per year (>25°C)": 3.29,
+        "Annual precipitation (mm)": 923,
+        "Heating degree days": 2463.3
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 1.57
       }
     },
     "0550": {
@@ -4819,6 +6535,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 586.2
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 173.83,
+        "Solar capacity (MW)": 21.73,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 195.56,
+        "Renewable capacity (MW per 1,000)": 5.4
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 10.2,
+        "Summer days per year (>25°C)": 11.14,
+        "Annual precipitation (mm)": 1148.2,
+        "Heating degree days": 2557.9
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 5.4
       }
     },
     "0561": {
@@ -4891,6 +6633,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 525.5
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 81.52,
+        "Solar capacity (MW)": 30.85,
+        "Offshore wind capacity (MW)": 776,
+        "Total renewable capacity (MW)": 888.37,
+        "Renewable capacity (MW per 1,000)": 7.73
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 10.2,
+        "Summer days per year (>25°C)": 10.95,
+        "Annual precipitation (mm)": 1247.9,
+        "Heating degree days": 2556.7
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 7.73
       }
     },
     "0563": {
@@ -4963,6 +6731,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 446.9
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 1.98,
+        "Solar capacity (MW)": 1.39,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 3.37,
+        "Renewable capacity (MW per 1,000)": 1.01
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 10.6,
+        "Summer days per year (>25°C)": 10.54,
+        "Annual precipitation (mm)": 1160,
+        "Heating degree days": 2449.4
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 1.01
       }
     },
     "0573": {
@@ -5035,6 +6829,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 593.2
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 99.11,
+        "Solar capacity (MW)": 72.46,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 171.57,
+        "Renewable capacity (MW per 1,000)": 3.47
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 10.1,
+        "Summer days per year (>25°C)": 10.68,
+        "Annual precipitation (mm)": 1153.7,
+        "Heating degree days": 2597
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 3.47
       }
     },
     "0575": {
@@ -5107,6 +6927,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 609.3
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 61.02,
+        "Solar capacity (MW)": 265.31,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 326.33,
+        "Renewable capacity (MW per 1,000)": 7.65
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 9.9,
+        "Summer days per year (>25°C)": 10.41,
+        "Annual precipitation (mm)": 1262.9,
+        "Heating degree days": 2680.3
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 7.65
       }
     },
     "0580": {
@@ -5179,6 +7025,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 605.6
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 84.32,
+        "Solar capacity (MW)": 357.84,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 442.16,
+        "Renewable capacity (MW per 1,000)": 7.58
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 10.2,
+        "Summer days per year (>25°C)": 11.21,
+        "Annual precipitation (mm)": 1091.9,
+        "Heating degree days": 2565.9
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 7.58
       }
     },
     "0607": {
@@ -5251,6 +7123,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 541.6
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 2.25,
+        "Solar capacity (MW)": 13.13,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 15.38,
+        "Renewable capacity (MW per 1,000)": 0.29
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 9.9,
+        "Summer days per year (>25°C)": 9,
+        "Annual precipitation (mm)": 1058.7,
+        "Heating degree days": 2655.7
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 0.29
       }
     },
     "0615": {
@@ -5323,6 +7221,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 520.8
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 3.56,
+        "Solar capacity (MW)": 56.36,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 59.92,
+        "Renewable capacity (MW per 1,000)": 0.61
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 9.3,
+        "Summer days per year (>25°C)": 8.59,
+        "Annual precipitation (mm)": 1009.2,
+        "Heating degree days": 2849.7
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 0.61
       }
     },
     "0621": {
@@ -5395,6 +7319,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 554.5
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 33.98,
+        "Solar capacity (MW)": 244.62,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 278.6,
+        "Renewable capacity (MW per 1,000)": 2.9
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 9.9,
+        "Summer days per year (>25°C)": 9.52,
+        "Annual precipitation (mm)": 1131.3,
+        "Heating degree days": 2654.5
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 2.9
       }
     },
     "0630": {
@@ -5467,6 +7417,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 550.8
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 53.44,
+        "Solar capacity (MW)": 226.83,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 280.27,
+        "Renewable capacity (MW per 1,000)": 2.27
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 9.5,
+        "Summer days per year (>25°C)": 9.4,
+        "Annual precipitation (mm)": 1218.1,
+        "Heating degree days": 2795.6
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 2.27
       }
     },
     "0657": {
@@ -5539,6 +7515,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 558.2
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 136.28,
+        "Solar capacity (MW)": 136.09,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 272.37,
+        "Renewable capacity (MW per 1,000)": 3
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 9.5,
+        "Summer days per year (>25°C)": 11.45,
+        "Annual precipitation (mm)": 1093.3,
+        "Heating degree days": 2787.6
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 3
       }
     },
     "0661": {
@@ -5611,6 +7613,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 540.6
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 230.22,
+        "Solar capacity (MW)": 177.55,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 407.77,
+        "Renewable capacity (MW per 1,000)": 6.87
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 9.7,
+        "Summer days per year (>25°C)": 12,
+        "Annual precipitation (mm)": 1119.3,
+        "Heating degree days": 2736.9
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 6.87
       }
     },
     "0665": {
@@ -5683,6 +7711,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 589.1
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 182.21,
+        "Solar capacity (MW)": 133.36,
+        "Offshore wind capacity (MW)": 219.6,
+        "Total renewable capacity (MW)": 535.17,
+        "Renewable capacity (MW per 1,000)": 28.89
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 9.8,
+        "Summer days per year (>25°C)": 10.2,
+        "Annual precipitation (mm)": 1010.4,
+        "Heating degree days": 2681.1
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 28.89
       }
     },
     "0671": {
@@ -5755,6 +7809,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 570.5
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 61.99,
+        "Solar capacity (MW)": 6.36,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 68.35,
+        "Renewable capacity (MW per 1,000)": 3.39
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 9.6,
+        "Summer days per year (>25°C)": 11.1,
+        "Annual precipitation (mm)": 1060,
+        "Heating degree days": 2743.9
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 3.39
       }
     },
     "0706": {
@@ -5827,6 +7907,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 579.7
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 18.6,
+        "Solar capacity (MW)": 125.47,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 144.07,
+        "Renewable capacity (MW per 1,000)": 3.24
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 9.7,
+        "Summer days per year (>25°C)": 3.7,
+        "Annual precipitation (mm)": 830.2,
+        "Heating degree days": 2747.9
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 3.24
       }
     },
     "0707": {
@@ -5899,6 +8005,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 579.6
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 52.42,
+        "Solar capacity (MW)": 92.81,
+        "Offshore wind capacity (MW)": 404,
+        "Total renewable capacity (MW)": 549.23,
+        "Renewable capacity (MW per 1,000)": 15.05
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 9.7,
+        "Summer days per year (>25°C)": 4.72,
+        "Annual precipitation (mm)": 815.7,
+        "Heating degree days": 2751.3
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 15.05
       }
     },
     "0710": {
@@ -5971,6 +8103,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 567.1
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 31.3,
+        "Solar capacity (MW)": 60.32,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 91.62,
+        "Renewable capacity (MW per 1,000)": 1.84
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 9.4,
+        "Summer days per year (>25°C)": 5.62,
+        "Annual precipitation (mm)": 893.5,
+        "Heating degree days": 2839.2
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 1.84
       }
     },
     "0727": {
@@ -6043,6 +8201,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 555.1
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 15.66,
+        "Solar capacity (MW)": 6.66,
+        "Offshore wind capacity (MW)": 5,
+        "Total renewable capacity (MW)": 27.32,
+        "Renewable capacity (MW per 1,000)": 1.12
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 9.4,
+        "Summer days per year (>25°C)": 3.5,
+        "Annual precipitation (mm)": 914.6,
+        "Heating degree days": 2823.7
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 1.12
       }
     },
     "0730": {
@@ -6115,6 +8299,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 533.3
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 275,
+        "Solar capacity (MW)": 137.57,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 412.57,
+        "Renewable capacity (MW per 1,000)": 4.1
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 9.3,
+        "Summer days per year (>25°C)": 5.4,
+        "Annual precipitation (mm)": 833.6,
+        "Heating degree days": 2877.3
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 4.1
       }
     },
     "0740": {
@@ -6187,6 +8397,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 566.2
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 30.93,
+        "Solar capacity (MW)": 48.59,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 79.52,
+        "Renewable capacity (MW per 1,000)": 0.77
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 9.3,
+        "Summer days per year (>25°C)": 8.99,
+        "Annual precipitation (mm)": 1011.2,
+        "Heating degree days": 2853.5
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 0.77
       }
     },
     "0741": {
@@ -6259,6 +8495,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 544.3
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 11.03,
+        "Solar capacity (MW)": 2.7,
+        "Offshore wind capacity (MW)": 23.1,
+        "Total renewable capacity (MW)": 36.83,
+        "Renewable capacity (MW per 1,000)": 10.19
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 10.1,
+        "Summer days per year (>25°C)": 3.61,
+        "Annual precipitation (mm)": 763.3,
+        "Heating degree days": 2586.4
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 10.19
       }
     },
     "0746": {
@@ -6331,6 +8593,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 549.4
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 18.33,
+        "Solar capacity (MW)": 20.37,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 38.7,
+        "Renewable capacity (MW per 1,000)": 0.58
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 9.2,
+        "Summer days per year (>25°C)": 5.31,
+        "Annual precipitation (mm)": 986.8,
+        "Heating degree days": 2885.6
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 0.58
       }
     },
     "0751": {
@@ -6403,6 +8691,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 403.2
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 11.3,
+        "Solar capacity (MW)": 65.82,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 77.12,
+        "Renewable capacity (MW per 1,000)": 0.2
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 9.3,
+        "Summer days per year (>25°C)": 3.97,
+        "Annual precipitation (mm)": 875.2,
+        "Heating degree days": 2881.8
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 0.2
       }
     },
     "0756": {
@@ -6475,6 +8789,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 656.5
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 66.36,
+        "Solar capacity (MW)": 23.9,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 90.26,
+        "Renewable capacity (MW per 1,000)": 2.08
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 9.4,
+        "Summer days per year (>25°C)": 10.07,
+        "Annual precipitation (mm)": 1075.7,
+        "Heating degree days": 2849
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 2.08
       }
     },
     "0760": {
@@ -6547,6 +8887,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 591.2
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 516.5,
+        "Solar capacity (MW)": 164.93,
+        "Offshore wind capacity (MW)": 168,
+        "Total renewable capacity (MW)": 849.43,
+        "Renewable capacity (MW per 1,000)": 15.36
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 10,
+        "Summer days per year (>25°C)": 11.46,
+        "Annual precipitation (mm)": 1078.8,
+        "Heating degree days": 2618.1
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 15.36
       }
     },
     "0766": {
@@ -6619,6 +8985,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 621.7
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 28.98,
+        "Solar capacity (MW)": 72.22,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 101.2,
+        "Renewable capacity (MW per 1,000)": 2.08
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 9.5,
+        "Summer days per year (>25°C)": 8.37,
+        "Annual precipitation (mm)": 1035,
+        "Heating degree days": 2807.8
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 2.08
       }
     },
     "0773": {
@@ -6691,6 +9083,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 613.7
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 77.71,
+        "Solar capacity (MW)": 34.03,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 111.74,
+        "Renewable capacity (MW per 1,000)": 5.78
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 9.5,
+        "Summer days per year (>25°C)": 4.57,
+        "Annual precipitation (mm)": 917.7,
+        "Heating degree days": 2774.7
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 5.78
       }
     },
     "0779": {
@@ -6763,6 +9181,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 582
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 164.54,
+        "Solar capacity (MW)": 92.98,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 257.52,
+        "Renewable capacity (MW per 1,000)": 5.85
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 9.6,
+        "Summer days per year (>25°C)": 8.14,
+        "Annual precipitation (mm)": 952,
+        "Heating degree days": 2770.2
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 5.85
       }
     },
     "0787": {
@@ -6835,6 +9279,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 561.7
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 218.92,
+        "Solar capacity (MW)": 61.05,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 279.97,
+        "Renewable capacity (MW per 1,000)": 6.58
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 9.5,
+        "Summer days per year (>25°C)": 4.32,
+        "Annual precipitation (mm)": 899,
+        "Heating degree days": 2780.9
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 6.58
       }
     },
     "0791": {
@@ -6907,6 +9377,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 572.3
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 74.01,
+        "Solar capacity (MW)": 170.2,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 244.21,
+        "Renewable capacity (MW per 1,000)": 2.49
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 9.4,
+        "Summer days per year (>25°C)": 8.88,
+        "Annual precipitation (mm)": 958.5,
+        "Heating degree days": 2839
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 2.49
       }
     },
     "0810": {
@@ -6979,6 +9475,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 574.8
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 91.98,
+        "Solar capacity (MW)": 40.02,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 132,
+        "Renewable capacity (MW per 1,000)": 3.6
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 9.3,
+        "Summer days per year (>25°C)": 5.93,
+        "Annual precipitation (mm)": 790.6,
+        "Heating degree days": 2873.3
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 3.6
       }
     },
     "0813": {
@@ -7051,6 +9573,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 537.9
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 48.45,
+        "Solar capacity (MW)": 92.31,
+        "Offshore wind capacity (MW)": 7.6,
+        "Total renewable capacity (MW)": 148.36,
+        "Renewable capacity (MW per 1,000)": 2.58
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 9.3,
+        "Summer days per year (>25°C)": 1.53,
+        "Annual precipitation (mm)": 806.1,
+        "Heating degree days": 2862.2
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 2.58
       }
     },
     "0820": {
@@ -7123,6 +9671,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 592
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 163.81,
+        "Solar capacity (MW)": 46.21,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 210.02,
+        "Renewable capacity (MW per 1,000)": 5.91
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 9.5,
+        "Summer days per year (>25°C)": 7.52,
+        "Annual precipitation (mm)": 870.1,
+        "Heating degree days": 2798
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 5.91
       }
     },
     "0825": {
@@ -7195,6 +9769,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 541.9
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 0,
+        "Solar capacity (MW)": 7.78,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 7.78,
+        "Renewable capacity (MW per 1,000)": 4.65
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 9.9,
+        "Summer days per year (>25°C)": 0.16,
+        "Annual precipitation (mm)": 761.3,
+        "Heating degree days": 2681.5
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 4.65
       }
     },
     "0840": {
@@ -7267,6 +9867,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 593.6
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 48.38,
+        "Solar capacity (MW)": 15.16,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 63.54,
+        "Renewable capacity (MW per 1,000)": 2.03
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 9.4,
+        "Summer days per year (>25°C)": 7.6,
+        "Annual precipitation (mm)": 856.1,
+        "Heating degree days": 2853.6
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 2.03
       }
     },
     "0846": {
@@ -7339,6 +9965,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 589.3
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 104.17,
+        "Solar capacity (MW)": 31.23,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 135.4,
+        "Renewable capacity (MW per 1,000)": 3.26
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 9.3,
+        "Summer days per year (>25°C)": 6.48,
+        "Annual precipitation (mm)": 834.4,
+        "Heating degree days": 2867.7
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 3.26
       }
     },
     "0849": {
@@ -7411,6 +10063,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 599.4
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 218.66,
+        "Solar capacity (MW)": 39.53,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 258.19,
+        "Renewable capacity (MW per 1,000)": 6.81
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 9.5,
+        "Summer days per year (>25°C)": 6.87,
+        "Annual precipitation (mm)": 821.6,
+        "Heating degree days": 2807.6
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 6.81
       }
     },
     "0851": {
@@ -7483,6 +10161,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 470.7
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 158.82,
+        "Solar capacity (MW)": 39.11,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 197.93,
+        "Renewable capacity (MW per 1,000)": 0.88
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 9.4,
+        "Summer days per year (>25°C)": 7.66,
+        "Annual precipitation (mm)": 788.8,
+        "Heating degree days": 2839.3
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 0.88
       }
     },
     "0860": {
@@ -7555,6 +10259,32 @@
       },
       "Vehicles": {
         "Cars per 1,000": 601.9
+      },
+      "IndustrySectors": {
+        "Agriculture, forestry & fishing (%)": {},
+        "Manufacturing & utilities (%)": {},
+        "Construction (%)": {},
+        "Trade & transport (%)": {},
+        "ICT (%)": {},
+        "Finance & insurance (%)": {},
+        "Public admin, edu & health (%)": {}
+      },
+      "GreenEnergy": {
+        "Onshore wind capacity (MW)": 121.47,
+        "Solar capacity (MW)": 35.48,
+        "Offshore wind capacity (MW)": 0,
+        "Total renewable capacity (MW)": 156.95,
+        "Renewable capacity (MW per 1,000)": 2.49
+      },
+      "ClimateBaseline": {
+        "Mean annual temperature (°C)": 9.3,
+        "Summer days per year (>25°C)": 2.69,
+        "Annual precipitation (mm)": 844.9,
+        "Heating degree days": 2884.6
+      },
+      "GreenTransition": {
+        "Fossil-linked sector share (%)": {},
+        "Renewable intensity (MW/1,000)": 2.49
       }
     }
   },

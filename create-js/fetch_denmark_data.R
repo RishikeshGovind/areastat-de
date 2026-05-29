@@ -5,8 +5,10 @@
 # No API key required — all sources are public.
 #
 # Sources:
-#   DAWA (api.dataforsyningen.dk) — kommuner/regioner geography
-#   DST  (api.statbank.dk)        — statistics
+#   DAWA              (api.dataforsyningen.dk)   — kommuner/regioner geography
+#   DST               (api.statbank.dk)           — statistics
+#   Energi Data Service (api.energidataservice.dk) — renewable energy capacity
+#   DMI               (dmigw.govcloud.dk)         — climate baseline indicators
 #
 # Geographic hierarchy:
 #   Region (5)  ←  Kommune (98)
@@ -17,8 +19,19 @@
 #   - We normalise everything to 4-digit in data.json
 # ============================================================
 
+library(dplyr)
+library(tidyr)
+library(tibble)
+library(readr)
+library(httr)
+library(jsonlite)
+library(janitor)
+library(here)
+
 DST_BASE  <- "https://api.statbank.dk/v1/"
 DAWA_BASE <- "https://api.dataforsyningen.dk/"
+EDS_BASE  <- "https://api.energidataservice.dk/dataset/"
+DMI_BASE  <- "https://dmigw.govcloud.dk/v2/climateData/collections/municipalityValue/items"
 
 # ---- Domain → indicator → internal column mapping ----
 VARIABLE_MAP <- list(
@@ -86,6 +99,32 @@ VARIABLE_MAP <- list(
   ),
   Vehicles = list(
     `Cars per 1,000` = "CARS_PER_1K"
+  ),
+  IndustrySectors = list(
+    `Agriculture, forestry & fishing (%)` = "SECTOR_AGR_PCT",
+    `Manufacturing & utilities (%)`        = "SECTOR_MANUF_PCT",
+    `Construction (%)`                     = "SECTOR_CONSTRUCT_PCT",
+    `Trade & transport (%)`                = "SECTOR_TRADE_PCT",
+    `ICT (%)`                              = "SECTOR_ICT_PCT",
+    `Finance & insurance (%)`              = "SECTOR_FINANCE_PCT",
+    `Public admin, edu & health (%)`       = "SECTOR_PUBLIC_PCT"
+  ),
+  GreenEnergy = list(
+    `Onshore wind capacity (MW)`         = "ONSHORE_WIND_MW",
+    `Solar capacity (MW)`                = "SOLAR_MW",
+    `Offshore wind capacity (MW)`        = "OFFSHORE_WIND_MW",
+    `Total renewable capacity (MW)`      = "TOTAL_RENEWABLE_MW",
+    `Renewable capacity (MW per 1,000)`  = "RENEWABLE_MW_PER_1K"
+  ),
+  ClimateBaseline = list(
+    `Mean annual temperature (°C)`  = "MEAN_TEMP_C",
+    `Summer days per year (>25°C)`  = "SUMMER_DAYS",
+    `Annual precipitation (mm)`     = "ANNUAL_PRECIP_MM",
+    `Heating degree days`           = "HEAT_DEG_DAYS"
+  ),
+  GreenTransition = list(
+    `Fossil-linked sector share (%)` = "FOSSIL_SECTOR_PCT",
+    `Renewable intensity (MW/1,000)` = "RENEWABLE_MW_PER_1K"
   )
 )
 
@@ -125,9 +164,30 @@ AGGREGATION_TYPE <- list(
   WELFARE_RETIRE     = "pct",
   WELFARE_CASH       = "pct",
   GP_UTILIZATION     = "pct",
-  WORKPLACES         = "sum",
-  WORKPLACES_PER_1K  = "pct",
-  CARS_PER_1K        = "pct"
+  WORKPLACES          = "sum",
+  WORKPLACES_PER_1K   = "pct",
+  CARS_PER_1K         = "pct",
+  # IndustrySectors
+  SECTOR_AGR_PCT      = "pct",
+  SECTOR_MANUF_PCT    = "pct",
+  SECTOR_CONSTRUCT_PCT= "pct",
+  SECTOR_TRADE_PCT    = "pct",
+  SECTOR_ICT_PCT      = "pct",
+  SECTOR_FINANCE_PCT  = "pct",
+  SECTOR_PUBLIC_PCT   = "pct",
+  # GreenEnergy
+  ONSHORE_WIND_MW     = "sum",
+  SOLAR_MW            = "sum",
+  OFFSHORE_WIND_MW    = "sum",
+  TOTAL_RENEWABLE_MW  = "sum",
+  RENEWABLE_MW_PER_1K = "pct",
+  # ClimateBaseline
+  MEAN_TEMP_C         = "pct",
+  SUMMER_DAYS         = "pct",
+  ANNUAL_PRECIP_MM    = "pct",
+  HEAT_DEG_DAYS       = "pct",
+  # GreenTransition
+  FOSSIL_SECTOR_PCT   = "pct"
 )
 INDICATOR_COLS <- names(AGGREGATION_TYPE)
 
@@ -278,6 +338,12 @@ ts_make <- function(wide, dk_row, period_ids, year_labels) {
       wide$kommune_kode
     )
   )
+}
+
+convert_to_named_list <- function(x) {
+  lapply(x, function(category) {
+    if (is.list(category)) category else unname(category)
+  })
 }
 
 # Helper: map Danish label column → DST ID codes using table metadata
@@ -1123,6 +1189,182 @@ cars_df <- tryCatch({
 
 
 # ============================================================
+# 7b. ERHV6 sector breakdown — IndustrySectors domain
+# ============================================================
+message("Fetching ERHV6 sector breakdown from DST...")
+
+sector_df <- tryCatch({
+  # ARBSTRDK has no "IALT" total — request all sizes and sum below
+  raw <- dst_post("ERHV6", list(
+    list(code="OMRÅDE",      values=list("*")),
+    list(code="BRANCHE0710", values=list("*")),
+    list(code="ARBSTRDK",    values=list("*")),
+    list(code="Tid",         values=list(""))
+  ))
+  if (is.null(raw)) stop("null response")
+  names(raw) <- janitor::make_clean_names(names(raw))
+
+  area_c    <- grep("omr|area",              names(raw), value=TRUE, ignore.case=TRUE)[1]
+  branch_c  <- grep("branche|industry|branch",names(raw), value=TRUE, ignore.case=TRUE)[1]
+  val_c     <- grep("indhold|value|antal",   names(raw), value=TRUE, ignore.case=TRUE)[1]
+
+  df <- raw |>
+    rename(area=!!area_c, branch=!!branch_c, value=!!val_c) |>
+    mutate(
+      value        = suppressWarnings(as.numeric(gsub(",",".",value))),
+      kommune_kode = coalesce(area_code, pad4(area)),
+      # Map Danish branch labels to the 10-group DB07 codes
+      branch_id    = suppressWarnings(as.integer(gsub("[^0-9]", "", branch)))
+    ) |>
+    filter(kommune_kode %in% kommune_lookup$kommune_kode, !is.na(value), !is.na(branch_id))
+
+  # Total workplaces per municipality (all sectors)
+  totals <- df |>
+    filter(branch_id == 0 | grepl("i alt|total|ialt", branch, ignore.case=TRUE)) |>
+    group_by(kommune_kode) |>
+    summarise(total_wp = sum(value, na.rm=TRUE), .groups="drop")
+
+  # Sector-level counts (DB07 10-group codes 1-10)
+  sectors <- df |>
+    filter(branch_id >= 1, branch_id <= 10) |>
+    group_by(kommune_kode, branch_id) |>
+    summarise(count = sum(value, na.rm=TRUE), .groups="drop") |>
+    tidyr::pivot_wider(names_from=branch_id, values_from=count,
+                       names_prefix="s", values_fill=0)
+
+  result <- totals |>
+    left_join(sectors, by="kommune_kode") |>
+    mutate(
+      total_wp = pmax(total_wp, 1),   # avoid /0
+      SECTOR_AGR_PCT       = round(coalesce(s1, 0) / total_wp * 100, 1),
+      SECTOR_MANUF_PCT     = round(coalesce(s2, 0) / total_wp * 100, 1),
+      SECTOR_CONSTRUCT_PCT = round(coalesce(s3, 0) / total_wp * 100, 1),
+      SECTOR_TRADE_PCT     = round(coalesce(s4, 0) / total_wp * 100, 1),
+      SECTOR_ICT_PCT       = round(coalesce(s5, 0) / total_wp * 100, 1),
+      SECTOR_FINANCE_PCT   = round(coalesce(s6, 0) / total_wp * 100, 1),
+      SECTOR_PUBLIC_PCT    = round(coalesce(s9, 0) / total_wp * 100, 1),
+      # Fossil-linked: manufacturing/utilities (s2) + trade/transport (s4)
+      FOSSIL_SECTOR_PCT    = round((coalesce(s2,0) + coalesce(s4,0)) / total_wp * 100, 1)
+    ) |>
+    select(kommune_kode, SECTOR_AGR_PCT, SECTOR_MANUF_PCT, SECTOR_CONSTRUCT_PCT,
+           SECTOR_TRADE_PCT, SECTOR_ICT_PCT, SECTOR_FINANCE_PCT, SECTOR_PUBLIC_PCT,
+           FOSSIL_SECTOR_PCT)
+
+  message(sprintf("  Sector data: %d kommuner", nrow(result)))
+  result
+}, error=function(e){ message("  ERHV6 sector failed: ", conditionMessage(e)); NULL })
+
+
+# ============================================================
+# 7c. Energi Data Service — GreenEnergy domain
+# ============================================================
+message("Fetching CapacityPerMunicipality from Energi Data Service...")
+
+green_energy_df <- tryCatch({
+  # Pull latest month for all municipalities
+  url  <- paste0(EDS_BASE, "CapacityPerMunicipality?limit=200&offset=0",
+                 "&sort=Month%20desc")
+  resp <- httr::GET(url, httr::accept_json(), httr::timeout(60))
+  if (httr::http_error(resp)) stop(paste("HTTP", httr::status_code(resp)))
+
+  records <- jsonlite::fromJSON(httr::content(resp,"text",encoding="UTF-8"),
+                                simplifyDataFrame=TRUE)$records
+
+  if (is.null(records) || nrow(records) == 0) stop("no records")
+
+  # Keep only the most recent month
+  latest_month <- max(records$Month, na.rm=TRUE)
+  rec <- records |>
+    dplyr::filter(Month == latest_month) |>
+    dplyr::mutate(
+      kommune_kode  = pad4(as.integer(MunicipalityNo)),
+      ONSHORE_WIND_MW  = round(as.numeric(OnshoreWindCapacity),  2),
+      SOLAR_MW         = round(as.numeric(SolarPowerCapacity),   2),
+      OFFSHORE_WIND_MW = round(as.numeric(OffshoreWindCapacity), 2),
+      TOTAL_RENEWABLE_MW = round(ONSHORE_WIND_MW + SOLAR_MW + OFFSHORE_WIND_MW, 2)
+    ) |>
+    dplyr::filter(kommune_kode %in% kommune_lookup$kommune_kode) |>
+    dplyr::select(kommune_kode, ONSHORE_WIND_MW, SOLAR_MW, OFFSHORE_WIND_MW,
+                  TOTAL_RENEWABLE_MW)
+
+  # Add per-capita metric using population from pop_age_df
+  if (!is.null(pop_age_df)) {
+    rec <- rec |>
+      left_join(pop_age_df |> select(kommune_kode, POPULATION), by="kommune_kode") |>
+      mutate(
+        RENEWABLE_MW_PER_1K = if_else(
+          coalesce(POPULATION, 0L) > 0,
+          round(TOTAL_RENEWABLE_MW / POPULATION * 1000, 3),
+          NA_real_)
+      ) |>
+      select(-POPULATION)
+  } else {
+    rec$RENEWABLE_MW_PER_1K <- NA_real_
+  }
+
+  message(sprintf("  Green energy: %d kommuner (data as of %s)",
+                  nrow(rec), latest_month))
+  rec
+}, error=function(e){ message("  EDS capacity failed: ", conditionMessage(e)); NULL })
+
+
+# ============================================================
+# 7d. DMI — ClimateBaseline domain
+# ============================================================
+message("Fetching climate baseline from DMI...")
+
+dmi_fetch_param <- function(param_id, year = 2023) {
+  # DMI municipalityValue with annual resolution for cumulative parameters
+  from  <- sprintf("%d-01-01T00:00:00Z", year)
+  to    <- sprintf("%d-12-31T23:59:59Z", year)
+  url   <- paste0(DMI_BASE,
+    "?parameterId=", param_id,
+    "&datetime=", utils::URLencode(paste0(from, "/", to)),
+    "&timeResolution=year",
+    "&limit=200")
+  resp  <- httr::GET(url, httr::accept_json(), httr::timeout(60))
+  if (httr::http_error(resp)) return(NULL)
+  feats <- jsonlite::fromJSON(httr::content(resp,"text",encoding="UTF-8"),
+                              simplifyDataFrame=TRUE)$features
+  if (is.null(feats) || length(feats) == 0) return(NULL)
+  props <- feats$properties
+  if (is.null(props)) return(NULL)
+  tibble::tibble(
+    kommune_kode = pad4(as.integer(props$municipalityId)),
+    value        = as.numeric(props$value)
+  ) |>
+    dplyr::group_by(kommune_kode) |>
+    dplyr::summarise(value = mean(value, na.rm=TRUE), .groups="drop") |>
+    dplyr::rename(!!param_id := value)
+}
+
+climate_df <- tryCatch({
+  temp_df   <- dmi_fetch_param("mean_temp",                2023)
+  summer_df <- dmi_fetch_param("no_summer_days",           2023)
+  precip_df <- dmi_fetch_param("acc_precip",               2023)
+  hdd_df    <- dmi_fetch_param("acc_heating_degree_days_17", 2023)
+
+  all_dfs <- list(temp_df, summer_df, precip_df, hdd_df)
+  non_null <- Filter(Negate(is.null), all_dfs)
+  if (length(non_null) == 0) stop("all DMI fetches failed")
+
+  result <- Reduce(function(a, b) full_join(a, b, by="kommune_kode"), non_null) |>
+    filter(kommune_kode %in% kommune_lookup$kommune_kode) |>
+    rename_with(~ case_when(
+      . == "mean_temp"                  ~ "MEAN_TEMP_C",
+      . == "no_summer_days"             ~ "SUMMER_DAYS",
+      . == "acc_precip"                 ~ "ANNUAL_PRECIP_MM",
+      . == "acc_heating_degree_days_17" ~ "HEAT_DEG_DAYS",
+      TRUE ~ .
+    ))
+
+  message(sprintf("  Climate baseline: %d kommuner, %d parameters",
+                  nrow(result), ncol(result) - 1))
+  result
+}, error=function(e){ message("  DMI climate failed: ", conditionMessage(e)); NULL })
+
+
+# ============================================================
 # 8. Assemble kommunal indicator table
 # ============================================================
 message("Assembling kommunal indicator table...")
@@ -1131,7 +1373,8 @@ komm_stats <- kommune_lookup |> select(kommune_kode)
 
 for (df in list(pop_age_df, foreign_df, unemp_df, emp_df, emp_local_df, edu_df,
                 commute_df, income_df, housing_df, crime_df, finance_df,
-                pop_dyn_df, ancestry_df, welfare_df, health_df, business_df, cars_df)) {
+                pop_dyn_df, ancestry_df, welfare_df, health_df, business_df, cars_df,
+                sector_df, green_energy_df, climate_df)) {
   if (!is.null(df) && "kommune_kode" %in% names(df))
     komm_stats <- left_join(komm_stats, df, by="kommune_kode")
 }

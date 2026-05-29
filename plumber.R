@@ -25,7 +25,8 @@ dk_raw <- final_json[["Denmark Total"]]
 NUMERIC_DOMAINS <- c(
   "AgeStructure", "LabourMarket", "Economy", "Education",
   "Migration", "Ancestry", "Housing", "Safety", "Welfare",
-  "PopulationDynamics", "Financial", "Health", "Businesses", "Vehicles"
+  "PopulationDynamics", "Financial", "Health", "Businesses", "Vehicles",
+  "IndustrySectors", "GreenEnergy", "ClimateBaseline", "GreenTransition"
 )
 
 flatten_zone <- function(z) {
