@@ -2835,10 +2835,12 @@
         sub.textContent = `ΔL(t) ≈ −(T − G − I) · Showing top 8 zones by debt level + DK avg (dashed red)`;
         wrap.appendChild(sub);
 
+        const chartWrap = document.createElement('div');
+        chartWrap.style.cssText = 'position:relative;height:360px;';
         const canvas = document.createElement('canvas');
         canvas.id = 'sfc_debt_ts';
-        canvas.style.height = '360px';
-        wrap.appendChild(canvas);
+        chartWrap.appendChild(canvas);
+        wrap.appendChild(chartWrap);
         container.appendChild(wrap);
 
         const yearLabels = Array.isArray(years) ? years.map(String) : Object.values(years).map(String);
