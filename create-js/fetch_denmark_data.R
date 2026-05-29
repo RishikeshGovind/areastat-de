@@ -1208,7 +1208,8 @@ tax_rate_df <- tryCatch({
   if (is.null(raw)) stop("null response")
   names(raw) <- janitor::make_clean_names(names(raw))
   area_c <- grep("omr|area", names(raw), value=TRUE, ignore.case=TRUE)[1]
-  val_c  <- grep("indhold|value|skatte|rate|pct", names(raw), value=TRUE, ignore.case=TRUE)[1]
+  # Use last column — PSKAT column order is OMRÅDE, SKATPCT, TID, INDHOLD
+  val_c <- tail(names(raw)[!names(raw) %in% c("area_code")], 1)
 
   raw |>
     rename(area=!!area_c, value=!!val_c) |>

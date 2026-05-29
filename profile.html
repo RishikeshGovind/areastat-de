@@ -2808,21 +2808,21 @@
         if (!years.length) return;
 
         const src = currentZoneType === 'region' ? regionData : kommuneData;
-        const datasets = ids.map((id, i) => {
-          const vals = years.map((_, yi) => {
-            const v = lanTs[id]?.[yi];
-            return typeof v === 'number' ? v : (Array.isArray(v) ? v[0] : null);
-          });
-          return { label: zoneName(id), values: vals };
+        const getVals = (key) => years.map((_, yi) => {
+          const v = lanTs[key]?.[yi];
+          return typeof v === 'number' ? v : (Array.isArray(v) ? v[0] : null);
         });
-        // Add DK avg
-        datasets.push({
-          label: 'Denmark avg',
-          values: years.map((_, yi) => {
-            const v = lanTs['000']?.[yi];
-            return typeof v === 'number' ? v : (Array.isArray(v) ? v[0] : null);
-          }),
-        });
+
+        // Sort zones by latest debt value, keep top 8 most interesting
+        const ranked = ids
+          .map(id => ({ id, lastVal: getVals(id).filter(v=>v!=null).pop() ?? 0 }))
+          .sort((a,b) => b.lastVal - a.lastVal)
+          .slice(0, 8);
+
+        const datasets = ranked.map(({ id }, i) => ({
+          label: zoneName(id), values: getVals(id),
+        }));
+        datasets.push({ label: 'Denmark avg', values: getVals('000') });
 
         const wrap = document.createElement('div');
         wrap.style.cssText = 'margin:1.5rem 1.5rem 0;';
@@ -2832,7 +2832,7 @@
         wrap.appendChild(hdr);
         const sub = document.createElement('div');
         sub.style.cssText = 'font-size:.7rem;color:#9ca3af;margin-bottom:.75rem;';
-        sub.textContent = 'ΔL(t) ≈ −(T − G − I) · Debt stock accumulates when expenditure exceeds revenue';
+        sub.textContent = `ΔL(t) ≈ −(T − G − I) · Showing top 8 zones by debt level + DK avg (dashed red)`;
         wrap.appendChild(sub);
 
         const canvas = document.createElement('canvas');
@@ -2841,13 +2841,41 @@
         wrap.appendChild(canvas);
         container.appendChild(wrap);
 
-        renderLineChart(canvas,
-          datasets.map((ds, i) => ({
-            label: ds.label,
-            values: ds.values,
-          })),
-          years.map ? years.map(String) : Object.values(years).map(String)
-        );
+        const yearLabels = Array.isArray(years) ? years.map(String) : Object.values(years).map(String);
+        destroyChart(canvas.id);
+        _chartInstMap[canvas.id] = new Chart(canvas, {
+          type: 'line',
+          data: {
+            labels: yearLabels,
+            datasets: datasets.map((ds, i) => {
+              const isDK = ds.label === 'Denmark avg';
+              return {
+                label: ds.label,
+                data: ds.values,
+                borderColor: isDK ? '#dc2626' : ZONE_PALETTE[i % ZONE_PALETTE.length],
+                backgroundColor: 'transparent',
+                borderWidth: isDK ? 3 : 1.5,
+                borderDash: isDK ? [6,3] : [],
+                pointRadius: isDK ? 3 : 2,
+                tension: 0.3,
+                order: isDK ? 0 : 1,
+              };
+            })
+          },
+          options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: {
+              legend: { position: 'bottom', labels: { font: { size: 10 }, boxWidth: 10, padding: 6,
+                filter: item => item.text === 'Denmark avg' || datasets.length <= 10
+              }},
+              tooltip: { mode: 'index', intersect: false }
+            },
+            scales: {
+              x: { grid: { color: '#f0f0f0' }, ticks: { font: { size: 10 } } },
+              y: { grid: { color: '#f0f0f0' }, ticks: { font: { size: 10 }, callback: v => v >= 1000 ? (v/1000).toFixed(0)+'k' : v } }
+            }
+          }
+        });
       }
 
       function renderSFCFlowDiagram(container, zoneRows) {
