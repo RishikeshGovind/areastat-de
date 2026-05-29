@@ -49,6 +49,43 @@ VARIABLE_MAP <- list(
   ),
   Safety = list(
     `Crimes per 1,000` = "CRIMES_PER_1K"
+  ),
+  PopulationDynamics = list(
+    `Birth rate (per 1,000)`        = "BIRTH_RATE",
+    `Death rate (per 1,000)`        = "DEATH_RATE",
+    `Natural growth (per 1,000)`    = "NAT_GROWTH",
+    `Net migration (per 1,000)`     = "NET_MIGRATION",
+    `Population growth (per 1,000)` = "POP_GROWTH"
+  ),
+  Ancestry = list(
+    `Immigrants (%)`    = "ANC_IMMIGRANTS",
+    `Descendants (%)`   = "ANC_DESCENDANTS",
+    `Danish origin (%)` = "ANC_DANISH"
+  ),
+  Welfare = list(
+    `Welfare dependency (%)`      = "WELFARE_TOTAL",
+    `Disability & retirement (%)` = "WELFARE_RETIRE",
+    `Cash benefit recipients (%)` = "WELFARE_CASH"
+  ),
+  Financial = list(
+    `Operating expenses/capita (DKK)` = "FIN_OPERATING",
+    `Service costs/capita (DKK)`      = "FIN_SERVICE",
+    `Long-term debt/capita (DKK)`     = "FIN_DEBT",
+    `Capital expenditures/capita (DKK)` = "FIN_CAPITAL",
+    `Health care/capita (DKK)`        = "FIN_HEALTH",
+    `Education spending/pupil (DKK)`  = "FIN_EDUCATION",
+    `Day care/child (DKK)`            = "FIN_DAYCARE",
+    `Elderly care/capita (DKK)`       = "FIN_ELDERLY"
+  ),
+  Health = list(
+    `GP utilization (%)` = "GP_UTILIZATION"
+  ),
+  Businesses = list(
+    `Workplaces`           = "WORKPLACES",
+    `Workplaces per 1,000` = "WORKPLACES_PER_1K"
+  ),
+  Vehicles = list(
+    `Cars per 1,000` = "CARS_PER_1K"
   )
 )
 
@@ -67,7 +104,30 @@ AGGREGATION_TYPE <- list(
   OWNER_PCT          = "pct",
   SOCIAL_HOUSING_PCT = "pct",
   DWELLINGS          = "sum",
-  CRIMES_PER_1K      = "pct"
+  CRIMES_PER_1K      = "pct",
+  FIN_OPERATING      = "pct",
+  FIN_SERVICE        = "pct",
+  FIN_DEBT           = "pct",
+  FIN_CAPITAL        = "pct",
+  FIN_HEALTH         = "pct",
+  FIN_EDUCATION      = "pct",
+  FIN_DAYCARE        = "pct",
+  FIN_ELDERLY        = "pct",
+  BIRTH_RATE         = "pct",
+  DEATH_RATE         = "pct",
+  NAT_GROWTH         = "pct",
+  NET_MIGRATION      = "pct",
+  POP_GROWTH         = "pct",
+  ANC_DANISH         = "pct",
+  ANC_IMMIGRANTS     = "pct",
+  ANC_DESCENDANTS    = "pct",
+  WELFARE_TOTAL      = "pct",
+  WELFARE_RETIRE     = "pct",
+  WELFARE_CASH       = "pct",
+  GP_UTILIZATION     = "pct",
+  WORKPLACES         = "sum",
+  WORKPLACES_PER_1K  = "pct",
+  CARS_PER_1K        = "pct"
 )
 INDICATOR_COLS <- names(AGGREGATION_TYPE)
 
@@ -192,6 +252,42 @@ build_indicator_list <- function(row_data) {
       round(as.numeric(val), 2)
     }) |> setNames(names(domain))
   })
+}
+
+# Common time series constants — 2012-2024 (13 years, consistent across all tables)
+TS_YEARS <- as.character(2012:2024)
+TS_K1    <- paste0(TS_YEARS, "K1")   # Jan 1 each year
+TS_K4    <- paste0(TS_YEARS, "K4")   # Dec 31 each year
+TS_ALL_Q <- unlist(lapply(TS_YEARS, function(y) paste0(y, c("K1","K2","K3","K4"))))
+
+# Helper: assemble a named timeseries list from a wide per-municipality data frame.
+# period_ids: column names in wide (e.g. "2012K1" … "2024K1")
+# year_labels: axis labels stored in the JSON (e.g. "2012" … "2024")
+# dk_row: 1-row df or named numeric vector with DK aggregate per period
+ts_make <- function(wide, dk_row, period_ids, year_labels) {
+  dk_vals <- if (is.data.frame(dk_row))
+    as.list(unname(as.numeric(dk_row[1, period_ids])))
+  else
+    as.list(unname(as.numeric(dk_row[period_ids])))
+  c(
+    list(years = as.list(year_labels)),
+    list("000" = dk_vals),
+    setNames(
+      lapply(seq_len(nrow(wide)), function(i)
+        as.list(unname(as.numeric(wide[i, period_ids])))),
+      wide$kommune_kode
+    )
+  )
+}
+
+# Helper: map Danish label column → DST ID codes using table metadata
+map_labels_to_ids <- function(df, label_col, meta_var) {
+  if (!is.null(meta_var)) {
+    lkp <- meta_var |> mutate(lc = tolower(trimws(text))) |> dplyr::select(id, lc)
+    lkp$id[match(tolower(trimws(df[[label_col]])), lkp$lc)]
+  } else {
+    df[[label_col]]
+  }
 }
 
 
@@ -676,6 +772,357 @@ crime_df <- tryCatch({
 
 
 # ============================================================
+# 8e. NGLK — Municipal finances key figures
+# ============================================================
+message("Fetching NGLK (municipal finances) from DST...")
+
+# NGLK BNØGLE codes → internal column names
+NGLK_CODES <- c(DRI="FIN_OPERATING", SER="FIN_SERVICE", LAN="FIN_DEBT",
+                 ANL="FIN_CAPITAL",  SUN="FIN_HEALTH",  FOL="FIN_EDUCATION",
+                 DAG="FIN_DAYCARE",  ÆLD="FIN_ELDERLY")
+
+finance_df <- tryCatch({
+  raw <- dst_post("NGLK", list(
+    list(code="OMRÅDE",     values=list("*")),
+    list(code="BNØGLE",     values=as.list(names(NGLK_CODES))),
+    list(code="BRUTNETUDG", values=list("NET")),
+    list(code="PRISENHED",  values=list("AARPRIS")),
+    list(code="Tid",        values=list(""))
+  ))
+  if (is.null(raw)) stop("null response")
+  names(raw) <- janitor::make_clean_names(names(raw))
+  area_c  <- grep("omr|area|omr_de", names(raw), value=TRUE, ignore.case=TRUE)[1]
+  bn_c    <- grep("bnøgle|n.gle|key|noegle", names(raw), value=TRUE, ignore.case=TRUE)[1]
+  val_c   <- grep("indhold|value|antal", names(raw), value=TRUE, ignore.case=TRUE)[1]
+
+  fin <- raw |>
+    rename(area=!!area_c, bnoegle=!!bn_c, value=!!val_c) |>
+    mutate(value = suppressWarnings(as.numeric(gsub("[. ]","",gsub(",",".",value)))),
+           kommune_kode = coalesce(area_code, pad4(area))) |>
+    filter(kommune_kode %in% kommune_lookup$kommune_kode, !is.na(value))
+
+  # Pivot: one row per kommune, one column per BNØGLE code
+  # The bnoegle column contains Danish labels — join back via metadata
+  nglk_meta <- get_table_meta("NGLK")
+  if (!is.null(nglk_meta$`BNØGLE`)) {
+    lkp <- nglk_meta$`BNØGLE` |>
+      mutate(label_clean = tolower(trimws(text))) |>
+      dplyr::select(id, label_clean)
+    fin$bn_code <- lkp$id[match(tolower(trimws(fin$bnoegle)), lkp$label_clean)]
+  } else {
+    fin$bn_code <- fin$bnoegle
+  }
+
+  fin_wide <- fin |>
+    filter(!is.na(bn_code), bn_code %in% names(NGLK_CODES)) |>
+    group_by(kommune_kode, bn_code) |>
+    summarise(value = mean(value, na.rm=TRUE), .groups="drop") |>
+    tidyr::pivot_wider(names_from=bn_code, values_from=value) |>
+    rename_with(~ NGLK_CODES[.x], .cols = tidyselect::any_of(names(NGLK_CODES)))
+
+  # Ensure all financial columns exist
+  for (col in unname(NGLK_CODES)) {
+    if (!col %in% names(fin_wide)) fin_wide[[col]] <- NA_real_
+  }
+  message(sprintf("  Finance: %d kommuner", nrow(fin_wide)))
+  fin_wide
+}, error=function(e){ message("  NGLK failed: ", conditionMessage(e)); NULL })
+
+
+# ============================================================
+# 8f. BEV107 — Population dynamics (births, deaths, migration)
+# ============================================================
+message("Fetching BEV107 (population dynamics) from DST...")
+
+pop_dyn_df <- tryCatch({
+  raw <- dst_post("BEV107", list(
+    list(code="OMRÅDE",    values=list("*")),
+    list(code="BEVÆGELSE", values=list("B01A","B02","B03","B04","B10","B11")),
+    list(code="KØN",       values=list("M","K")),
+    list(code="Tid",       values=list(""))
+  ))
+  if (is.null(raw)) stop("null response")
+  names(raw) <- janitor::make_clean_names(names(raw))
+  area_c <- grep("omr|area",           names(raw), value=TRUE, ignore.case=TRUE)[1]
+  bev_c  <- grep("bev",                names(raw), value=TRUE, ignore.case=TRUE)[1]
+  val_c  <- grep("indhold|value|antal", names(raw), value=TRUE, ignore.case=TRUE)[1]
+
+  bev <- raw |>
+    rename(area=!!area_c, bev_label=!!bev_c, value=!!val_c) |>
+    mutate(value = suppressWarnings(as.numeric(gsub(",",".",value))),
+           kommune_kode = coalesce(area_code, pad4(area))) |>
+    filter(kommune_kode %in% kommune_lookup$kommune_kode, !is.na(value))
+
+  # Map Danish BEVÆGELSE labels → codes
+  bev107_meta <- get_table_meta("BEV107")
+  if (!is.null(bev107_meta[["BEVÆGELSE"]])) {
+    lkp <- bev107_meta[["BEVÆGELSE"]] |>
+      mutate(label_clean = tolower(trimws(text))) |>
+      dplyr::select(id, label_clean)
+    bev$bev_code <- lkp$id[match(tolower(trimws(bev$bev_label)), lkp$label_clean)]
+  } else {
+    bev$bev_code <- bev$bev_label
+  }
+
+  bev_wide <- bev |>
+    filter(!is.na(bev_code)) |>
+    group_by(kommune_kode, bev_code) |>
+    summarise(v = sum(value, na.rm=TRUE), .groups="drop") |>
+    tidyr::pivot_wider(names_from=bev_code, values_from=v)
+
+  for (col in c("B01A","B02","B03","B04","B10","B11")) {
+    if (!col %in% names(bev_wide)) bev_wide[[col]] <- NA_real_
+  }
+
+  result <- bev_wide |>
+    mutate(
+      denom         = coalesce(B01A, 0),
+      BIRTH_RATE    = if_else(denom>0, round(coalesce(B02,0)/denom*1000, 1), NA_real_),
+      DEATH_RATE    = if_else(denom>0, round(coalesce(B03,0)/denom*1000, 1), NA_real_),
+      NAT_GROWTH    = if_else(denom>0, round(coalesce(B04,0)/denom*1000, 1), NA_real_),
+      NET_MIGRATION = if_else(denom>0, round(coalesce(B10,0)/denom*1000, 1), NA_real_),
+      POP_GROWTH    = if_else(denom>0, round(coalesce(B11,0)/denom*1000, 1), NA_real_)
+    ) |>
+    select(kommune_kode, BIRTH_RATE, DEATH_RATE, NAT_GROWTH, NET_MIGRATION, POP_GROWTH)
+  message(sprintf("  Population dynamics: %d kommuner", nrow(result)))
+  result
+}, error=function(e){ message("  BEV107 failed: ",conditionMessage(e)); NULL })
+
+
+# ============================================================
+# 8g. FOLK1E — Ancestry (Danish origin, immigrants, descendants)
+# ============================================================
+message("Fetching FOLK1E (ancestry) from DST...")
+
+ancestry_df <- tryCatch({
+  raw <- dst_post("FOLK1E", list(
+    list(code="OMRÅDE",   values=list("*")),
+    list(code="ALDER",    values=list("IALT")),
+    list(code="KØN",      values=list("TOT")),
+    list(code="HERKOMST", values=list("TOT","1","24","25","34","35")),
+    list(code="Tid",      values=list(""))
+  ))
+  if (is.null(raw)) stop("null response")
+  names(raw) <- janitor::make_clean_names(names(raw))
+  area_c <- grep("omr|area",           names(raw), value=TRUE, ignore.case=TRUE)[1]
+  herk_c <- grep("herkomst|anc",       names(raw), value=TRUE, ignore.case=TRUE)[1]
+  val_c  <- grep("indhold|value|antal", names(raw), value=TRUE, ignore.case=TRUE)[1]
+
+  anc <- raw |>
+    rename(area=!!area_c, herk_label=!!herk_c, value=!!val_c) |>
+    mutate(value = suppressWarnings(as.numeric(gsub(",",".",value))),
+           kommune_kode = coalesce(area_code, pad4(area))) |>
+    filter(kommune_kode %in% kommune_lookup$kommune_kode, !is.na(value))
+
+  # Map Danish HERKOMST labels → codes
+  folk1e_meta <- get_table_meta("FOLK1E")
+  if (!is.null(folk1e_meta[["HERKOMST"]])) {
+    lkp <- folk1e_meta[["HERKOMST"]] |>
+      mutate(label_clean = tolower(trimws(text))) |>
+      dplyr::select(id, label_clean)
+    anc$herk_code <- lkp$id[match(tolower(trimws(anc$herk_label)), lkp$label_clean)]
+  } else {
+    anc$herk_code <- anc$herk_label
+  }
+
+  total_anc <- anc |>
+    filter(herk_code == "TOT") |>
+    group_by(kommune_kode) |> summarise(total=sum(value,na.rm=TRUE),.groups="drop")
+  danish_anc <- anc |>
+    filter(herk_code == "1") |>
+    group_by(kommune_kode) |> summarise(danish=sum(value,na.rm=TRUE),.groups="drop")
+  immigrant_anc <- anc |>
+    filter(herk_code %in% c("24","25")) |>
+    group_by(kommune_kode) |> summarise(immigrants=sum(value,na.rm=TRUE),.groups="drop")
+  descendant_anc <- anc |>
+    filter(herk_code %in% c("34","35")) |>
+    group_by(kommune_kode) |> summarise(descendants=sum(value,na.rm=TRUE),.groups="drop")
+
+  result <- total_anc |>
+    left_join(danish_anc,     by="kommune_kode") |>
+    left_join(immigrant_anc,  by="kommune_kode") |>
+    left_join(descendant_anc, by="kommune_kode") |>
+    mutate(
+      ANC_DANISH      = if_else(total>0, round(coalesce(danish,0)/total*100,1),      NA_real_),
+      ANC_IMMIGRANTS  = if_else(total>0, round(coalesce(immigrants,0)/total*100,1),  NA_real_),
+      ANC_DESCENDANTS = if_else(total>0, round(coalesce(descendants,0)/total*100,1), NA_real_)
+    ) |>
+    select(kommune_kode, ANC_DANISH, ANC_IMMIGRANTS, ANC_DESCENDANTS)
+  message(sprintf("  Ancestry: %d kommuner", nrow(result)))
+  result
+}, error=function(e){ message("  FOLK1E failed: ",conditionMessage(e)); NULL })
+
+
+# ============================================================
+# 8h. AUK01 — Welfare dependency (public benefit recipients)
+# ============================================================
+message("Fetching AUK01 (welfare) from DST...")
+
+welfare_df <- tryCatch({
+  raw <- dst_post("AUK01", list(
+    list(code="OMRÅDE",      values=list("*")),
+    list(code="YDELSESTYPE", values=list("TOTUSU","FP","TP","KT","KH")),
+    list(code="KØN",         values=list("TOT")),
+    list(code="ALDER",       values=list("TOT")),
+    list(code="Tid",         values=list(""))
+  ))
+  if (is.null(raw)) stop("null response")
+  names(raw) <- janitor::make_clean_names(names(raw))
+  area_c <- grep("omr|area",           names(raw), value=TRUE, ignore.case=TRUE)[1]
+  ydel_c <- grep("ydelse|benefit",     names(raw), value=TRUE, ignore.case=TRUE)[1]
+  val_c  <- grep("indhold|value|antal", names(raw), value=TRUE, ignore.case=TRUE)[1]
+
+  wel <- raw |>
+    rename(area=!!area_c, ydel_label=!!ydel_c, value=!!val_c) |>
+    mutate(value = suppressWarnings(as.numeric(gsub(",",".",value))),
+           kommune_kode = coalesce(area_code, pad4(area))) |>
+    filter(kommune_kode %in% kommune_lookup$kommune_kode, !is.na(value))
+
+  # Map Danish YDELSESTYPE labels → codes
+  auk01_meta <- get_table_meta("AUK01")
+  if (!is.null(auk01_meta[["YDELSESTYPE"]])) {
+    lkp <- auk01_meta[["YDELSESTYPE"]] |>
+      mutate(label_clean = tolower(trimws(text))) |>
+      dplyr::select(id, label_clean)
+    wel$ydel_code <- lkp$id[match(tolower(trimws(wel$ydel_label)), lkp$label_clean)]
+  } else {
+    wel$ydel_code <- wel$ydel_label
+  }
+
+  total_wel  <- wel |> filter(ydel_code == "TOTUSU") |>
+    group_by(kommune_kode) |> summarise(welf_total=sum(value,na.rm=TRUE),.groups="drop")
+  retire_wel <- wel |> filter(ydel_code %in% c("FP","TP")) |>
+    group_by(kommune_kode) |> summarise(welf_retire=sum(value,na.rm=TRUE),.groups="drop")
+  cash_wel   <- wel |> filter(ydel_code %in% c("KT","KH")) |>
+    group_by(kommune_kode) |> summarise(welf_cash=sum(value,na.rm=TRUE),.groups="drop")
+
+  result <- total_wel |>
+    left_join(retire_wel, by="kommune_kode") |>
+    left_join(cash_wel,   by="kommune_kode") |>
+    left_join(if (!is.null(pop_age_df)) pop_age_df |> select(kommune_kode, POPULATION)
+              else tibble(kommune_kode=character(), POPULATION=integer()),
+              by="kommune_kode") |>
+    mutate(
+      WELFARE_TOTAL  = if_else(coalesce(POPULATION,0L)>0,
+                         round(coalesce(welf_total,0)/POPULATION*100, 1), NA_real_),
+      WELFARE_RETIRE = if_else(coalesce(POPULATION,0L)>0,
+                         round(coalesce(welf_retire,0)/POPULATION*100, 1), NA_real_),
+      WELFARE_CASH   = if_else(coalesce(POPULATION,0L)>0,
+                         round(coalesce(welf_cash,0)/POPULATION*100, 1), NA_real_)
+    ) |>
+    select(kommune_kode, WELFARE_TOTAL, WELFARE_RETIRE, WELFARE_CASH)
+  message(sprintf("  Welfare: %d kommuner", nrow(result)))
+  result
+}, error=function(e){ message("  AUK01 failed: ",conditionMessage(e)); NULL })
+
+
+# ============================================================
+# 8i. SYGP1 — Health: persons with GP contacts (%)
+# ============================================================
+message("Fetching SYGP1 (GP health contacts) from DST...")
+
+health_df <- tryCatch({
+  raw <- dst_post("SYGP1", list(
+    list(code="OMRÅDE",     values=list("*")),
+    list(code="YDELSESART", values=list("130")),  # general medical treatment total
+    list(code="ALERAMS",    values=list("IALT")),
+    list(code="KØN",        values=list("TOT")),
+    list(code="Tid",        values=list(""))
+  ))
+  if (is.null(raw)) stop("null response")
+  names(raw) <- janitor::make_clean_names(names(raw))
+  area_c <- grep("omr|area",           names(raw), value=TRUE, ignore.case=TRUE)[1]
+  val_c  <- grep("indhold|value|antal", names(raw), value=TRUE, ignore.case=TRUE)[1]
+
+  result <- raw |>
+    rename(area=!!area_c, value=!!val_c) |>
+    mutate(value = suppressWarnings(as.numeric(gsub(",",".",value))),
+           kommune_kode = coalesce(area_code, pad4(area))) |>
+    filter(kommune_kode %in% kommune_lookup$kommune_kode, !is.na(value)) |>
+    group_by(kommune_kode) |>
+    summarise(gp_persons = sum(value, na.rm=TRUE), .groups="drop") |>
+    left_join(if (!is.null(pop_age_df)) pop_age_df |> select(kommune_kode, POPULATION)
+              else tibble(kommune_kode=character(), POPULATION=integer()),
+              by="kommune_kode") |>
+    mutate(GP_UTILIZATION = if_else(coalesce(POPULATION,0L)>0,
+                              round(gp_persons/POPULATION*100, 1), NA_real_)) |>
+    select(kommune_kode, GP_UTILIZATION)
+  message(sprintf("  Health (GP): %d kommuner", nrow(result)))
+  result
+}, error=function(e){ message("  SYGP1 failed: ",conditionMessage(e)); NULL })
+
+
+# ============================================================
+# 8j. ERHV5 — Workplaces by municipality
+# ============================================================
+message("Fetching ERHV5 (workplaces) from DST...")
+
+business_df <- tryCatch({
+  raw <- dst_post("ERHV5", list(
+    list(code="OMRÅDE", values=list("*")),
+    list(code="SEKTOR", values=list("1015","1020","1025","1030","1035","1040","1045")),
+    list(code="Tid",    values=list(""))
+  ))
+  if (is.null(raw)) stop("null response")
+  names(raw) <- janitor::make_clean_names(names(raw))
+  area_c <- grep("omr|area",           names(raw), value=TRUE, ignore.case=TRUE)[1]
+  val_c  <- grep("indhold|value|antal", names(raw), value=TRUE, ignore.case=TRUE)[1]
+
+  result <- raw |>
+    rename(area=!!area_c, value=!!val_c) |>
+    mutate(value = suppressWarnings(as.numeric(gsub(",",".",value))),
+           kommune_kode = coalesce(area_code, pad4(area))) |>
+    filter(kommune_kode %in% kommune_lookup$kommune_kode, !is.na(value)) |>
+    group_by(kommune_kode) |>
+    summarise(WORKPLACES = as.integer(sum(value, na.rm=TRUE)), .groups="drop") |>
+    left_join(if (!is.null(pop_age_df)) pop_age_df |> select(kommune_kode, POPULATION)
+              else tibble(kommune_kode=character(), POPULATION=integer()),
+              by="kommune_kode") |>
+    mutate(WORKPLACES_PER_1K = if_else(coalesce(POPULATION,0L)>0,
+                                 round(WORKPLACES/POPULATION*1000, 1), NA_real_)) |>
+    select(kommune_kode, WORKPLACES, WORKPLACES_PER_1K)
+  message(sprintf("  Workplaces: %d kommuner", nrow(result)))
+  result
+}, error=function(e){ message("  ERHV5 failed: ",conditionMessage(e)); NULL })
+
+
+# ============================================================
+# 8k. BIL54 — Passenger cars per 1,000 residents
+# ============================================================
+message("Fetching BIL54 (passenger cars) from DST...")
+
+cars_df <- tryCatch({
+  raw <- dst_post("BIL54", list(
+    list(code="OMRÅDE",  values=list("*")),
+    list(code="BILTYPE", values=list("4000101002")),  # passenger cars, total
+    list(code="BRUG",    values=list("1000")),         # total (all uses)
+    list(code="DRIV",    values=list("20200")),        # total propellant
+    list(code="Tid",     values=list(""))
+  ))
+  if (is.null(raw)) stop("null response")
+  names(raw) <- janitor::make_clean_names(names(raw))
+  area_c <- grep("omr|area",           names(raw), value=TRUE, ignore.case=TRUE)[1]
+  val_c  <- grep("indhold|value|antal", names(raw), value=TRUE, ignore.case=TRUE)[1]
+
+  result <- raw |>
+    rename(area=!!area_c, value=!!val_c) |>
+    mutate(value = suppressWarnings(as.numeric(gsub(",",".",value))),
+           kommune_kode = coalesce(area_code, pad4(area))) |>
+    filter(kommune_kode %in% kommune_lookup$kommune_kode, !is.na(value)) |>
+    group_by(kommune_kode) |>
+    summarise(total_cars = sum(value, na.rm=TRUE), .groups="drop") |>
+    left_join(if (!is.null(pop_age_df)) pop_age_df |> select(kommune_kode, POPULATION)
+              else tibble(kommune_kode=character(), POPULATION=integer()),
+              by="kommune_kode") |>
+    mutate(CARS_PER_1K = if_else(coalesce(POPULATION,0L)>0,
+                           round(total_cars/POPULATION*1000, 1), NA_real_)) |>
+    select(kommune_kode, CARS_PER_1K)
+  message(sprintf("  Cars: %d kommuner", nrow(result)))
+  result
+}, error=function(e){ message("  BIL54 failed: ",conditionMessage(e)); NULL })
+
+
+# ============================================================
 # 8. Assemble kommunal indicator table
 # ============================================================
 message("Assembling kommunal indicator table...")
@@ -683,7 +1130,8 @@ message("Assembling kommunal indicator table...")
 komm_stats <- kommune_lookup |> select(kommune_kode)
 
 for (df in list(pop_age_df, foreign_df, unemp_df, emp_df, emp_local_df, edu_df,
-                commute_df, income_df, housing_df, crime_df)) {
+                commute_df, income_df, housing_df, crime_df, finance_df,
+                pop_dyn_df, ancestry_df, welfare_df, health_df, business_df, cars_df)) {
   if (!is.null(df) && "kommune_kode" %in% names(df))
     komm_stats <- left_join(komm_stats, df, by="kommune_kode")
 }
@@ -793,12 +1241,277 @@ denmark_total <- build_indicator_list(as_tibble(dk_row))
 
 
 # ============================================================
-# 13. Assemble final_json
+# 13. Time series: population (FOLK1A K1 — Jan 1 each year)
+# ============================================================
+message("Fetching FOLK1A K1 time series (population)...")
+
+pop_ts <- tryCatch({
+  raw <- dst_post("FOLK1A", list(
+    list(code="OMRÅDE", values=list("*")),
+    list(code="ALDER",  values=list("IALT")),
+    list(code="KØN",    values=list("TOT")),
+    list(code="Tid",    values=as.list(TS_K1))
+  ))
+  if (is.null(raw)) stop("null")
+  names(raw) <- janitor::make_clean_names(names(raw))
+  area_c <- grep("omr|area",           names(raw), value=TRUE, ignore.case=TRUE)[1]
+  tid_c  <- grep("tid|time|kvart",     names(raw), value=TRUE, ignore.case=TRUE)[1]
+  val_c  <- grep("indhold|value|antal", names(raw), value=TRUE, ignore.case=TRUE)[1]
+
+  f1a_meta <- get_table_meta("FOLK1A")
+  df <- raw |>
+    rename(area=!!area_c, tid=!!tid_c, value=!!val_c) |>
+    mutate(value = suppressWarnings(as.numeric(gsub(",",".",value))),
+           kommune_kode = coalesce(area_code, pad4(area)),
+           period_id = map_labels_to_ids(pick(tid), "tid", f1a_meta$Tid)) |>
+    filter(kommune_kode %in% kommune_lookup$kommune_kode,
+           period_id %in% TS_K1, !is.na(value))
+
+  wide <- df |>
+    group_by(kommune_kode, period_id) |>
+    summarise(value = sum(value, na.rm=TRUE), .groups="drop") |>
+    tidyr::pivot_wider(names_from=period_id, values_from=value)
+  for (p in TS_K1) if (!p %in% names(wide)) wide[[p]] <- NA_real_
+
+  dk_row <- wide |> summarise(across(all_of(TS_K1), ~ sum(.x, na.rm=TRUE)))
+  message(sprintf("  Population trend: %d kommuner × %d years", nrow(wide), length(TS_YEARS)))
+  ts_make(wide, dk_row, TS_K1, TS_YEARS)
+}, error=function(e){ message("  Pop trend failed: ", conditionMessage(e)); list(years=as.list(TS_YEARS)) })
+
+
+# ============================================================
+# 14. Time series: foreign citizens % (FOLK1B K1)
+# ============================================================
+message("Fetching FOLK1B K1 time series (foreign citizens %)...")
+
+foreign_ts <- tryCatch({
+  raw <- dst_post("FOLK1B", list(
+    list(code="OMRÅDE", values=list("*")),
+    list(code="ALDER",  values=list("IALT")),
+    list(code="KØN",    values=list("TOT")),
+    list(code="STATSB", values=list("*")),
+    list(code="Tid",    values=as.list(TS_K1))
+  ))
+  if (is.null(raw)) stop("null")
+  names(raw) <- janitor::make_clean_names(names(raw))
+  area_c  <- grep("omr|area",           names(raw), value=TRUE, ignore.case=TRUE)[1]
+  stat_c  <- grep("statsb|citizen|state", names(raw), value=TRUE, ignore.case=TRUE)[1]
+  tid_c   <- grep("tid|time|kvart",     names(raw), value=TRUE, ignore.case=TRUE)[1]
+  val_c   <- grep("indhold|value|antal", names(raw), value=TRUE, ignore.case=TRUE)[1]
+
+  f1b_meta <- get_table_meta("FOLK1B")
+  df <- raw |>
+    rename(area=!!area_c, statsb=!!stat_c, tid=!!tid_c, value=!!val_c) |>
+    mutate(value = suppressWarnings(as.numeric(gsub(",",".",value))),
+           kommune_kode = coalesce(area_code, pad4(area)),
+           period_id = map_labels_to_ids(pick(tid), "tid", f1b_meta$Tid)) |>
+    filter(kommune_kode %in% kommune_lookup$kommune_kode,
+           period_id %in% TS_K1, !is.na(value))
+
+  totals <- df |>
+    filter(grepl("^i alt$|^in all$|^total$", statsb, ignore.case=TRUE)) |>
+    group_by(kommune_kode, period_id) |>
+    summarise(total=sum(value,na.rm=TRUE), .groups="drop")
+  danish <- df |>
+    filter(grepl("^Danmark$|^Denmark$", statsb, ignore.case=TRUE)) |>
+    group_by(kommune_kode, period_id) |>
+    summarise(danish=sum(value,na.rm=TRUE), .groups="drop")
+
+  pct_long <- totals |>
+    left_join(danish, by=c("kommune_kode","period_id")) |>
+    mutate(value = if_else(total>0,
+             round((total - coalesce(danish,0))/total*100, 1), NA_real_)) |>
+    select(kommune_kode, period_id, value)
+
+  wide <- pct_long |>
+    tidyr::pivot_wider(names_from=period_id, values_from=value)
+  for (p in TS_K1) if (!p %in% names(wide)) wide[[p]] <- NA_real_
+
+  dk_row <- wide |>
+    left_join(pop_age_df |> select(kommune_kode, POPULATION), by="kommune_kode") |>
+    summarise(across(all_of(TS_K1),
+      ~ round(weighted.mean(.x, w=coalesce(POPULATION,0L), na.rm=TRUE), 1)))
+  message(sprintf("  Foreign % trend: %d kommuner × %d years", nrow(wide), length(TS_YEARS)))
+  ts_make(wide, dk_row, TS_K1, TS_YEARS)
+}, error=function(e){ message("  Foreign trend failed: ", conditionMessage(e)); list(years=as.list(TS_YEARS)) })
+
+
+# ============================================================
+# 15. Time series: unemployment rate % (AUL01 annual)
+# ============================================================
+message("Fetching AUL01 time series (unemployment rate)...")
+
+unemp_ts <- tryCatch({
+  raw <- dst_post("AUL01", list(
+    list(code="OMRÅDE",      values=list("*")),
+    list(code="YDELSESTYPE", values=list("TOT")),
+    list(code="ALDER",       values=list("TOT")),
+    list(code="KØN",         values=list("TOT")),
+    list(code="AKASSE",      values=list("TOT")),
+    list(code="Tid",         values=as.list(TS_YEARS))
+  ))
+  if (is.null(raw)) stop("null")
+  names(raw) <- janitor::make_clean_names(names(raw))
+  area_c <- grep("omr|area",           names(raw), value=TRUE, ignore.case=TRUE)[1]
+  tid_c  <- grep("^tid$|^time$|^year$", names(raw), value=TRUE, ignore.case=TRUE)[1]
+  val_c  <- grep("indhold|value|antal", names(raw), value=TRUE, ignore.case=TRUE)[1]
+
+  aul_meta <- get_table_meta("AUL01")
+  df <- raw |>
+    rename(area=!!area_c, tid=!!tid_c, value=!!val_c) |>
+    mutate(value = suppressWarnings(as.numeric(gsub(",",".",value))),
+           kommune_kode = coalesce(area_code, pad4(area)),
+           period_id = map_labels_to_ids(pick(tid), "tid", aul_meta$Tid)) |>
+    filter(kommune_kode %in% kommune_lookup$kommune_kode,
+           period_id %in% TS_YEARS, !is.na(value)) |>
+    group_by(kommune_kode, period_id) |>
+    summarise(unemp = sum(value, na.rm=TRUE), .groups="drop") |>
+    left_join(pop_age_df |> select(kommune_kode, POPULATION), by="kommune_kode") |>
+    mutate(value = if_else(coalesce(POPULATION,0L)>0,
+                    round(unemp/POPULATION*100, 2), NA_real_)) |>
+    select(kommune_kode, period_id, value)
+
+  wide <- df |>
+    tidyr::pivot_wider(names_from=period_id, values_from=value)
+  for (p in TS_YEARS) if (!p %in% names(wide)) wide[[p]] <- NA_real_
+
+  dk_row <- wide |>
+    left_join(pop_age_df |> select(kommune_kode, POPULATION), by="kommune_kode") |>
+    summarise(across(all_of(TS_YEARS),
+      ~ round(weighted.mean(.x, w=coalesce(POPULATION,0L), na.rm=TRUE), 2)))
+  message(sprintf("  Unemployment trend: %d kommuner × %d years", nrow(wide), length(TS_YEARS)))
+  ts_make(wide, dk_row, TS_YEARS, TS_YEARS)
+}, error=function(e){ message("  Unemployment trend failed: ", conditionMessage(e)); list(years=as.list(TS_YEARS)) })
+
+
+# ============================================================
+# 16. Time series: crime rate per 1,000 (STRAF11 quarterly → annual sum)
+# ============================================================
+message("Fetching STRAF11 time series (crime rate)...")
+
+crime_ts <- tryCatch({
+  raw <- dst_post("STRAF11", list(
+    list(code="OMRÅDE",   values=list("*")),
+    list(code="OVERTRÆD", values=list("TOT")),
+    list(code="Tid",      values=as.list(TS_ALL_Q))
+  ))
+  if (is.null(raw)) stop("null")
+  names(raw) <- janitor::make_clean_names(names(raw))
+  area_c <- grep("omr|area",           names(raw), value=TRUE, ignore.case=TRUE)[1]
+  tid_c  <- grep("tid|time|kvart",     names(raw), value=TRUE, ignore.case=TRUE)[1]
+  val_c  <- grep("indhold|value|antal", names(raw), value=TRUE, ignore.case=TRUE)[1]
+
+  straf_meta <- get_table_meta("STRAF11")
+  df <- raw |>
+    rename(area=!!area_c, tid=!!tid_c, value=!!val_c) |>
+    mutate(value = suppressWarnings(as.numeric(gsub(",",".",value))),
+           kommune_kode = coalesce(area_code, pad4(area)),
+           period_id = map_labels_to_ids(pick(tid), "tid", straf_meta$Tid),
+           year = substr(period_id, 1, 4)) |>
+    filter(kommune_kode %in% kommune_lookup$kommune_kode,
+           year %in% TS_YEARS, !is.na(value)) |>
+    group_by(kommune_kode, year) |>
+    summarise(annual_crimes = sum(value, na.rm=TRUE), .groups="drop") |>
+    left_join(pop_age_df |> select(kommune_kode, POPULATION), by="kommune_kode") |>
+    mutate(value = if_else(coalesce(POPULATION,0L)>0,
+                    round(annual_crimes/POPULATION*1000, 2), NA_real_)) |>
+    select(kommune_kode, year, value)
+
+  wide <- df |>
+    tidyr::pivot_wider(names_from=year, values_from=value)
+  for (y in TS_YEARS) if (!y %in% names(wide)) wide[[y]] <- NA_real_
+
+  dk_row <- wide |>
+    left_join(pop_age_df |> select(kommune_kode, POPULATION), by="kommune_kode") |>
+    summarise(across(all_of(TS_YEARS),
+      ~ round(weighted.mean(.x, w=coalesce(POPULATION,0L), na.rm=TRUE), 2)))
+  message(sprintf("  Crime trend: %d kommuner × %d years", nrow(wide), length(TS_YEARS)))
+  ts_make(wide, dk_row, TS_YEARS, TS_YEARS)
+}, error=function(e){ message("  Crime trend failed: ", conditionMessage(e)); list(years=as.list(TS_YEARS)) })
+
+
+# ============================================================
+# 17. Time series: disposable income trend (INDKP106, last 12 years)
+# ============================================================
+message("Fetching INDKP106 time series (income trend)...")
+
+income_ts <- tryCatch({
+  ts_meta  <- get_table_meta("INDKP106")
+  ts_years <- tail(ts_meta$Tid$id, 12)
+
+  raw <- dst_post("INDKP106", list(
+    list(code="OMRÅDE",   values=list("*")),
+    list(code="ENHED",    values=list("118")),
+    list(code="KOEN",     values=list("MOK")),
+    list(code="ALDER1",   values=list("00")),
+    list(code="INDKINTB", values=list("000")),
+    list(code="Tid",      values=as.list(ts_years))
+  ))
+  if (is.null(raw)) stop("null response")
+  names(raw) <- janitor::make_clean_names(names(raw))
+  area_c <- grep("omr|area",           names(raw), value=TRUE, ignore.case=TRUE)[1]
+  tid_c  <- grep("^tid$|^time$",       names(raw), value=TRUE, ignore.case=TRUE)[1]
+  val_c  <- grep("indhold|value|antal", names(raw), value=TRUE, ignore.case=TRUE)[1]
+
+  df <- raw |>
+    rename(area=!!area_c, tid=!!tid_c, value=!!val_c) |>
+    mutate(
+      value        = suppressWarnings(as.numeric(gsub("[. ]","",gsub(",",".",value)))),
+      kommune_kode = coalesce(area_code, pad4(area))
+    ) |>
+    filter(kommune_kode %in% kommune_lookup$kommune_kode, !is.na(value))
+
+  # Map Danish Tid labels → year IDs
+  if (!is.null(ts_meta$Tid)) {
+    lkp <- ts_meta$Tid |>
+      mutate(label_clean = tolower(trimws(text))) |>
+      dplyr::select(id, label_clean)
+    df$year_id <- lkp$id[match(tolower(trimws(df$tid)), lkp$label_clean)]
+  } else {
+    df$year_id <- df$tid
+  }
+
+  wide <- df |>
+    filter(year_id %in% ts_years) |>
+    group_by(kommune_kode, year_id) |>
+    summarise(value = round(mean(value, na.rm=TRUE), 0), .groups="drop") |>
+    tidyr::pivot_wider(names_from=year_id, values_from=value)
+
+  # Compute population-weighted Denmark average for each year
+  dk_avg <- wide |>
+    left_join(pop_age_df |> select(kommune_kode, POPULATION), by="kommune_kode") |>
+    summarise(across(all_of(ts_years),
+      ~ round(weighted.mean(.x, w=coalesce(POPULATION, 0L), na.rm=TRUE), 0)))
+
+  # Build named list: years vector + one entry per kommune + "000" = DK average
+  result <- c(
+    list(years = as.list(ts_years)),
+    list("000" = as.list(unname(as.numeric(dk_avg[1, ts_years])))),
+    setNames(
+      lapply(seq_len(nrow(wide)), function(i)
+        as.list(unname(as.numeric(wide[i, ts_years])))),
+      wide$kommune_kode
+    )
+  )
+  message(sprintf("  Income trend: %d kommuner × %d years", nrow(wide), length(ts_years)))
+  result
+}, error=function(e){ message("  Income trend failed: ", conditionMessage(e)); list(years=list()) })
+
+
+# ============================================================
+# 14. Assemble final_json
 # ============================================================
 final_json <- list(
   "Denmark Total" = denmark_total,
   "Region"        = lapply(region_entries,  convert_to_named_list),
-  "Kommune"       = lapply(kommune_entries, convert_to_named_list)
+  "Kommune"       = lapply(kommune_entries, convert_to_named_list),
+  "timeseries"    = list(
+    income           = income_ts,
+    population       = pop_ts,
+    foreign_pct      = foreign_ts,
+    unemployment_rate = unemp_ts,
+    crime_rate        = crime_ts
+  )
 )
 
 message(sprintf("Done. Denmark Total + %d Regions + %d Kommuner ready.",

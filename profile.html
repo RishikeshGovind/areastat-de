@@ -270,7 +270,7 @@
       let currentView          = 'demographics';
       window.chartInstances    = [];
 
-      const DEMO_DOMAINS = ['AgeStructure', 'Migration', 'Housing', 'Safety'];
+      const DEMO_DOMAINS = ['AgeStructure', 'PopulationDynamics', 'Ancestry', 'Migration', 'Housing', 'Safety', 'Welfare'];
       const ECON_DOMAINS = ['LabourMarket', 'Economy', 'Education'];
 
       const excludedKeys = EXCLUDED_PROFILE_KEYS;
@@ -805,64 +805,111 @@
         return Promise.all(promises);
       }
 
-      function downloadSummaryImage() {
+      async function downloadSummaryImage() {
         const selectedTab = document.querySelector('.view-tab.selected');
-        const view = selectedTab ? selectedTab.getAttribute('data-view') : 'overview';
+        const view = selectedTab ? selectedTab.getAttribute('data-view') : 'demographics';
 
-        // For domain tabs, capture the active domain container
         const domainContainerMap = {
           demographics: 'demographics-container',
           economics:    'economics-container',
           financial:    'financial-container',
           'ml-export':  'ml-export-container',
         };
-        if (domainContainerMap[view]) {
-          const src = document.getElementById(domainContainerMap[view]);
-          if (!src) return;
-          const wrap = document.createElement('div');
-          wrap.style.cssText = 'background:#fff;padding:20px;font-family:sans-serif;max-width:1200px;margin:0 auto;';
-          const clone = src.cloneNode(true);
-          clone.style.display = 'block';
-          const mmInClone = clone.querySelector('#zone-minimap');
-          if (mmInClone && window._zoneMiniMap) {
-            try {
-              const img = new Image();
-              img.src = window._zoneMiniMap.getCanvas().toDataURL('image/png');
-              img.style.cssText = 'width:100%;height:220px;border-radius:8px;object-fit:cover;display:block;';
-              mmInClone.innerHTML = '';
-              mmInClone.appendChild(img);
-            } catch (_) { mmInClone.remove(); }
-          }
-          wrap.appendChild(clone);
-          document.body.appendChild(wrap);
-          wrap.offsetHeight;
-          waitForImagesToLoad(wrap).then(() =>
-            new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(() =>
-              html2canvas(wrap, { useCORS: true, scale: 2, backgroundColor: '#ffffff' }).then(resolve)
-            )))
-          ).then(canvas => {
-            const fc = document.createElement('canvas');
-            fc.width = canvas.width; fc.height = canvas.height + 40;
-            const ctx = fc.getContext('2d');
-            ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, fc.width, fc.height);
-            ctx.drawImage(canvas, 0, 0);
-            ctx.font = '12px sans-serif'; ctx.fillStyle = '#666666'; ctx.textAlign = 'right';
-            ctx.fillText('Source: Statistics Denmark (DST) · DAWA · CC BY 4.0', fc.width - 20, canvas.height + 25);
-            const link = document.createElement('a');
-            link.download = `areastat_${view}.png`;
-            link.href = fc.toDataURL('image/png');
-            link.click();
-            document.body.removeChild(wrap);
-          });
-          return;
+        const containerId = domainContainerMap[view];
+        if (!containerId) return;
+
+        const src = document.getElementById(containerId);
+        if (!src) return;
+
+        // Button feedback
+        const btn = document.querySelector('#drawer-actions button:last-child');
+        const origLabel = btn?.textContent;
+        if (btn) { btn.disabled = true; btn.textContent = '⏳ Capturing…'; }
+
+        // Temporarily replace MapLibre WebGL canvas with a static image so html2canvas can read it
+        const mmDiv = document.getElementById('zone-minimap');
+        let mmSavedHTML = null;
+        if (mmDiv && window._zoneMiniMap) {
+          try {
+            mmSavedHTML = mmDiv.innerHTML;
+            const mmImg = Object.assign(new Image(), {
+              src: window._zoneMiniMap.getCanvas().toDataURL('image/png')
+            });
+            mmImg.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;border-radius:inherit;';
+            mmDiv.innerHTML = '';
+            mmDiv.appendChild(mmImg);
+          } catch (_) {}
         }
 
-        if (view === 'analysis') {
-          const src = document.getElementById('analysis-container');
-          if (!src) return;
+        try {
+          // Capture the ACTUAL container — Chart.js canvases render correctly (cloneNode gives blank canvases)
+          await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+          const contentCanvas = await html2canvas(src, {
+            useCORS: true, scale: 2, backgroundColor: '#f8fafc', logging: false,
+          });
+
+          // Build title from view name + selection info
+          const TITLE_MAP = { demographics: 'Demographics', economics: 'Economics',
+                              financial: 'Municipal Finances', 'ml-export': 'ML Export' };
+          const title = `AreaStat DK  —  ${TITLE_MAP[view] || view}`;
+          const selectionInfo = (() => {
+            const zoneEl = document.querySelector('#zone-summary-bar strong');
+            const popEl  = document.querySelectorAll('#zone-summary-bar strong')[1];
+            return zoneEl ? `${zoneEl.textContent}  ·  Pop. ${popEl?.textContent || ''}` : '';
+          })();
+
+          const HDR = 64, FTR = 36, S = 2; // header/footer heights at scale 2
+          const W = contentCanvas.width, H = contentCanvas.height;
+          const fc = document.createElement('canvas');
+          fc.width = W; fc.height = H + HDR * S + FTR * S;
+          const ctx = fc.getContext('2d');
+
+          // Header
+          ctx.fillStyle = '#1e3a5f';
+          ctx.fillRect(0, 0, W, HDR * S);
+          ctx.fillStyle = '#ffffff';
+          ctx.font = `bold ${15 * S}px "Space Grotesk", sans-serif`;
+          ctx.textAlign = 'left';
+          ctx.fillText('◈ ' + title, 20 * S, 38 * S);
+          if (selectionInfo) {
+            ctx.font = `${11 * S}px Inter, sans-serif`;
+            ctx.fillStyle = 'rgba(255,255,255,.65)';
+            ctx.textAlign = 'right';
+            ctx.fillText(selectionInfo, W - 20 * S, 38 * S);
+          }
+
+          // Content
+          ctx.drawImage(contentCanvas, 0, HDR * S);
+
+          // Footer
+          ctx.fillStyle = '#f1f5f9';
+          ctx.fillRect(0, HDR * S + H, W, FTR * S);
+          ctx.fillStyle = '#9ca3af';
+          ctx.font = `${10 * S}px Inter, sans-serif`;
+          ctx.textAlign = 'right';
+          ctx.fillText('Source: Statistics Denmark (DST) · api.statbank.dk · CC BY 4.0',
+                       W - 16 * S, HDR * S + H + 24 * S);
+
+          // Trigger download
+          const date = new Date().toISOString().slice(0, 10);
+          Object.assign(document.createElement('a'), {
+            download: `areastat_dk_${view}_${date}.png`,
+            href: fc.toDataURL('image/png'),
+          }).click();
+
+        } finally {
+          // Restore MapLibre
+          if (mmDiv && mmSavedHTML !== null) mmDiv.innerHTML = mmSavedHTML;
+          if (btn) { btn.disabled = false; btn.textContent = origLabel; }
+        }
+
+        // ── Legacy path kept for analysis container (unused from main UI but kept for compatibility)
+        if (false && view === 'analysis') {
+          const src2 = document.getElementById('analysis-container');
+          if (!src2) return;
           const wrap = document.createElement('div');
           wrap.style.cssText = 'background:#fff;padding:20px;font-family:sans-serif;max-width:1200px;margin:0 auto;';
-          const clone = src.cloneNode(true);
+          const clone = src2.cloneNode(true);
           clone.style.cssText = 'display:flex;flex-direction:column;visibility:visible;';
           wrap.appendChild(clone);
           document.body.appendChild(wrap);
@@ -1988,6 +2035,7 @@
           kommuneData   = data['Kommune']       || {};
           regionData    = data['Region']        || {};
           denmarkTotals = data['Denmark Total'] || {};
+          window.timeseriesData = data['timeseries'] || {};
           window.denmarkTotals     = denmarkTotals;
           window.denmarkPopulation = totalPopulationForData(kommuneData);
 
@@ -2207,17 +2255,38 @@
             { label: 'Other',          value: 100 - own - soc, color: '#d1d5db' },
           ]);
 
+          // ── Donut: Ancestry composition
+          const c2b = makeChartCard(grid, 'Ancestry Composition (average of selected)', 200);
+          c2b.id = idPfx + 'ancestry';
+          const dan = agg?.Ancestry?.['Danish origin (%)'] ?? 0;
+          const imm = agg?.Ancestry?.['Immigrants (%)'] ?? 0;
+          const des = agg?.Ancestry?.['Descendants (%)'] ?? 0;
+          renderDonutChart(c2b, [
+            { label: 'Danish origin', value: dan, color: '#2563eb' },
+            { label: 'Immigrants',    value: imm, color: '#dc2626' },
+            { label: 'Descendants',   value: des, color: '#d97706' },
+          ]);
+
           // ── Bar: % over 65 per zone
-          const vals65 = capped.map(z => sv(z, 'AgeStructure', 'Over 65 years (%)') ?? 0);
-          const c3 = makeChartCard(grid, '% Over 65 — by Zone', Math.max(180, capped.length * 22));
-          c3.id = idPfx + 'over65'; c3.style.maxHeight = Math.max(180, capped.length * 22) + 'px';
-          renderHBarChart(c3, capped.map(z => z.name), vals65, '#e07520', agg?.AgeStructure?.['Over 65 years (%)']);
+          const age65Pairs = capped.map(z => ({ name: z.name, val: sv(z, 'AgeStructure', 'Over 65 years (%)') }))
+            .filter(p => p.val != null);
+          const c3 = makeChartCard(grid, '% Over 65 — by Zone', Math.max(180, age65Pairs.length * 22));
+          c3.id = idPfx + 'over65'; c3.style.maxHeight = Math.max(180, age65Pairs.length * 22) + 'px';
+          renderHBarChart(c3, age65Pairs.map(p => p.name), age65Pairs.map(p => p.val), '#e07520', agg?.AgeStructure?.['Over 65 years (%)']);
 
           // ── Bar: % foreign citizens per zone
-          const valsFgn = capped.map(z => sv(z, 'Migration', 'Foreign citizens (%)') ?? 0);
-          const c4 = makeChartCard(grid, 'Foreign Citizens (%) — by Zone', Math.max(180, capped.length * 22));
-          c4.id = idPfx + 'foreign'; c4.style.maxHeight = Math.max(180, capped.length * 22) + 'px';
-          renderHBarChart(c4, capped.map(z => z.name), valsFgn, '#0e7490', agg?.Migration?.['Foreign citizens (%)']);
+          const fgnPairs = capped.map(z => ({ name: z.name, val: sv(z, 'Migration', 'Foreign citizens (%)') }))
+            .filter(p => p.val != null);
+          const c4 = makeChartCard(grid, 'Foreign Citizens (%) — by Zone', Math.max(180, fgnPairs.length * 22));
+          c4.id = idPfx + 'foreign'; c4.style.maxHeight = Math.max(180, fgnPairs.length * 22) + 'px';
+          renderHBarChart(c4, fgnPairs.map(p => p.name), fgnPairs.map(p => p.val), '#0e7490', agg?.Migration?.['Foreign citizens (%)']);
+
+          // ── Bar: welfare dependency per zone
+          const welPairs = capped.map(z => ({ name: z.name, val: sv(z, 'Welfare', 'Welfare dependency (%)') }))
+            .filter(p => p.val != null);
+          const c5 = makeChartCard(grid, 'Welfare Dependency (%) — by Zone', Math.max(180, welPairs.length * 22));
+          c5.id = idPfx + 'welfare'; c5.style.maxHeight = Math.max(180, welPairs.length * 22) + 'px';
+          renderHBarChart(c5, welPairs.map(p => p.name), welPairs.map(p => p.val), '#7c3aed', agg?.Welfare?.['Welfare dependency (%)']);
 
           // ── Live: sex breakdown + 5-year age groups from FOLK1A (async, appended after grid)
           container.appendChild(section);
@@ -2264,31 +2333,30 @@
         }
 
         if (tabKey === 'econ') {
-          // ── Scatter: income vs employment rate
-          const c1 = makeChartCard(grid, 'Income vs Employment Rate (each dot = one zone)', 260);
+          // ── Scatter: income vs employment rate — filter zones with missing data
+          const scatterPts = zones.map((z, i) => ({
+            label: z.name,
+            x: sv(z, 'Economy', 'Avg income (DKK)'),
+            y: sv(z, 'LabourMarket', 'Employment rate (%)'),
+            color: ZONE_PALETTE[i % ZONE_PALETTE.length] + 'cc',
+          })).filter(p => p.x != null && p.y != null && p.x > 0 && p.y > 0);
+          const c1 = makeChartCard(grid, `Income vs Employment Rate — ${scatterPts.length} zones`, 260);
           c1.id = idPfx + 'scatter'; c1.style.maxHeight = '260px';
-          renderScatterChart(c1,
-            zones.map((z, i) => ({
-              label: z.name,
-              x: sv(z, 'Economy', 'Avg income (DKK)') ?? 0,
-              y: sv(z, 'LabourMarket', 'Employment rate (%)') ?? 0,
-              color: ZONE_PALETTE[i % ZONE_PALETTE.length] + 'cc',
-            })),
-            'Avg Income (DKK)', 'Employment Rate (%)'
-          );
+          renderScatterChart(c1, scatterPts, 'Avg Income (DKK)', 'Employment Rate (%)');
 
-          // ── Bar: income per zone
-          const incVals = capped.map(z => sv(z, 'Economy', 'Avg income (DKK)') ?? 0);
-          const sorted = capped.map((z,i) => ({ name: z.name, val: incVals[i] })).sort((a,b) => b.val - a.val);
-          const c2 = makeChartCard(grid, 'Avg Income (DKK) — by Zone', Math.max(180, capped.length * 22));
-          c2.id = idPfx + 'income'; c2.style.maxHeight = Math.max(180, capped.length * 22) + 'px';
-          renderHBarChart(c2, sorted.map(s => s.name), sorted.map(s => s.val), '#2ca25f', agg?.Economy?.['Avg income (DKK)']);
+          // ── Bar: income per zone — skip missing/zero values
+          const incPairs = capped.map(z => ({ name: z.name, val: sv(z, 'Economy', 'Avg income (DKK)') }))
+            .filter(p => p.val != null && p.val > 0).sort((a, b) => b.val - a.val);
+          const c2 = makeChartCard(grid, 'Avg Income (DKK) — by Zone', Math.max(180, incPairs.length * 22));
+          c2.id = idPfx + 'income'; c2.style.maxHeight = Math.max(180, incPairs.length * 22) + 'px';
+          renderHBarChart(c2, incPairs.map(p => p.name), incPairs.map(p => p.val), '#2ca25f', agg?.Economy?.['Avg income (DKK)']);
 
-          // ── Bar: unemployment per zone
-          const unempVals = capped.map(z => sv(z, 'LabourMarket', 'Unemployment rate (%)') ?? 0);
-          const c3 = makeChartCard(grid, 'Unemployment Rate (%) — by Zone', Math.max(180, capped.length * 22));
-          c3.id = idPfx + 'unemp'; c3.style.maxHeight = Math.max(180, capped.length * 22) + 'px';
-          renderHBarChart(c3, capped.map(z => z.name), unempVals, '#dc2626', agg?.LabourMarket?.['Unemployment rate (%)']);
+          // ── Bar: unemployment per zone — skip missing/zero values
+          const unempPairs = capped.map(z => ({ name: z.name, val: sv(z, 'LabourMarket', 'Unemployment rate (%)') }))
+            .filter(p => p.val != null && p.val > 0);
+          const c3 = makeChartCard(grid, 'Unemployment Rate (%) — by Zone', Math.max(180, unempPairs.length * 22));
+          c3.id = idPfx + 'unemp'; c3.style.maxHeight = Math.max(180, unempPairs.length * 22) + 'px';
+          renderHBarChart(c3, unempPairs.map(p => p.name), unempPairs.map(p => p.val), '#dc2626', agg?.LabourMarket?.['Unemployment rate (%)']);
         }
 
         // ── Time series: population trend (both tabs)
@@ -2330,25 +2398,25 @@
           }
 
           if (tabKey === 'econ') {
-            // INDKP106: Disposable income per person by municipality (annual)
-            tsTtl.textContent = 'Disposable Income per Person — Trend (DST · live)';
-            const info    = await dstTableInfo('INDKP106');
-            const tidVar  = info.variables.find(v => v.id === 'Tid');
-            const years   = (tidVar?.values || []).map(v => v.id).slice(-12);
-            const { rows } = await dstFetch('INDKP106', [
-              { code: 'OMRÅDE',   values: showPerZone ? dstCodes : ['000'] },
-              { code: 'ENHED',    values: ['103'] },  // DKK per person
-              { code: 'KOEN',     values: ['MOK'] },  // total (both sexes)
-              { code: 'ALDER1',   values: ['00'] },   // all ages
-              { code: 'INDKINTB', values: ['000'] },  // total disposable income
-              { code: 'Tid',      values: years },
-            ]);
-            if (!rows.length) throw new Error('No income data for selected municipalities');
-            const areaKey = Object.keys(rows[0]).find(k => /region|område/i.test(k)) || Object.keys(rows[0])[0];
-            const tidKey  = Object.keys(rows[0]).find(k => /^tid$|^time$/i.test(k)) || Object.keys(rows[0])[4];
-            const valKey  = Object.keys(rows[0]).find(k => /indhold/i.test(k)) || Object.keys(rows[0]).at(-1);
-            tsYears  = years;
-            tsSeries = pivotRows(rows, years, tidKey, areaKey, valKey);
+            // INDKP106: Disposable income per person — read from pre-built data.json cache
+            tsTtl.textContent = 'Disposable Income per Person — Trend';
+            const incomeTs = window.timeseriesData?.income || {};
+            const years = (incomeTs.years || []).map(String);
+            if (!years.length) throw new Error('Income time series not available in data.json');
+            tsYears = years;
+            if (showPerZone) {
+              tsSeries = zones.map(z => {
+                const vals = incomeTs[dawaToDs(z.id)] || incomeTs[z.id] || null;
+                if (!vals) return null;
+                return { label: z.name, values: (Array.isArray(vals) ? vals : Object.values(vals)).map(Number) };
+              }).filter(Boolean);
+            }
+            if (!tsSeries || !tsSeries.length) {
+              // Fallback: show all-Denmark average if available
+              const dkVals = incomeTs['000'] || null;
+              if (dkVals) tsSeries = [{ label: 'All Denmark', values: (Array.isArray(dkVals) ? dkVals : Object.values(dkVals)).map(Number) }];
+              else throw new Error('No income data for selected municipalities');
+            }
           } else {
             // FOLK1A: Population quarterly — use Q1 of each year for clean annual view
             const info       = await dstTableInfo('FOLK1A');
@@ -2397,43 +2465,62 @@
           zoneNames.push(zoneName(id));
         });
 
-        // Collapsed state by default — just one slim line
         bar.innerHTML = '';
-        bar.style.cssText = 'background:#f8fafc;border-bottom:1px solid #e5e7eb;font-size:.78rem;color:#374151;';
+        bar.style.cssText = 'background:#fff;border-bottom:1px solid #e5e7eb;';
 
-        const pill = document.createElement('div');
-        pill.style.cssText = 'display:flex;align-items:center;gap:1rem;padding:.45rem 1.5rem;flex-wrap:wrap;';
+        // ── Layout: left (KPIs + zone chips) | right (mini-map)
+        const layout = document.createElement('div');
+        layout.style.cssText = 'display:flex;gap:0;align-items:stretch;';
 
-        const stats = document.createElement('span');
-        stats.style.cssText = 'display:flex;align-items:center;gap:.75rem;';
-        stats.innerHTML = `<strong style="color:#1e3a5f;">${escapeHtml(String(ids.length))} zone${ids.length !== 1 ? 's' : ''}</strong>
-          <span style="color:#6b7280;">·</span>
-          <span>Pop. <strong>${escapeHtml(totalPop.toLocaleString())}</strong></span>`;
+        // Left panel
+        const left = document.createElement('div');
+        left.style.cssText = 'flex:1;min-width:0;padding:.85rem 1.5rem;';
 
+        // KPI row
+        const kpiRow = document.createElement('div');
+        kpiRow.style.cssText = 'display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;margin-bottom:.6rem;';
+        kpiRow.innerHTML = `
+          <div><span style="font-size:1.4rem;font-weight:700;color:#1e3a5f;line-height:1;">${escapeHtml(String(ids.length))}</span>
+               <span style="font-size:.72rem;color:#6b7280;margin-left:.3rem;text-transform:uppercase;letter-spacing:.04em;">zone${ids.length !== 1 ? 's' : ''}</span></div>
+          <div><span style="font-size:1.4rem;font-weight:700;color:#4f46e5;line-height:1;">${escapeHtml(totalPop.toLocaleString())}</span>
+               <span style="font-size:.72rem;color:#6b7280;margin-left:.3rem;text-transform:uppercase;letter-spacing:.04em;">population</span></div>`;
+        left.appendChild(kpiRow);
+
+        // Zone chips (collapsible)
         const toggle = document.createElement('button');
-        toggle.style.cssText = 'margin-left:.5rem;background:none;border:1px solid #d1d5db;border-radius:4px;color:#4f46e5;font-size:.72rem;padding:.15rem .55rem;cursor:pointer;';
+        toggle.style.cssText = 'background:none;border:1px solid #d1d5db;border-radius:4px;color:#4f46e5;font-size:.72rem;padding:.15rem .55rem;cursor:pointer;margin-bottom:.4rem;';
         toggle.textContent = '▾ Show zones';
-
-        const detail = document.createElement('div');
-        detail.style.cssText = 'display:none;padding:.5rem 1.5rem .65rem;flex-wrap:wrap;gap:.35rem;border-top:1px solid #e5e7eb;';
+        const chips = document.createElement('div');
+        chips.style.cssText = 'display:none;flex-wrap:wrap;gap:.3rem;margin-top:.4rem;';
         zoneNames.sort().forEach(n => {
           const chip = document.createElement('span');
           chip.style.cssText = 'background:#e0e7ff;color:#3730a3;border-radius:99px;padding:.1rem .55rem;font-size:.72rem;font-weight:500;';
           chip.textContent = n;
-          detail.appendChild(chip);
+          chips.appendChild(chip);
         });
-
         let open = false;
         toggle.addEventListener('click', () => {
           open = !open;
-          detail.style.display = open ? 'flex' : 'none';
+          chips.style.display = open ? 'flex' : 'none';
           toggle.textContent = open ? '▴ Hide zones' : '▾ Show zones';
         });
+        left.appendChild(toggle);
+        left.appendChild(chips);
 
-        pill.appendChild(stats);
-        pill.appendChild(toggle);
-        bar.appendChild(pill);
-        bar.appendChild(detail);
+        // Right panel — mini-map (always visible, loads from local GeoJSON)
+        const right = document.createElement('div');
+        right.style.cssText = 'flex:0 0 260px;width:260px;border-left:1px solid #e5e7eb;';
+        const miniMapDiv = document.createElement('div');
+        miniMapDiv.id = 'zone-minimap';
+        miniMapDiv.style.cssText = 'width:100%;height:140px;background:#f3f4f6;';
+        right.appendChild(miniMapDiv);
+
+        layout.appendChild(left);
+        layout.appendChild(right);
+        bar.appendChild(layout);
+
+        // Init mini-map immediately — GeoJSON is local (fast CDN), no DAWA roundtrip
+        requestAnimationFrame(() => window.initZoneMiniMap(ids, currentZoneType));
       }
 
       // ══ DEMOGRAPHICS / ECONOMICS DOMAIN VIEWS ════════════════════════════════
@@ -2516,126 +2603,112 @@
         ANL: 'Capital expenditures / capita',
       };
 
-      async function renderFinancial(ids) {
+      function renderFinancial(ids) {
         const container = document.getElementById('financial-container');
         if (!container) return;
 
         if (currentZoneType !== 'kommune') {
-          container.innerHTML = '<p style="padding:2rem;color:#6b7280;">Financial data is available at municipality (kommune) level only. Switch the geographic level on the map to Kommune.</p>';
+          container.innerHTML = '<p style="padding:2rem;color:#6b7280;">Financial data is available at municipality (kommune) level only.</p>';
           return;
         }
 
-        container.innerHTML = `<div style="display:flex;align-items:center;gap:1rem;padding:2rem;color:#6b7280;font-size:.9rem;">
-          <div style="width:24px;height:24px;border:3px solid #e2e8f0;border-top-color:#4f46e5;border-radius:50%;animation:profile-spin .7s linear infinite;flex-shrink:0;"></div>
-          Fetching municipal finance data from Statistics Denmark…
-        </div>`;
+        // Financial data is pre-loaded in data.json under kommuneData[id].Financial
+        const FIN_LABELS = [
+          'Operating expenses/capita (DKK)',
+          'Service costs/capita (DKK)',
+          'Health care/capita (DKK)',
+          'Long-term debt/capita (DKK)',
+          'Capital expenditures/capita (DKK)',
+          'Education spending/pupil (DKK)',
+          'Day care/child (DKK)',
+          'Elderly care/capita (DKK)',
+        ];
 
-        try {
-          // NGLK uses: OMRÅDE (3-digit DST codes), BNØGLE (key figure), Tid (year)
-          // dawaToDs() converts DAWA 4-digit codes → 3-digit DST codes (from dst-explorer.js)
-          const dstCodes  = ids.map(id => dawaToDs(id));
-          const info      = await dstTableInfo('NGLK');
-          const tidVar    = info.variables.find(v => v.id === 'Tid');
-          const latestYear = latestTidValue(tidVar) || String(new Date().getFullYear() - 1);
+        const zoneRows = ids.map(id => ({
+          id,
+          name: zoneName(id),
+          fin: kommuneData[id]?.Financial || null,
+        })).filter(z => z.fin && Object.keys(z.fin).length > 0);
 
-          // Fetch NET expenditures, current prices, all key figures, latest year
-          const { rows } = await dstFetch('NGLK', [
-            { code: 'OMRÅDE',      values: dstCodes },
-            { code: 'BNØGLE',      values: ['*'] },
-            { code: 'BRUTNETUDG',  values: ['NET'] },
-            { code: 'PRISENHED',   values: ['AARPRIS'] },
-            { code: 'Tid',         values: [latestYear] },
-          ]);
-
-          if (!rows.length) throw new Error('No data returned for selected municipalities');
-
-          // Column detection: use positional fallback if regex doesn't match
-          // DST English CSV for NGLK returns headers like: region, key figures, gross/net..., price unit, time, INDHOLD
-          const keys     = Object.keys(rows[0]);
-          const areaKey  = keys.find(k => /region|område/i.test(k))      ?? keys[0];
-          const bnKey    = keys.find(k => /key.?fig|bnøgle|nøgle/i.test(k)) ?? keys[1];
-          const valKey   = keys.find(k => /indhold/i.test(k))            ?? keys.at(-1);
-
-          // Pivot: zoneName → bnøgle → value
-          const pivot = {};   // dstCode → { bnøgle: value }
-          const zoneNames = {};
-          rows.forEach(row => {
-            const area = row[areaKey];
-            const bn   = row[bnKey];
-            const raw  = row[valKey];
-            if (!area || !bn) return;
-            if (!pivot[area]) pivot[area] = {};
-            // Values can be strings with dots/commas — normalise
-            const num = parseFloat(String(raw).replace(/\./g, '').replace(',', '.'));
-            pivot[area][bn] = isNaN(num) ? null : num;
-            zoneNames[area] = area; // DST CSV uses municipality name as label
-          });
-
-          // Zone name from CSV area column (it's the municipality name, not the code)
-          // Rebuild using the actual row area values (which may be names, not codes)
-          const zoneList = Object.keys(pivot);
-          const bnList   = Object.keys(NGLK_LABELS);
-
-          container.innerHTML = '';
-
-          const hdr = document.createElement('div');
-          hdr.style.cssText = 'padding:1.25rem 1.5rem .5rem;';
-          hdr.innerHTML = `<h2 style="font-size:1rem;font-weight:700;color:#1e3a5f;margin:0 0 .2rem;">Municipal Finances — Key Figures ${escapeHtml(latestYear)}</h2>
-            <p style="font-size:.75rem;color:#6b7280;margin:0;">Source: Statistics Denmark · NGLK · Net expenditures · Current prices (DKK) · <a href="https://api.statbank.dk" target="_blank" style="color:#4f46e5;">api.statbank.dk</a></p>`;
-          container.appendChild(hdr);
-
-          const scroll = document.createElement('div');
-          scroll.style.cssText = 'overflow:auto;padding:0 1.5rem 2rem;max-height:70vh;';
-
-          const tbl = document.createElement('table');
-          tbl.style.cssText = 'width:100%;border-collapse:collapse;font-size:.77rem;background:#fff;border:1px solid #e5e7eb;';
-
-          // Header: key figures as rows, zones as columns
-          const thead = document.createElement('thead');
-          const hRow  = document.createElement('tr');
-          const thFirst = document.createElement('th');
-          thFirst.style.cssText = 'background:#1e3a5f;color:#fff;padding:.5rem .9rem;text-align:left;position:sticky;top:0;left:0;z-index:2;white-space:nowrap;';
-          thFirst.textContent = 'Key Figure';
-          hRow.appendChild(thFirst);
-          zoneList.forEach(zone => {
-            const th = document.createElement('th');
-            th.style.cssText = 'background:#1e3a5f;color:#fff;padding:.5rem .75rem;text-align:right;position:sticky;top:0;z-index:1;white-space:nowrap;';
-            th.textContent = zone;
-            hRow.appendChild(th);
-          });
-          thead.appendChild(hRow);
-          tbl.appendChild(thead);
-
-          const tbody = document.createElement('tbody');
-          bnList.forEach((bn, ri) => {
-            // Skip if no zone has data for this key figure
-            if (!zoneList.some(z => pivot[z]?.[bn] != null)) return;
-            const tr = document.createElement('tr');
-            tr.style.cssText = `border-bottom:1px solid #f0f0f0;${ri%2===1?'background:#f9fafb;':''}`;
-
-            const labelTd = document.createElement('td');
-            labelTd.style.cssText = 'padding:.42rem .9rem;font-weight:500;color:#1e3a5f;position:sticky;left:0;background:inherit;white-space:nowrap;';
-            labelTd.textContent = NGLK_LABELS[bn] || bn;
-            tr.appendChild(labelTd);
-
-            zoneList.forEach(zone => {
-              const td  = document.createElement('td');
-              td.style.cssText = 'padding:.42rem .75rem;text-align:right;font-family:"JetBrains Mono",monospace;color:#374151;';
-              const val = pivot[zone]?.[bn];
-              td.textContent = val != null ? Math.round(val).toLocaleString() : '–';
-              tr.appendChild(td);
-            });
-            tbody.appendChild(tr);
-          });
-          tbl.appendChild(tbody);
-          scroll.appendChild(tbl);
-          container.appendChild(scroll);
-
-        } catch (err) {
-          container.innerHTML = `<div style="padding:1.5rem;color:#dc2626;background:#fef2f2;border-radius:8px;margin:1.5rem;">
-            <strong>Could not load financial data.</strong><br>${escapeHtml(err.message)}
-          </div>`;
+        if (!zoneRows.length) {
+          container.innerHTML = '<p style="padding:2rem;color:#6b7280;">No financial data found for selected zones. Re-run the R pipeline to include NGLK data.</p>';
+          return;
         }
+
+        container.innerHTML = '';
+
+        const hdr = document.createElement('div');
+        hdr.style.cssText = 'padding:1.25rem 1.5rem .5rem;';
+        hdr.innerHTML = `<h2 style="font-size:1rem;font-weight:700;color:#1e3a5f;margin:0 0 .2rem;">Municipal Finances — Key Figures 2025</h2>
+          <p style="font-size:.75rem;color:#6b7280;margin:0;">Source: Statistics Denmark · NGLK · Net expenditures · Current prices (DKK) · <a href="https://api.statbank.dk" target="_blank" style="color:#4f46e5;">api.statbank.dk</a></p>`;
+        container.appendChild(hdr);
+
+        const scroll = document.createElement('div');
+        scroll.style.cssText = 'overflow:auto;padding:0 1.5rem 2rem;max-height:70vh;';
+
+        const tbl = document.createElement('table');
+        tbl.style.cssText = 'width:100%;border-collapse:collapse;font-size:.77rem;background:#fff;border:1px solid #e5e7eb;';
+
+        // Header row: zones as columns
+        const thead = document.createElement('thead');
+        const hRow  = document.createElement('tr');
+        const thFirst = document.createElement('th');
+        thFirst.style.cssText = 'background:#1e3a5f;color:#fff;padding:.5rem .9rem;text-align:left;position:sticky;top:0;left:0;z-index:2;white-space:nowrap;min-width:220px;';
+        thFirst.textContent = 'Key Figure';
+        hRow.appendChild(thFirst);
+
+        // Denmark average column
+        const thDk = document.createElement('th');
+        thDk.style.cssText = 'background:#374151;color:#fff;padding:.5rem .75rem;text-align:right;position:sticky;top:0;z-index:1;white-space:nowrap;font-style:italic;';
+        thDk.textContent = 'DK avg';
+        hRow.appendChild(thDk);
+
+        zoneRows.forEach(z => {
+          const th = document.createElement('th');
+          th.style.cssText = 'background:#1e3a5f;color:#fff;padding:.5rem .75rem;text-align:right;position:sticky;top:0;z-index:1;white-space:nowrap;';
+          th.textContent = z.name;
+          hRow.appendChild(th);
+        });
+        thead.appendChild(hRow);
+        tbl.appendChild(thead);
+
+        const dkFin = denmarkTotals?.Financial || {};
+        const tbody = document.createElement('tbody');
+        FIN_LABELS.forEach((label, ri) => {
+          if (!zoneRows.some(z => z.fin[label] != null)) return;
+          const tr = document.createElement('tr');
+          tr.style.cssText = `border-bottom:1px solid #f0f0f0;${ri%2===1?'background:#f9fafb;':''}`;
+
+          const labelTd = document.createElement('td');
+          labelTd.style.cssText = 'padding:.42rem .9rem;font-weight:500;color:#1e3a5f;position:sticky;left:0;background:inherit;white-space:nowrap;';
+          labelTd.textContent = label;
+          tr.appendChild(labelTd);
+
+          // Denmark average
+          const dkTd = document.createElement('td');
+          dkTd.style.cssText = 'padding:.42rem .75rem;text-align:right;font-family:"JetBrains Mono",monospace;color:#6b7280;font-style:italic;border-right:2px solid #e5e7eb;';
+          const dkVal = dkFin[label];
+          dkTd.textContent = dkVal != null ? Number(dkVal).toLocaleString() : '–';
+          tr.appendChild(dkTd);
+
+          zoneRows.forEach(z => {
+            const td = document.createElement('td');
+            const val = z.fin[label];
+            const dkV = dkFin[label];
+            // Colour-code vs Denmark: red = higher, green = lower (for cost metrics)
+            let color = '#374151';
+            if (val != null && dkV != null) {
+              color = val > dkV * 1.1 ? '#dc2626' : val < dkV * 0.9 ? '#16a34a' : '#374151';
+            }
+            td.style.cssText = `padding:.42rem .75rem;text-align:right;font-family:"JetBrains Mono",monospace;color:${color};font-weight:${color !== '#374151' ? '600' : '400'};`;
+            td.textContent = val != null ? Number(val).toLocaleString() : '–';
+            tr.appendChild(td);
+          });
+          tbody.appendChild(tr);
+        });
+        tbl.appendChild(tbody);
+        scroll.appendChild(tbl);
+        container.appendChild(scroll);
       }
 
       // ══ ML EXPORT TAB — feature matrix + CSV download ════════════════════════
@@ -2705,9 +2778,10 @@
           <h2 style="font-size:1rem;font-weight:700;color:#1e3a5f;margin:0 0 .2rem;">ML Feature Matrix</h2>
           <p style="font-size:.78rem;color:#6b7280;margin:0;">${escapeHtml(String(rows.length))} zones &times; ${escapeHtml(String(allCols.length))} features &nbsp;&middot;&nbsp; Each row = one area &nbsp;&middot;&nbsp; Ready for model training</p>
         </div>
-        <div style="display:flex;gap:.5rem;">
-          <button id="ml-dl-csv" style="background:#4f46e5;color:#fff;border:none;border-radius:6px;padding:.45rem 1rem;font-size:.82rem;font-weight:600;cursor:pointer;">⬇ Download CSV</button>
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+          <button id="ml-dl-csv" style="background:#4f46e5;color:#fff;border:none;border-radius:6px;padding:.45rem 1rem;font-size:.82rem;font-weight:600;cursor:pointer;">⬇ Cross-section CSV</button>
           <button id="ml-dl-json" style="background:#fff;color:#374151;border:1px solid #d1d5db;border-radius:6px;padding:.45rem 1rem;font-size:.82rem;font-weight:600;cursor:pointer;">⬇ JSON</button>
+          <button id="ml-dl-panel" style="background:#0e7490;color:#fff;border:none;border-radius:6px;padding:.45rem 1rem;font-size:.82rem;font-weight:600;cursor:pointer;">⬇ Panel CSV (2012–2024)</button>
         </div>`;
         container.appendChild(hdr);
 
@@ -2792,6 +2866,56 @@
           a.download = `areastat_ml_features_${ids.length}zones.json`;
           a.click();
         });
+
+        // Panel CSV download — long format: (zone × year) rows with 5 time series
+        document.getElementById('ml-dl-panel').addEventListener('click', () => {
+          const ts = window.timeseriesData || {};
+          const SERIES = [
+            { key: 'income',            col: 'avg_income_dkk' },
+            { key: 'population',        col: 'population' },
+            { key: 'foreign_pct',       col: 'foreign_citizens_pct' },
+            { key: 'unemployment_rate', col: 'unemployment_rate_pct' },
+            { key: 'crime_rate',        col: 'crime_per_1000' },
+          ];
+          const panelCols = ['zone_code','zone_name','region','year',
+            ...SERIES.map(s => s.col)];
+          const panelRows = [];
+          const dataSource = currentZoneType === 'region' ? regionData : kommuneData;
+
+          ids.forEach(id => {
+            const z = dataSource[id];
+            if (!z) return;
+            // all series share TS_YEARS (2012-2024); use income.years as reference
+            const years = (ts.income?.years || []).map(String);
+            years.forEach((yr, yi) => {
+              const row = {
+                zone_code: id,
+                zone_name: zoneName(id),
+                region:    getScalar(z['Region']) || '',
+                year:      yr,
+              };
+              SERIES.forEach(s => {
+                const vals = ts[s.key]?.[id] || ts[s.key]?.[dawaToDs(id)] || null;
+                row[s.col] = (Array.isArray(vals) ? vals[yi] : null) ?? '';
+              });
+              panelRows.push(row);
+            });
+          });
+
+          const lines = [panelCols.join(',')];
+          panelRows.forEach(row => {
+            lines.push(panelCols.map(col => {
+              const v = row[col];
+              const s = v == null ? '' : String(v);
+              return s.includes(',') || s.includes('"') ? `"${s.replace(/"/g,'""')}"` : s;
+            }).join(','));
+          });
+          const blob = new Blob([lines.join('\n')], { type: 'text/csv' });
+          const a = document.createElement('a');
+          a.href = URL.createObjectURL(blob);
+          a.download = `areastat_panel_${ids.length}zones_2012-2024.csv`;
+          a.click();
+        });
       }
 
     </script>
@@ -2811,9 +2935,15 @@
     (function () {
       const ZONE_URLS = {
         kommune: [
+          './data/kommuner.geojson',
           'https://api.dataforsyningen.dk/kommuner?format=geojson&srid=4326',
         ],
+        region: [
+          './data/regioner.geojson',
+          'https://api.dataforsyningen.dk/regioner?format=geojson&srid=4326',
+        ],
         sogn: [
+          './data/regioner.geojson',
           'https://api.dataforsyningen.dk/regioner?format=geojson&srid=4326',
         ],
       };

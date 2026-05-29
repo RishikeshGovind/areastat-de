@@ -9,12 +9,19 @@ const ML_BASE = _IS_LOCAL
 
 const DEFAULT_PROFILE_CATEGORIES = [
   'AgeStructure',
+  'PopulationDynamics',
   'LabourMarket',
   'Economy',
   'Education',
   'Migration',
+  'Ancestry',
   'Housing',
-  'Safety'
+  'Safety',
+  'Welfare',
+  'Financial',
+  'Health',
+  'Businesses',
+  'Vehicles'
 ];
 
 const EXCLUDED_PROFILE_KEYS = [
@@ -114,13 +121,20 @@ const LABEL_EN = {
 };
 
 const DOMAIN_EN = {
-  'AgeStructure': 'Age Structure',
-  'LabourMarket': 'Labour Market',
-  'Economy':      'Economy',
-  'Education':    'Education',
-  'Migration':    'Migration',
-  'Housing':      'Housing',
-  'Safety':       'Safety',
+  'AgeStructure':       'Age Structure',
+  'PopulationDynamics': 'Population Dynamics',
+  'LabourMarket':       'Labour Market',
+  'Economy':            'Economy',
+  'Education':          'Education',
+  'Migration':          'Migration',
+  'Ancestry':           'Ancestry',
+  'Housing':            'Housing',
+  'Safety':             'Safety',
+  'Welfare':            'Welfare',
+  'Financial':          'Municipal Finances',
+  'Health':             'Health',
+  'Businesses':         'Businesses',
+  'Vehicles':           'Vehicles',
 };
 
 const RATE_PER_1000_DOMAIN     = 'Economy';
