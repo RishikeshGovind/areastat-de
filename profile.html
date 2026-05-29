@@ -1194,9 +1194,9 @@
           const clusterNum = parseInt(clusterId.split('_').pop(), 10);
 
           const zoneChips  = zones.map(z => `<span class="typology-zone-chip">${escapeHtml(z)}</span>`).join('');
-          const traitItems = (info.common_traits || []).map(t => `<li>${escapeHtml(t)}</li>`).join('') || '<li>—</li>';
-          const chalItems  = (info.challenges    || []).map(c => `<li>${escapeHtml(c)}</li>`).join('') || '<li>—</li>';
-          const oppItems   = (info.opportunities || []).map(o => `<li>${escapeHtml(o)}</li>`).join('') || '<li>—</li>';
+          const traitItems = [].concat(info.common_traits || []).map(t => `<li>${escapeHtml(t)}</li>`).join('') || '<li>—</li>';
+          const chalItems  = [].concat(info.challenges    || []).map(c => `<li>${escapeHtml(c)}</li>`).join('') || '<li>—</li>';
+          const oppItems   = [].concat(info.opportunities || []).map(o => `<li>${escapeHtml(o)}</li>`).join('') || '<li>—</li>';
 
           // Differentiator bars
           const diffs = profileByCluster[clusterNum] || [];
