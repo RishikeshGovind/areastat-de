@@ -12,3 +12,5 @@ category_lookup.json
 __pycache__/
 *.pyc
 .DS_Store.venv/
+areastat-dk-python-api/
+areastat-dk-r-api/
