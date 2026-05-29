@@ -74,11 +74,13 @@
     <script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
 
     <script>
-      // ── Boundary URLs — DAWA (Danmarks Adressers Web API), public, no auth required
-      const REGION_URLS = [
+      // ── Boundary sources: local (fast, Netlify CDN) → DAWA fallback
+      const REGION_URLS  = [
+        './data/regioner.geojson',
         'https://api.dataforsyningen.dk/regioner?format=geojson&srid=4326',
       ];
       const KOMMUNE_URLS = [
+        './data/kommuner.geojson',
         'https://api.dataforsyningen.dk/kommuner?format=geojson&srid=4326',
       ];
 
@@ -86,8 +88,8 @@
         for (const url of urls) {
           try {
             const r = await fetch(url);
-            if (r.ok) { console.log(`Loaded ${label} from: ${url}`); return r.json(); }
-          } catch (_) { /* try next */ }
+            if (r.ok) return r.json();
+          } catch (_) {}
         }
         throw new Error(`All ${label} URL attempts failed`);
       }
@@ -121,11 +123,24 @@
           container: 'map',
           style: 'https://tiles.openfreemap.org/styles/bright',
           center: [10.2, 56.1],
-          zoom: 6.5,
+          zoom: 6,
           minZoom: 5.0,
           maxZoom: 13,
-          maxBounds: [[7.0, 54.4], [15.5, 58.2]]
+          // Wider western bound so camera can shift left to centre Denmark in usable area
+          maxBounds: [[3.0, 54.0], [16.5, 58.5]]
         });
+
+        // setPadding permanently registers the card offset with MapLibre's camera.
+        // All subsequent fitBounds/setCenter calls automatically account for it.
+        const CARD_W = 256;
+        map.setPadding({ left: CARD_W + 20, top: 0, right: 0, bottom: 0 });
+
+        function fitDenmark(animate) {
+          map.fitBounds([[7.8, 54.7], [14.5, 57.8]], {
+            padding: { top: 40, right: 40, bottom: 40, left: 20 }, // extra breathing room
+            duration: animate ? 1800 : 0
+          });
+        }
 
         let activeZone = 'kommune';
         let currentZoneType = 'kommune';
@@ -181,6 +196,7 @@
 
         map.on('load', () => {
           mapLoaded = true;
+          fitDenmark(false);
           tryAddSources();
         });
 
