@@ -188,9 +188,10 @@ health <- function() {
 
 
 #* @get /cluster_typology
-#* @serializer json
+#* @serializer unboxedJSON
 #* @param ids Comma-separated 4-digit kommune codes (e.g. "0101,0147,0751")
 cluster_typology <- function(ids = "", res) {
+  tryCatch({
   sel_ids   <- trimws(strsplit(ids, ",", fixed = TRUE)[[1]])
   if (length(sel_ids) < 3) {
     res$status <- 400
@@ -201,13 +202,16 @@ cluster_typology <- function(ids = "", res) {
   if (length(sel_zones) < 3) {
     res$status <- 400
     return(list(error = sprintf(
-      "Only %d valid zones found (need ≥ 3).", length(sel_zones)
+      "Only %d valid zones found (need ≥ 3). Sent: %s. Keys sample: %s",
+      length(sel_zones),
+      paste(sel_ids[1:min(3,length(sel_ids))], collapse=","),
+      paste(names(all_zones)[1:min(3,length(all_zones))], collapse=",")
     )))
   }
 
   mat        <- build_zone_matrix(sel_zones)
   scaled_mat <- scale(mat, center = TRUE, scale = TRUE)
-  scaled_mat[is.nan(scaled_mat)] <- 0
+  scaled_mat[!is.finite(scaled_mat)] <- 0   # replace NA/NaN/Inf from missing indicators
 
   k <- max(2L, min(3L, nrow(scaled_mat) - 1L))
   set.seed(123)
@@ -246,6 +250,10 @@ cluster_typology <- function(ids = "", res) {
     profiles    = profiles,
     dk_profile  = as.list(at_vector)
   )
+  }, error = function(e) {
+    res$status <- 500
+    list(error = conditionMessage(e))
+  })
 }
 
 
@@ -262,7 +270,7 @@ cluster_plot_data <- function(ids = "", res) {
 
   mat        <- build_zone_matrix(sel_zones)
   scaled_mat <- scale(mat, center = TRUE, scale = TRUE)
-  scaled_mat[is.nan(scaled_mat)] <- 0
+  scaled_mat[!is.finite(scaled_mat)] <- 0
 
   k  <- min(3, nrow(scaled_mat))
   set.seed(123)

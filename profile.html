@@ -1693,9 +1693,12 @@
 
         const CLUSTER_COLORS = ['#1d6fa5','#e07520','#2ca25f','#6b2d8b','#dc2626','#0e7490'];
 
+        // R may wrap scalars in arrays — unwrap safely
+        const unbox = v => Array.isArray(v) ? v[0] : v;
+
         Object.entries(cluster.summary || {}).forEach(([clKey, cl], i) => {
           const clr   = CLUSTER_COLORS[i % CLUSTER_COLORS.length];
-          const nZ    = cl.count || 0;
+          const nZ    = unbox(cl.count) || 0;
           const block = document.createElement('div');
           block.className = 'fcb2-block';
           block.style.borderTopColor = clr;
@@ -1720,10 +1723,12 @@
 
           const drivers = (cl.drivers || []).slice(0,4);
           const driverRows = drivers.map(d => {
-            const pct = Math.round(Math.abs(d.pct_over || 0));
-            const pos = (d.pct_over || 0) >= 0;
+            const pctOver  = parseFloat(unbox(d.pct_over)) || 0;
+            const pct = Math.round(Math.abs(pctOver));
+            const pos = pctOver >= 0;
             const col = pos ? '#dc2626' : '#16a34a';
-            const varShort = (d.variable || '').replace(/^[^.]+\./, '');
+            const varRaw   = unbox(d.variable) || '';
+            const varShort = varRaw.replace(/^[^.]+\./, '');
             return `<div class="shap-row">
               <span class="shap-sign" style="color:${col}">${pos ? '▲' : '▼'}</span>
               <span class="shap-feat">${escapeHtml(varShort)}</span>
@@ -1752,7 +1757,7 @@
           // Right: zone list
           const right = document.createElement('div');
           right.className = 'fcb2-right';
-          const zones  = cl.zones || [];
+          const zones  = (cl.zones || []).map(unbox);
           const listId = `dkc-zones-${i}`;
           right.innerHTML = `<div class="fcb2-zones-hdr">
             <span>${nZ} zone${nZ!==1?'s':''} in this cluster</span>
