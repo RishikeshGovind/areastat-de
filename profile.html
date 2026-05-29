@@ -720,10 +720,16 @@
             const atVal  = comparableDenmarkValue(domain, rawLabel, atDomain[rawLabel]);
             const fmt    = v => formatIndicatorValue(domain, rawLabel, v);
             const label  = displayIndicatorLabel(domain, rawLabel);
-            const maxVal = Math.max(value, atVal ?? 0) * 1.12 || 1;
-            const barPct = Math.min((value / maxVal) * 100, 100).toFixed(1);
-            const atPct  = atVal != null ? Math.min((atVal / maxVal) * 100, 100).toFixed(1) : null;
-            const overAT = atVal != null && value > atVal;
+            const minVal   = Math.min(value, atVal ?? value, 0);
+            const maxVal   = Math.max(value, atVal ?? 0, 0) * 1.12 || 1;
+            const range    = (maxVal - minVal) || 1;
+            const zeroPct  = ((-minVal / range) * 100).toFixed(1);
+            const valPct   = ((value  - minVal) / range * 100).toFixed(1);
+            const barLeft  = Math.min(+zeroPct, +valPct).toFixed(1);
+            const barWidth = Math.abs(+zeroPct - +valPct).toFixed(1);
+            const atPct    = atVal != null ? (((atVal - minVal) / range) * 100).toFixed(1) : null;
+            const overAT   = atVal != null && value > atVal;
+            const showZero = minVal < 0;
 
             const row = document.createElement('div');
             row.className = 'css-indicator-row';
@@ -733,7 +739,8 @@
                 <span class="css-indicator-value">${escapeHtml(fmt(value))}${atVal != null ? ` <span class="css-indicator-at">(AT: ${escapeHtml(fmt(atVal))})</span>` : ''}</span>
               </div>
               <div class="css-bar-track">
-                <div class="css-bar-fill${overAT ? ' over-at' : ''}" style="width:${barPct}%"></div>
+                <div class="css-bar-fill${overAT ? ' over-at' : ''}" style="left:${barLeft}%;width:${barWidth}%"></div>
+                ${showZero ? `<div class="css-bar-zero" style="left:${zeroPct}%"></div>` : ''}
                 ${atPct != null ? `<div class="css-bar-at" style="left:${atPct}%"></div>` : ''}
               </div>`;
             card.appendChild(row);
@@ -2623,10 +2630,16 @@
             const atVal  = comparableDenmarkValue(domain, rawLabel, atDomain[rawLabel]);
             const fmt    = v => formatIndicatorValue(domain, rawLabel, v);
             const label  = displayIndicatorLabel(domain, rawLabel);
-            const maxVal = Math.max(value, atVal ?? 0) * 1.12 || 1;
-            const barPct = Math.min((value / maxVal) * 100, 100).toFixed(1);
-            const atPct  = atVal != null ? Math.min((atVal / maxVal) * 100, 100).toFixed(1) : null;
-            const overAT = atVal != null && value > atVal;
+            const minVal   = Math.min(value, atVal ?? value, 0);
+            const maxVal   = Math.max(value, atVal ?? 0, 0) * 1.12 || 1;
+            const range    = (maxVal - minVal) || 1;
+            const zeroPct  = ((-minVal / range) * 100).toFixed(1);
+            const valPct   = ((value  - minVal) / range * 100).toFixed(1);
+            const barLeft  = Math.min(+zeroPct, +valPct).toFixed(1);
+            const barWidth = Math.abs(+zeroPct - +valPct).toFixed(1);
+            const atPct    = atVal != null ? (((atVal - minVal) / range) * 100).toFixed(1) : null;
+            const overAT   = atVal != null && value > atVal;
+            const showZero = minVal < 0;
 
             const row = document.createElement('div');
             row.className = 'css-indicator-row';
@@ -2636,7 +2649,8 @@
                 <span class="css-indicator-value">${escapeHtml(fmt(value))}${atVal != null ? ` <span class="css-indicator-at">(DK: ${escapeHtml(fmt(atVal))})</span>` : ''}</span>
               </div>
               <div class="css-bar-track">
-                <div class="css-bar-fill${overAT ? ' over-at' : ''}" style="width:${barPct}%"></div>
+                <div class="css-bar-fill${overAT ? ' over-at' : ''}" style="left:${barLeft}%;width:${barWidth}%"></div>
+                ${showZero ? `<div class="css-bar-zero" style="left:${zeroPct}%"></div>` : ''}
                 ${atPct != null ? `<div class="css-bar-at" style="left:${atPct}%"></div>` : ''}
               </div>`;
             card.appendChild(row);

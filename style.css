@@ -1782,6 +1782,13 @@ button {
   border-radius: 2px;
   transform: translateX(-50%);
 }
+.css-bar-zero {
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 2px;
+  background: #9ca3af;
+  transform: translateX(-50%);
+}
 
 /* ── Trends: improved card ── */
 .trends-grid {
