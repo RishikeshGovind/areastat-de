@@ -1338,37 +1338,51 @@
         const idsParam = analysisIds.join(',');
         const idsBody  = JSON.stringify({ ids: analysisIds });
 
-        const TS_METRICS = [
-          { key: 'deficit_ratio',      label: 'Deficit Ratio',        fmt: v => (v*100).toFixed(1)+'%' },
-          { key: 'exp_per_capita',     label: 'Expenditure / Capita', fmt: v => '€'+Math.round(v).toLocaleString() },
-          { key: 'rev_per_capita',     label: 'Revenue / Capita',     fmt: v => '€'+Math.round(v).toLocaleString() },
-          { key: 'balance_per_capita', label: 'Balance / Capita',     fmt: v => (v>=0?'+':'')+'€'+Math.round(v).toLocaleString() },
-          { key: 'exp_growth',         label: 'Expenditure Growth',   fmt: v => (v*100).toFixed(1)+'%' },
-          { key: 'rev_growth',         label: 'Revenue Growth',       fmt: v => (v*100).toFixed(1)+'%' },
+        // Time series pulled from pre-loaded data.json (no extra API calls)
+        const TS_SERIES = [
+          { key: 'income',            label: 'Avg Income (DKK)',      fmt: v => 'DKK ' + Math.round(v).toLocaleString() },
+          { key: 'unemployment_rate', label: 'Unemployment Rate (%)', fmt: v => v.toFixed(1) + '%' },
+          { key: 'population',        label: 'Population',            fmt: v => Math.round(v).toLocaleString() },
+          { key: 'foreign_pct',       label: 'Foreign Citizens (%)',  fmt: v => v.toFixed(1) + '%' },
+          { key: 'crime_rate',        label: 'Crime Rate per 1,000',  fmt: v => v.toFixed(1) },
         ];
 
         try {
-          const [riskRes, profileRes, clusterRes, mlRes, shapRes, ...tsResults] = await Promise.allSettled([
-            fetch(`${PLUMBER_BASE}/fiscal_risk_summary?ids=${encodeURIComponent(idsParam)}`).then(r => r.json()),
-            fetch(`${PLUMBER_BASE}/fiscal_profile?ids=${encodeURIComponent(idsParam)}`).then(r => r.json()),
-            fetch(`${PLUMBER_BASE}/fiscal_clustering?ids=${encodeURIComponent(idsParam)}&k=3`).then(r => r.json()),
+          const [clusterRes, mlRes, shapRes] = await Promise.allSettled([
+            fetch(`${PLUMBER_BASE}/cluster_typology?ids=${encodeURIComponent(idsParam)}`).then(r => r.json()),
             fetch(`${ML_BASE}/predict_distress`, { method:'POST', headers:{'Content-Type':'application/json'}, body: idsBody }).then(r => r.json()),
-            fetch(`${ML_BASE}/shap_explain`,     { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ ids, top_n: 6 }) }).then(r => r.json()),
-            ...TS_METRICS.map(m => fetch(`${PLUMBER_BASE}/fiscal_timeseries?ids=${encodeURIComponent(idsParam)}&metric=${m.key}`).then(r => r.json())),
+            fetch(`${ML_BASE}/shap_explain`,     { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ ids: analysisIds, top_n: 6 }) }).then(r => r.json()),
           ]);
 
           clearTimeout(warmupTimer);
-          const risk    = riskRes.status    === 'fulfilled' ? riskRes.value    : null;
-          const profile = profileRes.status === 'fulfilled' ? profileRes.value : null;
           const cluster = clusterRes.status === 'fulfilled' ? clusterRes.value : null;
           const ml      = mlRes.status      === 'fulfilled' ? mlRes.value      : null;
           const shap    = shapRes.status    === 'fulfilled' ? shapRes.value     : null;
-          const tsData  = tsResults.map((r, i) => ({
-            ...TS_METRICS[i],
-            data: r.status === 'fulfilled' && !r.value.error ? r.value : null
-          })).filter(t => t.data);
 
-          window.latestAnalysisData = { ml, risk, profile, cluster, tsData, shap };
+          // Build tsData from window.timeseriesData (already loaded with data.json)
+          const tsData = TS_SERIES.map(s => {
+            const ser = window.timeseriesData?.[s.key];
+            if (!ser?.years?.length) return null;
+            const yrs  = ser.years.map(String);
+            const series = analysisIds.map(id => {
+              const vals = ser[id];
+              if (!vals) return null;
+              return { gcd: id, zone_code: id, years: yrs.map(Number), values: vals.map(Number) };
+            }).filter(Boolean);
+            if (!series.length) return null;
+            const dkVals = ser['000'];
+            return {
+              key: s.key, label: s.label, fmt: s.fmt,
+              data: {
+                metric: s.key,
+                years_available: yrs.map(Number),
+                series,
+                national_median: dkVals ? { years: yrs.map(Number), values: dkVals.map(Number) } : null,
+              },
+            };
+          }).filter(Boolean);
+
+          window.latestAnalysisData = { ml, cluster, tsData, shap };
 
           container.innerHTML = '';
 
@@ -1380,37 +1394,35 @@
             <div style="flex:1;min-width:0;">
               <strong>Data &amp; Model Notes</strong>
               <ul style="margin:.45rem 0 0;padding-left:1.1rem;line-height:1.65;list-style:disc;">
-                <li><strong>Data source:</strong> Fiscal indicators are drawn from Statistics Denmark (DST)
-                  public API (api.statbank.dk) at Kommune level (reference year <strong>2020</strong>).
-                  Socio-demographic indicators come from DST FOLK1A and related tables.</li>
-                <li><strong>Train / test split:</strong> The XGBoost distress classifier uses a
-                  <strong>stratified 80 / 20 split</strong> on the 2020 cross-section
-                  (stratified by Region to preserve regional representation).
-                  AUC-ROC is reported on the held-out test set.</li>
-                <li><strong>Temporal scope:</strong> Predictions are anchored to 2020.
-                  Extending to a longitudinal panel is a core next step of this research.</li>
+                <li><strong>Data source:</strong> Panel data drawn from Statistics Denmark (DST)
+                  public API at Kommune level — 98 municipalities × 13 years (2012–2024).
+                  Indicators: avg income, population, foreign citizens %, unemployment rate, crime rate.</li>
+                <li><strong>ML target:</strong> Binary — will this municipality have
+                  <strong>above-median unemployment</strong> next year?
+                  Temporal train/test split: train 2012–2018, test 2020–2023.</li>
+                <li><strong>Clustering:</strong> K-means (k=3) on all indicator domains from data.json
+                  via the R Plumber API. Trait interpretation uses Danish policy context.</li>
               </ul>
             </div>`;
           container.appendChild(dataNoteEl);
 
-          const rDown = !risk   || risk.error;
+          const rDown = !cluster || cluster.error;
           const mDown = !ml     || ml.detail;
           if (rDown || mDown) {
             const banner = document.createElement('div');
             banner.className = 'analysis-api-banner';
             banner.innerHTML = [
-              rDown ? '⚠ R analysis API not responding — fiscal indicators unavailable.' : '',
-              mDown ? '⚠ Python ML API not responding — distress predictions unavailable.' : '',
+              rDown ? '⚠ R API not responding — clustering unavailable.' : '',
+              mDown ? '⚠ Python ML API not responding — predictions unavailable.' : '',
             ].filter(Boolean).join('<br>');
             container.appendChild(banner);
           }
 
           const ATABS = [
-            { id: 'atab-ml',       label: 'ML Distress',    available: !!(ml && ml.zones) },
-            { id: 'atab-risk',     label: 'Risk Summary',   available: !!(risk && risk.zones) },
-            { id: 'atab-spending', label: 'Spending',       available: !!(profile && profile.zones) },
-            { id: 'atab-cluster',  label: 'Clustering',     available: !!(cluster && cluster.profiles) },
-            { id: 'atab-trends',   label: 'Trends',         available: tsData.length > 0 },
+            { id: 'atab-ml',      label: 'ML Risk',       available: !!(ml && ml.zones) },
+            { id: 'atab-cluster', label: 'Clustering',    available: !!(cluster && cluster.summary) },
+            { id: 'atab-socio',   label: 'Socio Profile', available: analysisIds.length > 0 },
+            { id: 'atab-trends',  label: 'Trends',        available: tsData.length > 0 },
           ].filter(t => t.available);
 
           if (ATABS.length === 0) {
@@ -1442,32 +1454,25 @@
               renderMLRiskSection(p, ml, shap);
               panelWrap.appendChild(p);
             }
-            if (risk && risk.zones) {
-              const p = document.createElement('div');
-              p.className = 'analysis-panel'; p.id = 'atab-risk';
-              p.style.display = 'none';
-              renderRiskSummarySection(p, risk);
-              panelWrap.appendChild(p);
-            }
-            if (profile && profile.zones) {
-              const p = document.createElement('div');
-              p.className = 'analysis-panel'; p.id = 'atab-spending';
-              p.style.display = 'none';
-              renderSpendingProfileSection(p, profile);
-              panelWrap.appendChild(p);
-            }
-            if (cluster && cluster.profiles) {
+            if (cluster && cluster.summary) {
               const p = document.createElement('div');
               p.className = 'analysis-panel'; p.id = 'atab-cluster';
               p.style.display = 'none';
-              renderFiscalClusterSection(p, cluster);
+              renderDkClusterSection(p, cluster);
+              panelWrap.appendChild(p);
+            }
+            if (analysisIds.length > 0) {
+              const p = document.createElement('div');
+              p.className = 'analysis-panel'; p.id = 'atab-socio';
+              p.style.display = 'none';
+              renderSocioProfileSection(p, analysisIds);
               panelWrap.appendChild(p);
             }
             if (tsData.length > 0) {
               const p = document.createElement('div');
               p.className = 'analysis-panel'; p.id = 'atab-trends';
               p.style.display = 'none';
-              renderTrendsSection(p, tsData, ids);
+              renderTrendsSection(p, tsData, analysisIds);
               panelWrap.appendChild(p);
             }
 
@@ -1495,25 +1500,30 @@
       }
 
       function renderMLRiskSection(container, ml, shap) {
-        const sec  = makeSection('ML Fiscal Distress Prediction', `XGBoost · Predicts deficit in ${ml.year + 1} · AUC-ROC 0.632`);
+        const predYr = (ml.year || 2023) + 1;
+        const sec  = makeSection('ML Unemployment Risk Prediction',
+          `XGBoost · Above-median unemployment risk in ${predYr} · trained on DST panel 2012–2024`);
         const grid = document.createElement('div');
         grid.className = 'analysis-risk-grid';
 
         ml.zones.forEach(zone => {
-          const shapZone = shap?.explanations?.find(e => e.gcd === zone.gcd);
+          const zoneId  = zone.zone_code || zone.gcd;
+          const shapZone = shap?.explanations?.find(e => (e.zone_code || e.gcd) === zoneId);
           const card    = document.createElement('div');
           const riskCat = safeStr(zone.risk_category, 'Low');
           const riskKey = riskCat.toLowerCase();
           card.className = `analysis-risk-card arc-card risk-${riskKey}`;
 
-          const prob  = Math.round((zone.distress_probability || 0) * 100);
+          const prob  = Math.round((zone.high_unemp_probability || zone.distress_probability || 0) * 100);
           const color = riskColor(riskCat);
+          const curUnemp = zone.current_unemp_rate != null ? Number(zone.current_unemp_rate).toFixed(1) + '%' : '–';
+          const natMed   = zone.national_median_unemp != null ? Number(zone.national_median_unemp).toFixed(1) + '%' : null;
           card.innerHTML = `
             <div class="arc-card-header risk-${riskKey}">
               <div class="arc-card-title-row">
                 <div>
-                  <div class="arc-gcd">${escapeHtml(zoneName(zone.gcd))}</div>
-                  <div class="arc-meta"><span class="arc-gcd-code">${escapeHtml(zone.gcd)}</span> · ${escapeHtml(safeStr(zone.bundesland,''))} · ${escapeHtml(safeStr(zone.settlement_class,''))}</div>
+                  <div class="arc-gcd">${escapeHtml(zoneName(zoneId))}</div>
+                  <div class="arc-meta"><span class="arc-gcd-code">${escapeHtml(zoneId)}</span> · ${escapeHtml(safeStr(zone.region,''))}</div>
                 </div>
                 <div class="arc-badge risk-badge-${escapeHtml(riskKey)}">${escapeHtml(riskCat)}</div>
               </div>
@@ -1522,10 +1532,9 @@
               <div class="arc-gauge-row">
                 <div class="arc-gauge-svg">${svgArcGauge(prob, color)}</div>
                 <div class="arc-gauge-info">
-                  <div class="arc-prob-label">Distress probability<br>in ${(ml.year || 2019) + 1}</div>
-                  ${(zone.deficit_streak || 0) > 0
-                    ? `<div class="arc-streak">${escapeHtml(zone.deficit_streak)} consecutive deficit yr${zone.deficit_streak > 1 ? 's' : ''}</div>`
-                    : '<div class="arc-streak" style="color:#16a34a">No recent streak</div>'}
+                  <div class="arc-prob-label">High unemployment risk<br>in ${predYr}</div>
+                  <div class="arc-streak">Current unemp: <strong>${escapeHtml(curUnemp)}</strong>
+                    ${natMed ? ` · DK median: ${escapeHtml(natMed)}` : ''}</div>
                 </div>
               </div>
               ${shapZone ? renderShapDrivers(shapZone.top_drivers) : ''}
@@ -1657,108 +1666,77 @@
         container.appendChild(sec);
       }
 
-      function renderFiscalClusterSection(container, cluster) {
-        const sec = makeSection('Fiscal Typology Clustering',
-          `K-means on fiscal features · k=${cluster.k} · Year ${cluster.year} · ${cluster.n_zones} zones`);
+      function renderDkClusterSection(container, cluster) {
+        const nClusters = Object.keys(cluster.summary || {}).length;
+        const nZones    = (cluster.assignments || []).length;
+        const sec = makeSection('Municipality Clustering',
+          `K-means on ${Object.keys(cluster.dk_profile || {}).length} indicators · ${nClusters} clusters · ${nZones} zones`);
 
         const CLUSTER_COLORS = ['#1d6fa5','#e07520','#2ca25f','#6b2d8b','#dc2626','#0e7490'];
-        const SPEND_CATS = [
-          { key: 'share_exp_admin',             label: 'Admin' },
-          { key: 'share_exp_education_culture', label: 'Education' },
-          { key: 'share_exp_social_welfare',    label: 'Social' },
-          { key: 'share_exp_health',            label: 'Health' },
-          { key: 'share_exp_infrastructure',    label: 'Infrastructure' },
-          { key: 'share_exp_finance_debt',      label: 'Finance/Debt' },
-        ];
-        const safeNum = (v, mult, dec) => (v != null && !isNaN(Number(v))) ? (Number(v) * mult).toFixed(dec) : null;
 
-        cluster.profiles.forEach((prof, i) => {
-          const clr  = CLUSTER_COLORS[i % CLUSTER_COLORS.length];
-          const nZ   = Number(prof.n_zones) || 0;
-          const aRsk = Number(prof.avg_risk_score) || 0;
-          const top  = safeStr(prof.top_spending_cat, '–').replace(/_/g, ' ');
-          const fp   = prof.fiscal_profile || {};
-          const riskClr = aRsk >= 60 ? '#dc2626' : aRsk >= 30 ? '#f97316' : '#16a34a';
-
+        Object.entries(cluster.summary || {}).forEach(([clKey, cl], i) => {
+          const clr   = CLUSTER_COLORS[i % CLUSTER_COLORS.length];
+          const nZ    = cl.count || 0;
           const block = document.createElement('div');
           block.className = 'fcb2-block';
           block.style.borderTopColor = clr;
 
+          // Header
           const hdr = document.createElement('div');
           hdr.className = 'fcb2-hdr';
           hdr.innerHTML = `
-            <span class="fcb2-badge" style="background:${clr}">Cluster ${escapeHtml(prof.cluster)}</span>
+            <span class="fcb2-badge" style="background:${clr}">${escapeHtml(clKey.replace('_',' '))}</span>
             <span class="fcb2-count">${nZ} zone${nZ !== 1 ? 's' : ''}</span>
-            <span class="fcb2-top">Top spend: <strong>${escapeHtml(top)}</strong></span>
-            <span class="fcb2-risk" style="color:${riskClr}">Avg risk <strong>${aRsk}</strong>/100</span>
+            ${(cl.common_traits||[]).slice(0,2).map(t =>
+              `<span class="fcb2-top">${escapeHtml(t)}</span>`).join('')}
           `;
           block.appendChild(hdr);
 
           const body = document.createElement('div');
           body.className = 'fcb2-body';
 
+          // Left: drivers + challenges + opportunities
           const left = document.createElement('div');
           left.className = 'fcb2-left';
 
-          const kpis = [
-            { label: 'Deficit ratio',  val: safeNum(fp.deficit_ratio, 100, 1) != null ? safeNum(fp.deficit_ratio, 100, 1)+'%' : '–', neg: fp.deficit_ratio > 0.3 },
-            { label: 'Exp/capita',     val: fp.exp_per_capita != null ? '€'+Math.round(fp.exp_per_capita).toLocaleString() : '–', neg: false },
-            { label: 'Rev/capita',     val: fp.rev_per_capita != null ? '€'+Math.round(fp.rev_per_capita).toLocaleString() : '–', neg: false },
-            { label: 'Exp growth',     val: safeNum(fp.exp_growth, 100, 1) != null ? safeNum(fp.exp_growth,100,1)+'%' : '–', neg: fp.exp_growth > 0.05 },
-            { label: 'Rev growth',     val: safeNum(fp.rev_growth, 100, 1) != null ? safeNum(fp.rev_growth,100,1)+'%' : '–', neg: false },
-            { label: 'Deficit streak', val: fp.deficit_streak != null ? Number(fp.deficit_streak).toFixed(1)+' yrs' : '–', neg: fp.deficit_streak > 3 },
-          ];
-          left.innerHTML = `<div class="fcb2-kpi-grid">${
-            kpis.map(k => `<div class="fcb2-kpi">
-              <div class="fcb2-kpi-val" style="color:${k.neg ? '#dc2626' : '#1e3a5f'}">${escapeHtml(k.val)}</div>
-              <div class="fcb2-kpi-lbl">${escapeHtml(k.label)}</div>
-            </div>`).join('')
-          }</div>`;
+          const drivers = (cl.drivers || []).slice(0,4);
+          const driverRows = drivers.map(d => {
+            const pct = Math.round(Math.abs(d.pct_over || 0));
+            const pos = (d.pct_over || 0) >= 0;
+            const col = pos ? '#dc2626' : '#16a34a';
+            const varShort = (d.variable || '').replace(/^[^.]+\./, '');
+            return `<div class="shap-row">
+              <span class="shap-sign" style="color:${col}">${pos ? '▲' : '▼'}</span>
+              <span class="shap-feat">${escapeHtml(varShort)}</span>
+              <div class="shap-bar-wrap">
+                <div class="shap-bar" style="width:${Math.min(pct,100)}%;background:${col};"></div>
+              </div>
+              <span style="font-size:.7rem;color:#6b7280;white-space:nowrap">${pos?'+':''}${pct}% vs DK</span>
+            </div>`;
+          }).join('');
+          left.innerHTML = `<div class="shap-section"><div class="shap-title">Distinctive indicators vs Denmark avg</div>${driverRows}</div>`;
 
-          const maxShare = Math.max(...SPEND_CATS.map(c => Number(fp[c.key]) || 0));
-          left.innerHTML += `<div class="fcb2-spend-title">Spending breakdown (cluster avg)</div>
-            <div class="fcb2-spend-bars">${
-              SPEND_CATS.map(c => {
-                const pct  = ((Number(fp[c.key]) || 0) * 100);
-                const barW = maxShare > 0 ? Math.round((Number(fp[c.key]) || 0) / maxShare * 100) : 0;
-                return `<div class="fcb2-spend-row">
-                  <span class="fcb2-spend-lbl">${escapeHtml(c.label)}</span>
-                  <div class="fcb2-spend-barwrap">
-                    <div class="fcb2-spend-bar" style="width:${barW}%;background:${clr}88;"></div>
-                  </div>
-                  <span class="fcb2-spend-pct">${pct.toFixed(1)}%</span>
-                </div>`;
-              }).join('')
-            }</div>`;
-
+          if ((cl.challenges||[]).length) {
+            left.innerHTML += `<div style="margin-top:.75rem;font-size:.75rem;color:#6b7280;font-weight:600;text-transform:uppercase;letter-spacing:.05em">Challenges</div>
+              <ul style="margin:.3rem 0 0;padding-left:1rem;font-size:.78rem;color:#374151;line-height:1.6">
+                ${(cl.challenges||[]).map(c=>`<li>${escapeHtml(c)}</li>`).join('')}
+              </ul>`;
+          }
+          if ((cl.opportunities||[]).length) {
+            left.innerHTML += `<div style="margin-top:.75rem;font-size:.75rem;color:#16a34a;font-weight:600;text-transform:uppercase;letter-spacing:.05em">Opportunities</div>
+              <ul style="margin:.3rem 0 0;padding-left:1rem;font-size:.78rem;color:#374151;line-height:1.6">
+                ${(cl.opportunities||[]).map(o=>`<li>${escapeHtml(o)}</li>`).join('')}
+              </ul>`;
+          }
           body.appendChild(left);
 
+          // Right: zone list
           const right = document.createElement('div');
           right.className = 'fcb2-right';
-
-          const blDist  = prof.region_dist || prof.bundesland_dist || {};
-          const BL_COLORS = ['#1d6fa5','#e07520','#2ca25f','#6b2d8b','#dc2626','#0e7490','#b45309','#0f766e','#7c3aed'];
-          const blEntries = Object.entries(blDist).sort((a,b) => b[1]-a[1]);
-          const blSlices  = blEntries.map(([bl, cnt], j) => ({ label: bl, value: Number(cnt), color: BL_COLORS[j % BL_COLORS.length] }));
-          const blTotal   = blSlices.reduce((s, d) => s + d.value, 0) || 1;
-          const blLegend  = blSlices.map(s => `<div class="donut-legend-row"><span class="donut-dot" style="background:${s.color}"></span><span class="donut-lbl">${escapeHtml(s.label)}</span><span class="donut-pct">${Math.round(s.value/blTotal*100)}%</span></div>`).join('');
-          right.innerHTML = `<div class="fcb2-dist-title">Region distribution</div>
-            <div class="donut-wrap">${svgDonut(blSlices, 90)}<div class="donut-legend">${blLegend}</div></div>`;
-
-          const scDist   = prof.settlement_dist || {};
-          const SC_COLORS = { 'Large City':'#6b2d8b', 'Small City':'#1d6fa5', 'Town':'#e07520', 'Village':'#2ca25f' };
-          const scOrder  = ['Large City','Small City','Town','Village'];
-          const scSlices = scOrder.filter(k => scDist[k]).map(k => ({ label: k, value: Number(scDist[k]), color: SC_COLORS[k] }));
-          const scTotal  = scSlices.reduce((s, d) => s + d.value, 0) || 1;
-          const scLegend = scSlices.map(s => `<div class="donut-legend-row"><span class="donut-dot" style="background:${s.color}"></span><span class="donut-lbl">${escapeHtml(s.label)}</span><span class="donut-pct">${Math.round(s.value/scTotal*100)}%</span></div>`).join('');
-          right.innerHTML += `<div class="fcb2-dist-title" style="margin-top:12px">Settlement types</div>
-            <div class="donut-wrap">${svgDonut(scSlices, 90)}<div class="donut-legend">${scLegend}</div></div>`;
-
-          const zones      = Array.isArray(prof.zones) ? prof.zones : [];
-          const zonesSorted = [...zones].sort((a,b) => (Number(b.risk_score)||0) - (Number(a.risk_score)||0));
-          const listId     = `fcb2-zones-${i}`;
-          right.innerHTML += `<div class="fcb2-zones-hdr">
-            <span>${nZ} zone${nZ!==1?'s':''} — sorted by risk score</span>
+          const zones  = cl.zones || [];
+          const listId = `dkc-zones-${i}`;
+          right.innerHTML = `<div class="fcb2-zones-hdr">
+            <span>${nZ} zone${nZ!==1?'s':''} in this cluster</span>
             ${nZ > 6 ? `<button class="fcb2-show-all" onclick="
               const el=document.getElementById('${listId}');
               const hidden=el.querySelectorAll('.fcb2-zone-row.hidden');
@@ -1767,23 +1745,15 @@
             ">Show all ${nZ}</button>` : ''}
           </div>
           <div class="fcb2-zone-list" id="${listId}">${
-            zonesSorted.map((z, zi) => {
-              const zRisk    = Number(z.risk_score) || 0;
-              const zRiskClr = zRisk >= 60 ? '#dc2626' : zRisk >= 30 ? '#f97316' : '#16a34a';
-              const zName    = zoneName(safeStr(z.gcd,''));
-              const zDr      = safeStr(z.deficit_ratio,'');
-              const drPct    = zDr && !isNaN(Number(zDr)) ? (Number(zDr)*100).toFixed(1)+'%' : '–';
-              const expCap   = Number(z.exp_per_capita) ? '€'+Math.round(z.exp_per_capita).toLocaleString() : '–';
+            zones.map((zid, zi) => {
+              const src = currentZoneType === 'region' ? regionData : kommuneData;
+              const zData = src[zid] || {};
               return `<div class="fcb2-zone-row${zi>=6?' hidden':''}">
-                <div class="fcb2-zone-name" title="${escapeHtml(safeStr(z.gcd,''))}">${escapeHtml(zName)}</div>
-                <div class="fcb2-zone-meta">${escapeHtml(safeStr(z.region,''))} · ${escapeHtml(safeStr(z.settlement_class,''))}</div>
+                <div class="fcb2-zone-name">${escapeHtml(zoneName(zid))}</div>
+                <div class="fcb2-zone-meta">${escapeHtml(safeStr(zData.Region,''))}</div>
                 <div class="fcb2-zone-stats">
-                  <span style="color:${zRiskClr};font-weight:700">${zRisk}</span>
-                  <span class="fcb2-zone-stat-lbl">risk</span>
-                  <span>${escapeHtml(drPct)}</span>
-                  <span class="fcb2-zone-stat-lbl">def.</span>
-                  <span>${escapeHtml(expCap)}</span>
-                  <span class="fcb2-zone-stat-lbl">exp/cap</span>
+                  <span>${escapeHtml(String(zData.Population ? Math.round(zData.Population).toLocaleString() : '–'))}</span>
+                  <span class="fcb2-zone-stat-lbl">pop</span>
                 </div>
               </div>`;
             }).join('')
@@ -1794,6 +1764,50 @@
           sec.appendChild(block);
         });
 
+        container.appendChild(sec);
+      }
+
+      function renderSocioProfileSection(container, ids) {
+        const src = currentZoneType === 'region' ? regionData : kommuneData;
+        const sec = makeSection('Socioeconomic Profile', 'Key indicators per zone · sourced from DST data.json');
+
+        const COLS = [
+          { label: 'Population',     fn: z => z.Population ? Math.round(z.Population).toLocaleString() : '–' },
+          { label: 'Unemp %',        fn: z => z.LabourMarket?.['Unemployment rate (%)']?.toFixed(1) ?? '–' },
+          { label: 'Emp %',          fn: z => z.LabourMarket?.['Employment rate (%)']?.toFixed(1) ?? '–' },
+          { label: 'Avg Income',     fn: z => z.Economy?.['Avg income (DKK)'] ? 'DKK ' + Math.round(z.Economy['Avg income (DKK)']).toLocaleString() : '–' },
+          { label: 'Tertiary %',     fn: z => z.Education?.['Tertiary education (%)']?.toFixed(1) ?? '–' },
+          { label: 'Foreign %',      fn: z => z.Migration?.['Foreign citizens (%)']?.toFixed(1) ?? '–' },
+          { label: 'Welfare dep %',  fn: z => z.Welfare?.['Welfare dependency (%)']?.toFixed(1) ?? '–' },
+          { label: 'Crime / 1k',     fn: z => z.Safety?.['Crimes per 1,000']?.toFixed(1) ?? '–' },
+          { label: 'GP util %',      fn: z => z.Health?.['GP utilization (%)']?.toFixed(1) ?? '–' },
+          { label: 'Cars / 1k',      fn: z => z.Vehicles?.['Cars per 1,000']?.toFixed(0) ?? '–' },
+          { label: 'Urban type',     fn: z => z.Urban_rural_status ?? '–' },
+        ];
+
+        const tbl = document.createElement('table');
+        tbl.className = 'analysis-table';
+        tbl.style.cssText = 'width:100%;font-size:.74rem;';
+        tbl.innerHTML = `<thead><tr>
+          <th style="background:#374151;color:#fff;padding:.4rem .6rem;text-align:left;position:sticky;top:0">Zone</th>
+          ${COLS.map(c => `<th style="background:#374151;color:#fff;padding:.4rem .6rem;text-align:right;position:sticky;top:0">${escapeHtml(c.label)}</th>`).join('')}
+        </tr></thead>`;
+
+        const tbody = document.createElement('tbody');
+        ids.forEach((id, ri) => {
+          const z = src[id]; if (!z) return;
+          const tr = document.createElement('tr');
+          tr.style.cssText = `border-bottom:1px solid #f0f0f0;${ri%2===1?'background:#f9fafb;':''}`;
+          tr.innerHTML = `<td style="padding:.35rem .6rem;font-weight:500;color:#1e3a5f">${escapeHtml(zoneName(id))}</td>
+            ${COLS.map(c => `<td style="padding:.35rem .6rem;text-align:right;font-family:'JetBrains Mono',monospace">${escapeHtml(c.fn(z))}</td>`).join('')}`;
+          tbody.appendChild(tr);
+        });
+        tbl.appendChild(tbody);
+
+        const scroll = document.createElement('div');
+        scroll.style.cssText = 'overflow:auto;padding:0 1.5rem 1.5rem;max-height:60vh;';
+        scroll.appendChild(tbl);
+        sec.appendChild(scroll);
         container.appendChild(sec);
       }
 
@@ -1896,7 +1910,7 @@
       }
 
       function renderTrendsSection(container, tsData, ids) {
-        const sec  = makeSection('Fiscal Trends', '10-year time series · National median shown as dashed grey line');
+        const sec  = makeSection('Socioeconomic Trends', '2012–2024 panel · DK population-weighted average shown as dashed grey line');
         const grid = document.createElement('div');
         grid.className = 'trends-grid';
 
