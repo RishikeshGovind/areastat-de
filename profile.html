@@ -201,6 +201,7 @@
         <button class="view-tab selected" data-view="demographics">Demographics</button>
         <button class="view-tab" data-view="economics">Economics</button>
         <button class="view-tab" data-view="financial">Financial</button>
+        <button class="view-tab" data-view="analysis">Analysis</button>
         <button class="view-tab" data-view="ml-export">ML Export</button>
         <button class="view-tab" data-view="explore">DST Explorer</button>
       </div>
@@ -2010,6 +2011,7 @@
           demographics: document.getElementById('demographics-container'),
           economics:    document.getElementById('economics-container'),
           financial:    document.getElementById('financial-container'),
+          analysis:     document.getElementById('analysis-container'),
           'ml-export':  document.getElementById('ml-export-container'),
           explore:      document.getElementById('explorer-container'),
         };
@@ -2033,6 +2035,8 @@
               renderRichCharts('economics-container', 'econ', selectedIds);
             } else if (view === 'financial') {
               renderFinancial(selectedIds);
+            } else if (view === 'analysis') {
+              runFiscalAnalysis(selectedIds);
             } else if (view === 'ml-export') {
               renderMLExport(selectedIds);
             }
