@@ -3576,14 +3576,17 @@
         if (!container) return;
         container.innerHTML = '';
 
+        try {
         const scen = window.sfcScenario || {};
+        if (!scen.high_exposure) {
+          container.innerHTML = '<div style="padding:2rem 1.5rem;color:#6b7280;font-size:.85rem;">SFC scenario data not loaded — push data.json to deploy first.</div>';
+          return;
+        }
         const hi   = scen.high_exposure || {};
         const lo   = scen.low_exposure  || {};
         const meth = scen.methodology   || {};
 
-        const fmtK  = v => v == null ? '–' : (Math.abs(v) >= 1000 ? (v < 0 ? '−' : '') + Math.abs(Math.round(v/1000)) + 'k' : String(Math.round(v)));
-        const fmtDK = v => v == null ? '–' : Number(Math.round(v)).toLocaleString('da-DK') + ' DKK';
-        const css   = Object.assign.bind(Object, Object.create(null));
+        const sfcFmtDK = v => v == null ? '–' : Number(Math.round(v)).toLocaleString('da-DK') + ' DKK';
 
         // ── Header ───────────────────────────────────────────────────────────
         const header = document.createElement('div');
@@ -3625,11 +3628,11 @@
               <span style="color:#6b7280;">Renewable intensity</span>
               <span style="font-weight:700;font-family:monospace;">${ki.renewable_intensity_mw_per_1000 != null ? ki.renewable_intensity_mw_per_1000 + ' MW/1k' : '–'}</span>
               <span style="color:#6b7280;">Baseline debt/capita</span>
-              <span style="font-weight:700;font-family:monospace;">${fmtDK(ki.baseline_debt_per_capita)}</span>
+              <span style="font-weight:700;font-family:monospace;">${sfcFmtDK(ki.baseline_debt_per_capita)}</span>
               <span style="color:#6b7280;">Operating exp/capita</span>
-              <span style="font-weight:700;font-family:monospace;">${fmtDK(ki.baseline_ops_per_capita)}</span>
+              <span style="font-weight:700;font-family:monospace;">${sfcFmtDK(ki.baseline_ops_per_capita)}</span>
               <span style="color:#6b7280;">Est. tax revenue/cap</span>
-              <span style="font-weight:700;font-family:monospace;">${fmtDK(ki.estimated_tax_revenue_per_capita)}</span>
+              <span style="font-weight:700;font-family:monospace;">${sfcFmtDK(ki.estimated_tax_revenue_per_capita)}</span>
               <span style="color:#6b7280;">Transition vulnerability</span>
               <span style="font-weight:700;color:${accent};font-family:monospace;">${ki.transition_vulnerability_index != null ? ki.transition_vulnerability_index.toFixed(3) : '–'}</span>
             </div>
@@ -3662,7 +3665,7 @@
         const PALETTE_LO_BAU = '#6b7280';
         const PALETTE_LO_GT  = '#16a34a';
 
-        function makeChartCard(title, subtitle, datasets) {
+        function makeSFCChartCard(title, subtitle) {
           const wrap = document.createElement('div');
           wrap.style.cssText = 'background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:1rem;';
           const h = document.createElement('div');
@@ -3675,16 +3678,16 @@
           wrap.appendChild(s);
           const canvasWrap = document.createElement('div');
           canvasWrap.style.cssText = 'position:relative;height:240px;';
-          const canvas = document.createElement('canvas');
-          const canvasId = 'sfc_scen_' + Math.random().toString(36).slice(2);
-          canvas.id = canvasId;
-          canvasWrap.appendChild(canvas);
+          const cv = document.createElement('canvas');
+          const cvId = 'sfc_scen_' + Math.random().toString(36).slice(2);
+          cv.id = cvId;
+          canvasWrap.appendChild(cv);
           wrap.appendChild(canvasWrap);
-          return { wrap, canvas, canvasId };
+          return { wrap, canvas: cv, canvasId: cvId };
         }
 
         // Chart 1: Debt per capita
-        const c1 = makeChartCard(
+        const c1 = makeSFCChartCard(
           'Long-term Debt / Capita (DKK)',
           'ΔL(t) = G(t)+I(t)−T(t) · BAU: 0.5% surplus pa · Phase 1 shock visible as debt rise'
         );
@@ -3720,7 +3723,7 @@
         }, 0);
 
         // Chart 2: Fiscal balance per capita
-        const c2 = makeChartCard(
+        const c2 = makeSFCChartCard(
           'Fiscal Balance / Capita (DKK)',
           'Positive = surplus (debt-reducing) · Negative = deficit (debt-increasing) · Phase annotations shown'
         );
@@ -3803,6 +3806,11 @@
             ).join('')}
           </div>`;
         container.appendChild(methDiv);
+        } catch (err) {
+          container.innerHTML = `<div style="margin:2rem 1.5rem;padding:1rem;background:#fef2f2;border:1px solid #fecaca;border-radius:8px;font-size:.8rem;color:#dc2626;">
+            <strong>Render error:</strong> ${escapeHtml(String(err))}</div>`;
+          console.error('renderSFCScenario error:', err);
+        }
       }
 
       function buildTFMTable(hi, lo) {
