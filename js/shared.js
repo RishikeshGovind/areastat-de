@@ -20,11 +20,7 @@ const DEFAULT_PROFILE_CATEGORIES = [
   'Financial',
   'Health',
   'Businesses',
-  'Vehicles',
-  'IndustrySectors',
-  'GreenEnergy',
-  'ClimateBaseline',
-  'GreenTransition'
+  'Vehicles'
 ];
 
 const EXCLUDED_PROFILE_KEYS = [

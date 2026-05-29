@@ -201,6 +201,7 @@
         <button class="view-tab selected" data-view="demographics">Demographics</button>
         <button class="view-tab" data-view="economics">Economics</button>
         <button class="view-tab" data-view="financial">Financial</button>
+        <button class="view-tab" data-view="green-transition">🌱 Green Transition</button>
         <button class="view-tab" data-view="analysis">Analysis</button>
         <button class="view-tab" data-view="ml-export">ML Export</button>
         <button class="view-tab" data-view="explore">DST Explorer</button>
@@ -229,6 +230,7 @@
       <div id="demographics-container"></div>
       <div id="economics-container" style="display:none;"></div>
       <div id="financial-container" style="display:none;"></div>
+      <div id="green-transition-container" style="display:none;"></div>
       <div id="ml-export-container" style="display:none;"></div>
       <!-- DST Explorer -->
       <div id="explorer-container" style="display:none;">
@@ -2057,8 +2059,9 @@
           economics:    document.getElementById('economics-container'),
           financial:    document.getElementById('financial-container'),
           analysis:     document.getElementById('analysis-container'),
-          'ml-export':  document.getElementById('ml-export-container'),
-          explore:      document.getElementById('explorer-container'),
+          'ml-export':        document.getElementById('ml-export-container'),
+          'green-transition': document.getElementById('green-transition-container'),
+          explore:            document.getElementById('explorer-container'),
         };
         const _rendered = new Set();
 
@@ -2091,6 +2094,8 @@
               runFiscalAnalysis(selectedIds);
             } else if (view === 'ml-export') {
               renderMLExport(selectedIds);
+            } else if (view === 'green-transition') {
+              renderGreenTransition(selectedIds);
             }
             _rendered.add(view);
           }
@@ -2786,6 +2791,180 @@
         tbl.appendChild(tbody);
         scroll.appendChild(tbl);
         container.appendChild(scroll);
+      }
+
+      // ══ GREEN TRANSITION TAB ═════════════════════════════════════════════════
+
+      function renderStackedBarChart(canvas, labels, datasets, unit) {
+        destroyChart(canvas.id);
+        _chartInstMap[canvas.id] = new Chart(canvas, {
+          type: 'bar',
+          data: { labels, datasets },
+          options: {
+            indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+            plugins: {
+              legend: { position: 'bottom', labels: { font: { size: 10 }, boxWidth: 12, padding: 8 } },
+              tooltip: { callbacks: { label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.x.toFixed(2)} ${unit}` } }
+            },
+            scales: {
+              x: { stacked: true, grid: { color: '#f0f0f0' }, ticks: { font: { size: 10 } },
+                   title: { display: true, text: unit, font: { size: 10 }, color: '#6b7280' } },
+              y: { stacked: true, ticks: { font: { size: 10 } }, grid: { display: false } }
+            }
+          }
+        });
+      }
+
+      function renderGreenTransition(ids) {
+        const container = document.getElementById('green-transition-container');
+        if (!container) return;
+        container.innerHTML = '';
+
+        const src    = currentZoneType === 'region' ? regionData : kommuneData;
+        const dk     = denmarkTotals;
+        const zones  = ids.map(id => ({ id, name: zoneName(id), d: src[id] || {} }))
+                          .filter(z => Object.keys(z.d).length);
+
+        if (!zones.length) {
+          container.innerHTML = '<p style="padding:2rem;color:#6b7280;">No data for selected zones.</p>';
+          return;
+        }
+
+        const gv = (z, domain, key) => {
+          const raw = z.d[domain]?.[key];
+          return typeof raw === 'number' ? raw : (Array.isArray(raw) ? raw[0] : null);
+        };
+        const dkv = (domain, key) => {
+          const raw = dk[domain]?.[key];
+          return typeof raw === 'number' ? raw : (Array.isArray(raw) ? raw[0] : null);
+        };
+
+        // Weighted average across selected zones (population-weighted where possible)
+        const wavg = (vals) => {
+          const clean = vals.filter(v => v != null && isFinite(v));
+          return clean.length ? clean.reduce((a,b)=>a+b,0) / clean.length : null;
+        };
+
+        // ── KPI Summary Row
+        const kpiRow = document.createElement('div');
+        kpiRow.className = 'gt-kpi-row';
+
+        const kpis = [
+          { label: 'Fossil sector share', value: wavg(zones.map(z => gv(z,'GreenTransition','Fossil-linked sector share (%)'))), unit: '%', icon: '🏭', warn: true },
+          { label: 'Total renewable capacity', value: zones.reduce((s,z) => s + (gv(z,'GreenEnergy','Total renewable capacity (MW)') ?? 0), 0), unit: 'MW', icon: '⚡', warn: false },
+          { label: 'Mean temperature', value: wavg(zones.map(z => gv(z,'ClimateBaseline','Mean annual temperature (°C)'))), unit: '°C', icon: '🌡', warn: false },
+          { label: 'Summer days / year', value: wavg(zones.map(z => gv(z,'ClimateBaseline','Summer days per year (>25°C)'))), unit: 'days', icon: '☀️', warn: false },
+        ];
+
+        kpis.forEach(kpi => {
+          const card = document.createElement('div');
+          card.className = 'gt-kpi-card';
+          const val = kpi.value != null ? (kpi.unit === 'MW' ? Math.round(kpi.value).toLocaleString() : kpi.value.toFixed(1)) : '–';
+          card.innerHTML = `
+            <div class="gt-kpi-icon">${escapeHtml(kpi.icon)}</div>
+            <div class="gt-kpi-value${kpi.warn && kpi.value > 40 ? ' gt-kpi-warn' : ''}">${escapeHtml(val)}<span class="gt-kpi-unit"> ${escapeHtml(kpi.unit)}</span></div>
+            <div class="gt-kpi-label">${escapeHtml(kpi.label)}</div>`;
+          kpiRow.appendChild(card);
+        });
+        container.appendChild(kpiRow);
+
+        // ── Chart grid
+        const grid = document.createElement('div');
+        grid.className = 'gt-grid';
+        container.appendChild(grid);
+
+        // ── 1. Industry Sector Composition — Donut
+        const sectorCard = document.createElement('div');
+        sectorCard.className = 'gt-card';
+        sectorCard.innerHTML = '<div class="gt-card-title">Industry Sector Composition</div><div class="gt-card-sub">Share of workplaces by sector — fossil-linked sectors highlighted</div>';
+        const sectorCanvas = document.createElement('canvas');
+        sectorCanvas.id = 'gt_sector_donut';
+        sectorCanvas.style.maxHeight = '280px';
+        sectorCard.appendChild(sectorCanvas);
+        grid.appendChild(sectorCard);
+
+        const SECTORS = [
+          { key: 'Agriculture, forestry & fishing (%)',  label: 'Agriculture',      color: '#16a34a' },
+          { key: 'Manufacturing & utilities (%)',         label: 'Manufacturing & Utilities', color: '#dc2626' },
+          { key: 'Construction (%)',                      label: 'Construction',     color: '#d97706' },
+          { key: 'Trade & transport (%)',                 label: 'Trade & Transport', color: '#ea580c' },
+          { key: 'ICT (%)',                               label: 'ICT',              color: '#2563eb' },
+          { key: 'Finance & insurance (%)',               label: 'Finance',          color: '#7c3aed' },
+          { key: 'Public admin, edu & health (%)',        label: 'Public Sector',    color: '#0891b2' },
+        ];
+        const sectorVals = SECTORS.map(s => wavg(zones.map(z => gv(z, 'IndustrySectors', s.key))) ?? 0);
+        renderDonutChart(sectorCanvas, SECTORS.map((s,i) => ({ label: s.label, value: sectorVals[i], color: s.color })));
+
+        // ── 2. Renewable Energy Capacity — Stacked Bar
+        const renewCard = document.createElement('div');
+        renewCard.className = 'gt-card';
+        renewCard.innerHTML = '<div class="gt-card-title">Renewable Energy Capacity</div><div class="gt-card-sub">Installed capacity (MW) by type per municipality</div>';
+        const renewCanvas = document.createElement('canvas');
+        renewCanvas.id = 'gt_renew_bar';
+        renewCanvas.style.maxHeight = String(Math.max(180, zones.length * 28 + 60)) + 'px';
+        renewCard.appendChild(renewCanvas);
+        grid.appendChild(renewCard);
+
+        const zLabels = zones.map(z => z.name);
+        renderStackedBarChart(renewCanvas, zLabels, [
+          { label: 'Offshore Wind', data: zones.map(z => gv(z,'GreenEnergy','Offshore wind capacity (MW)') ?? 0), backgroundColor: '#0ea5e9cc', borderColor: '#0ea5e9', borderWidth: 1, borderRadius: 2 },
+          { label: 'Onshore Wind',  data: zones.map(z => gv(z,'GreenEnergy','Onshore wind capacity (MW)') ?? 0),  backgroundColor: '#22c55ecc', borderColor: '#22c55e', borderWidth: 1, borderRadius: 2 },
+          { label: 'Solar',         data: zones.map(z => gv(z,'GreenEnergy','Solar capacity (MW)') ?? 0),         backgroundColor: '#f59e0bcc', borderColor: '#f59e0b', borderWidth: 1, borderRadius: 2 },
+        ], 'MW');
+
+        // ── 3. Climate Baseline — metric tiles
+        const climCard = document.createElement('div');
+        climCard.className = 'gt-card';
+        climCard.innerHTML = '<div class="gt-card-title">Climate Baseline (2023)</div><div class="gt-card-sub">Municipality average vs Denmark national average</div>';
+        const climGrid = document.createElement('div');
+        climGrid.className = 'gt-climate-grid';
+
+        const CLIM = [
+          { key: 'Mean annual temperature (°C)', label: 'Mean Temperature', unit: '°C', icon: '🌡', dk: dkv('ClimateBaseline','Mean annual temperature (°C)'), higherIsBad: true },
+          { key: 'Summer days per year (>25°C)', label: 'Summer Days', unit: 'days', icon: '☀️', dk: dkv('ClimateBaseline','Summer days per year (>25°C)'), higherIsBad: true },
+          { key: 'Annual precipitation (mm)', label: 'Precipitation', unit: 'mm', icon: '🌧', dk: dkv('ClimateBaseline','Annual precipitation (mm)'), higherIsBad: false },
+          { key: 'Heating degree days', label: 'Heating Degree Days', unit: 'HDD', icon: '🏠', dk: dkv('ClimateBaseline','Heating degree days'), higherIsBad: false },
+        ];
+
+        CLIM.forEach(c => {
+          const val = wavg(zones.map(z => gv(z,'ClimateBaseline', c.key)));
+          const diff = (val != null && c.dk != null) ? val - c.dk : null;
+          const higher = diff != null && diff > 0;
+          const arrowColor = (higher === c.higherIsBad) ? '#dc2626' : '#16a34a';
+          const arrow = diff == null ? '' : (higher ? '▲' : '▼');
+          const diffStr = diff != null ? `${arrow} ${Math.abs(diff).toFixed(1)} vs DK` : '';
+          const tile = document.createElement('div');
+          tile.className = 'gt-clim-tile';
+          tile.innerHTML = `
+            <div class="gt-clim-icon">${escapeHtml(c.icon)}</div>
+            <div class="gt-clim-val">${val != null ? val.toFixed(1) : '–'}<span class="gt-clim-unit"> ${escapeHtml(c.unit)}</span></div>
+            <div class="gt-clim-label">${escapeHtml(c.label)}</div>
+            ${diffStr ? `<div class="gt-clim-diff" style="color:${arrowColor}">${escapeHtml(diffStr)}</div>` : ''}`;
+          climGrid.appendChild(tile);
+        });
+        climCard.appendChild(climGrid);
+        grid.appendChild(climCard);
+
+        // ── 4. Transition Exposure Scatter — Fossil% vs Renewable/1k
+        const scatCard = document.createElement('div');
+        scatCard.className = 'gt-card';
+        scatCard.innerHTML = '<div class="gt-card-title">Transition Exposure Matrix</div><div class="gt-card-sub">Fossil sector share vs renewable intensity — upper-left = most exposed</div>';
+        const scatCanvas = document.createElement('canvas');
+        scatCanvas.id = 'gt_scat';
+        scatCanvas.style.maxHeight = '280px';
+        scatCard.appendChild(scatCanvas);
+        grid.appendChild(scatCard);
+
+        const scatPoints = zones.map((z, i) => ({
+          x: gv(z,'GreenTransition','Fossil-linked sector share (%)') ?? gv(z,'GreenTransition','Fossil sector share (%)') ?? 0,
+          y: gv(z,'GreenEnergy','Renewable capacity (MW per 1,000)') ?? 0,
+          label: z.name,
+          color: ZONE_PALETTE[i % ZONE_PALETTE.length],
+        }));
+        const dkScatX = dkv('GreenTransition','Fossil-linked sector share (%)') ?? 0;
+        const dkScatY = dkv('GreenEnergy','Renewable capacity (MW per 1,000)') ?? 0;
+        scatPoints.push({ x: dkScatX, y: dkScatY, label: 'Denmark avg', color: '#dc2626' });
+        renderScatterChart(scatCanvas, scatPoints, 'Fossil sector share (%)', 'Renewable capacity (MW/1,000)');
       }
 
       // ══ ML EXPORT TAB — feature matrix + CSV download ════════════════════════

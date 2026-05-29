@@ -2155,3 +2155,69 @@ button {
   .typology-insights-grid { grid-template-columns: 1fr; }
   .typology-driver-row { grid-template-columns: 1fr 60px 44px; }
 }
+
+/* ── Green Transition Tab ──────────────────────────────────────────── */
+.gt-kpi-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  padding: 1.25rem 1.5rem .75rem;
+}
+@media (max-width: 900px) { .gt-kpi-row { grid-template-columns: repeat(2, 1fr); } }
+
+.gt-kpi-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 1rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: .2rem;
+}
+.gt-kpi-icon  { font-size: 1.4rem; margin-bottom: .15rem; }
+.gt-kpi-value { font-size: 1.7rem; font-weight: 700; color: #1e3a5f; line-height: 1.1; }
+.gt-kpi-value.gt-kpi-warn { color: #dc2626; }
+.gt-kpi-unit  { font-size: .85rem; font-weight: 500; color: #6b7280; }
+.gt-kpi-label { font-size: .72rem; color: #6b7280; font-weight: 500; text-transform: uppercase; letter-spacing: .04em; }
+
+.gt-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.1rem;
+  padding: .25rem 1.5rem 1.5rem;
+}
+@media (max-width: 900px) { .gt-grid { grid-template-columns: 1fr; } }
+
+.gt-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 1.1rem 1.1rem .9rem;
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+}
+.gt-card-title { font-size: .82rem; font-weight: 700; color: #1e3a5f; }
+.gt-card-sub   { font-size: .72rem; color: #9ca3af; margin-top: -.25rem; }
+
+.gt-climate-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: .75rem;
+  margin-top: .25rem;
+}
+.gt-clim-tile {
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: .75rem .9rem;
+  display: flex;
+  flex-direction: column;
+  gap: .15rem;
+}
+.gt-clim-icon  { font-size: 1.3rem; }
+.gt-clim-val   { font-size: 1.45rem; font-weight: 700; color: #1e3a5f; line-height: 1.1; }
+.gt-clim-unit  { font-size: .8rem; font-weight: 400; color: #6b7280; }
+.gt-clim-label { font-size: .7rem; color: #6b7280; font-weight: 500; text-transform: uppercase; letter-spacing: .04em; }
+.gt-clim-diff  { font-size: .72rem; font-weight: 600; margin-top: .1rem; }
