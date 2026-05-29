@@ -53,7 +53,8 @@
       "Health care/capita (DKK)": 6201.5,
       "Education spending/pupil (DKK)": 86356.2,
       "Day care/child (DKK)": 49543.5,
-      "Elderly care/capita (DKK)": 55031.6
+      "Elderly care/capita (DKK)": 55031.6,
+      "Equalization grants/capita (DKK)": -15247.5
     },
     "Health": {
       "GP utilization (%)": 83.5
@@ -152,7 +153,8 @@
         "Health care/capita (DKK)": 6227.71,
         "Education spending/pupil (DKK)": 89386.78,
         "Day care/child (DKK)": 55815.94,
-        "Elderly care/capita (DKK)": 64659.22
+        "Elderly care/capita (DKK)": 64659.22,
+        "Equalization grants/capita (DKK)": -5586.06
       },
       "Health": {
         "GP utilization (%)": 81.36
@@ -250,7 +252,8 @@
         "Health care/capita (DKK)": 6426.01,
         "Education spending/pupil (DKK)": 87963.49,
         "Day care/child (DKK)": 46260.05,
-        "Elderly care/capita (DKK)": 49598.9
+        "Elderly care/capita (DKK)": 49598.9,
+        "Equalization grants/capita (DKK)": -20803.81
       },
       "Health": {
         "GP utilization (%)": 83.17
@@ -348,7 +351,8 @@
         "Health care/capita (DKK)": 6600.4,
         "Education spending/pupil (DKK)": 83987.83,
         "Day care/child (DKK)": 45701.27,
-        "Elderly care/capita (DKK)": 50031.52
+        "Elderly care/capita (DKK)": 50031.52,
+        "Equalization grants/capita (DKK)": -22483.95
       },
       "Health": {
         "GP utilization (%)": 84.77
@@ -446,7 +450,8 @@
         "Health care/capita (DKK)": 5752.66,
         "Education spending/pupil (DKK)": 83056.06,
         "Day care/child (DKK)": 46986.55,
-        "Elderly care/capita (DKK)": 49731.67
+        "Elderly care/capita (DKK)": 49731.67,
+        "Equalization grants/capita (DKK)": -15700.7
       },
       "Health": {
         "GP utilization (%)": 84.67
@@ -544,7 +549,8 @@
         "Health care/capita (DKK)": 6001.3,
         "Education spending/pupil (DKK)": 86732.13,
         "Day care/child (DKK)": 47691.29,
-        "Elderly care/capita (DKK)": 54085.61
+        "Elderly care/capita (DKK)": 54085.61,
+        "Equalization grants/capita (DKK)": -22747.99
       },
       "Health": {
         "GP utilization (%)": 85.65
@@ -644,7 +650,8 @@
         "Health care/capita (DKK)": 5594,
         "Education spending/pupil (DKK)": 86693,
         "Day care/child (DKK)": 65388,
-        "Elderly care/capita (DKK)": 73976
+        "Elderly care/capita (DKK)": 73976,
+        "Equalization grants/capita (DKK)": -5593
       },
       "Health": {
         "GP utilization (%)": 79.5
@@ -742,7 +749,8 @@
         "Health care/capita (DKK)": 6317,
         "Education spending/pupil (DKK)": 82350,
         "Day care/child (DKK)": 56790,
-        "Elderly care/capita (DKK)": 61435
+        "Elderly care/capita (DKK)": 61435,
+        "Equalization grants/capita (DKK)": 9009
       },
       "Health": {
         "GP utilization (%)": 82.8
@@ -840,7 +848,8 @@
         "Health care/capita (DKK)": 6648,
         "Education spending/pupil (DKK)": 103393,
         "Day care/child (DKK)": 60792,
-        "Elderly care/capita (DKK)": 65417
+        "Elderly care/capita (DKK)": 65417,
+        "Equalization grants/capita (DKK)": -20277
       },
       "Health": {
         "GP utilization (%)": 82.3
@@ -938,7 +947,8 @@
         "Health care/capita (DKK)": 6980,
         "Education spending/pupil (DKK)": 106736,
         "Day care/child (DKK)": 52622,
-        "Elderly care/capita (DKK)": 69406
+        "Elderly care/capita (DKK)": 69406,
+        "Equalization grants/capita (DKK)": -41482
       },
       "Health": {
         "GP utilization (%)": 80.5
@@ -1036,7 +1046,8 @@
         "Health care/capita (DKK)": 7286,
         "Education spending/pupil (DKK)": 77228,
         "Day care/child (DKK)": 40478,
-        "Elderly care/capita (DKK)": 50639
+        "Elderly care/capita (DKK)": 50639,
+        "Equalization grants/capita (DKK)": 9143
       },
       "Health": {
         "GP utilization (%)": 84.6
@@ -1134,7 +1145,8 @@
         "Health care/capita (DKK)": 6260,
         "Education spending/pupil (DKK)": 80619,
         "Day care/child (DKK)": 48958,
-        "Elderly care/capita (DKK)": 64160
+        "Elderly care/capita (DKK)": 64160,
+        "Equalization grants/capita (DKK)": 45548
       },
       "Health": {
         "GP utilization (%)": 82.2
@@ -1232,7 +1244,8 @@
         "Health care/capita (DKK)": 6803,
         "Education spending/pupil (DKK)": 103389,
         "Day care/child (DKK)": 56801,
-        "Elderly care/capita (DKK)": 67505
+        "Elderly care/capita (DKK)": 67505,
+        "Equalization grants/capita (DKK)": -7922
       },
       "Health": {
         "GP utilization (%)": 82.3
@@ -1330,7 +1343,8 @@
         "Health care/capita (DKK)": 6416,
         "Education spending/pupil (DKK)": 102658,
         "Day care/child (DKK)": 46370,
-        "Elderly care/capita (DKK)": 66158
+        "Elderly care/capita (DKK)": 66158,
+        "Equalization grants/capita (DKK)": -16529
       },
       "Health": {
         "GP utilization (%)": 78.9
@@ -1428,7 +1442,8 @@
         "Health care/capita (DKK)": 6381,
         "Education spending/pupil (DKK)": 77301,
         "Day care/child (DKK)": 52012,
-        "Elderly care/capita (DKK)": 65172
+        "Elderly care/capita (DKK)": 65172,
+        "Equalization grants/capita (DKK)": -22141
       },
       "Health": {
         "GP utilization (%)": 80.1
@@ -1526,7 +1541,8 @@
         "Health care/capita (DKK)": 6885,
         "Education spending/pupil (DKK)": 98645,
         "Day care/child (DKK)": 52381,
-        "Elderly care/capita (DKK)": 70847
+        "Elderly care/capita (DKK)": 70847,
+        "Equalization grants/capita (DKK)": -38903
       },
       "Health": {
         "GP utilization (%)": 80.5
@@ -1624,7 +1640,8 @@
         "Health care/capita (DKK)": 7285,
         "Education spending/pupil (DKK)": 84793,
         "Day care/child (DKK)": 52595,
-        "Elderly care/capita (DKK)": 69135
+        "Elderly care/capita (DKK)": 69135,
+        "Equalization grants/capita (DKK)": -21850
       },
       "Health": {
         "GP utilization (%)": 82.2
@@ -1722,7 +1739,8 @@
         "Health care/capita (DKK)": 5585,
         "Education spending/pupil (DKK)": 108792,
         "Day care/child (DKK)": 57922,
-        "Elderly care/capita (DKK)": 59488
+        "Elderly care/capita (DKK)": 59488,
+        "Equalization grants/capita (DKK)": -24434
       },
       "Health": {
         "GP utilization (%)": 78.9
@@ -1820,7 +1838,8 @@
         "Health care/capita (DKK)": 6363,
         "Education spending/pupil (DKK)": 82876,
         "Day care/child (DKK)": 47035,
-        "Elderly care/capita (DKK)": 62440
+        "Elderly care/capita (DKK)": 62440,
+        "Equalization grants/capita (DKK)": 16967
       },
       "Health": {
         "GP utilization (%)": 80.7
@@ -1918,7 +1937,8 @@
         "Health care/capita (DKK)": 6159,
         "Education spending/pupil (DKK)": 90788,
         "Day care/child (DKK)": 48749,
-        "Elderly care/capita (DKK)": 71059
+        "Elderly care/capita (DKK)": 71059,
+        "Equalization grants/capita (DKK)": -21739
       },
       "Health": {
         "GP utilization (%)": 82.4
@@ -2016,7 +2036,8 @@
         "Health care/capita (DKK)": 6243,
         "Education spending/pupil (DKK)": 103377,
         "Day care/child (DKK)": 48651,
-        "Elderly care/capita (DKK)": 61545
+        "Elderly care/capita (DKK)": 61545,
+        "Equalization grants/capita (DKK)": -44728
       },
       "Health": {
         "GP utilization (%)": 79.8
@@ -2114,7 +2135,8 @@
         "Health care/capita (DKK)": 7300,
         "Education spending/pupil (DKK)": 80281,
         "Day care/child (DKK)": 52112,
-        "Elderly care/capita (DKK)": 64009
+        "Elderly care/capita (DKK)": 64009,
+        "Equalization grants/capita (DKK)": -16826
       },
       "Health": {
         "GP utilization (%)": 84.4
@@ -2212,7 +2234,8 @@
         "Health care/capita (DKK)": 6183,
         "Education spending/pupil (DKK)": 80073,
         "Day care/child (DKK)": 47437,
-        "Elderly care/capita (DKK)": 53210
+        "Elderly care/capita (DKK)": 53210,
+        "Equalization grants/capita (DKK)": -12405
       },
       "Health": {
         "GP utilization (%)": 80.1
@@ -2310,7 +2333,8 @@
         "Health care/capita (DKK)": 6307,
         "Education spending/pupil (DKK)": 87733,
         "Day care/child (DKK)": 48877,
-        "Elderly care/capita (DKK)": 50108
+        "Elderly care/capita (DKK)": 50108,
+        "Equalization grants/capita (DKK)": 4252
       },
       "Health": {
         "GP utilization (%)": 83.4
@@ -2408,7 +2432,8 @@
         "Health care/capita (DKK)": 5906,
         "Education spending/pupil (DKK)": 89777,
         "Day care/child (DKK)": 48486,
-        "Elderly care/capita (DKK)": 55046
+        "Elderly care/capita (DKK)": 55046,
+        "Equalization grants/capita (DKK)": 11028
       },
       "Health": {
         "GP utilization (%)": 83.8
@@ -2506,7 +2531,8 @@
         "Health care/capita (DKK)": 6206,
         "Education spending/pupil (DKK)": 86728,
         "Day care/child (DKK)": 46539,
-        "Elderly care/capita (DKK)": 51545
+        "Elderly care/capita (DKK)": 51545,
+        "Equalization grants/capita (DKK)": -4926
       },
       "Health": {
         "GP utilization (%)": 84.6
@@ -2604,7 +2630,8 @@
         "Health care/capita (DKK)": 6409,
         "Education spending/pupil (DKK)": 82935,
         "Day care/child (DKK)": 47744,
-        "Elderly care/capita (DKK)": 56071
+        "Elderly care/capita (DKK)": 56071,
+        "Equalization grants/capita (DKK)": -11347
       },
       "Health": {
         "GP utilization (%)": 85.5
@@ -2702,7 +2729,8 @@
         "Health care/capita (DKK)": 6134,
         "Education spending/pupil (DKK)": 92552,
         "Day care/child (DKK)": 49934,
-        "Elderly care/capita (DKK)": 52840
+        "Elderly care/capita (DKK)": 52840,
+        "Equalization grants/capita (DKK)": -3240
       },
       "Health": {
         "GP utilization (%)": 82.6
@@ -2800,7 +2828,8 @@
         "Health care/capita (DKK)": 6896,
         "Education spending/pupil (DKK)": 78272,
         "Day care/child (DKK)": 47158,
-        "Elderly care/capita (DKK)": 56108
+        "Elderly care/capita (DKK)": 56108,
+        "Equalization grants/capita (DKK)": 25678
       },
       "Health": {
         "GP utilization (%)": 84.2
@@ -2898,7 +2927,8 @@
         "Health care/capita (DKK)": 7234,
         "Education spending/pupil (DKK)": 77403,
         "Day care/child (DKK)": 44697,
-        "Elderly care/capita (DKK)": 61213
+        "Elderly care/capita (DKK)": 61213,
+        "Equalization grants/capita (DKK)": 30669
       },
       "Health": {
         "GP utilization (%)": 82.9
@@ -2996,7 +3026,8 @@
         "Health care/capita (DKK)": 5752,
         "Education spending/pupil (DKK)": 87268,
         "Day care/child (DKK)": 49837,
-        "Elderly care/capita (DKK)": 50466
+        "Elderly care/capita (DKK)": 50466,
+        "Equalization grants/capita (DKK)": -1857
       },
       "Health": {
         "GP utilization (%)": 81.4
@@ -3094,7 +3125,8 @@
         "Health care/capita (DKK)": 6569,
         "Education spending/pupil (DKK)": 94556,
         "Day care/child (DKK)": 51045,
-        "Elderly care/capita (DKK)": 48938
+        "Elderly care/capita (DKK)": 48938,
+        "Equalization grants/capita (DKK)": -13021
       },
       "Health": {
         "GP utilization (%)": 84
@@ -3192,7 +3224,8 @@
         "Health care/capita (DKK)": 5864,
         "Education spending/pupil (DKK)": 79291,
         "Day care/child (DKK)": 45792,
-        "Elderly care/capita (DKK)": 51057
+        "Elderly care/capita (DKK)": 51057,
+        "Equalization grants/capita (DKK)": -10328
       },
       "Health": {
         "GP utilization (%)": 84
@@ -3290,7 +3323,8 @@
         "Health care/capita (DKK)": 5806,
         "Education spending/pupil (DKK)": 87293,
         "Day care/child (DKK)": 48493,
-        "Elderly care/capita (DKK)": 55329
+        "Elderly care/capita (DKK)": 55329,
+        "Equalization grants/capita (DKK)": -18534
       },
       "Health": {
         "GP utilization (%)": 83.2
@@ -3388,7 +3422,8 @@
         "Health care/capita (DKK)": 7582,
         "Education spending/pupil (DKK)": 113454,
         "Day care/child (DKK)": 46755,
-        "Elderly care/capita (DKK)": 48041
+        "Elderly care/capita (DKK)": 48041,
+        "Equalization grants/capita (DKK)": -22540
       },
       "Health": {
         "GP utilization (%)": 83.1
@@ -3486,7 +3521,8 @@
         "Health care/capita (DKK)": 5829,
         "Education spending/pupil (DKK)": 88175,
         "Day care/child (DKK)": 51072,
-        "Elderly care/capita (DKK)": 46048
+        "Elderly care/capita (DKK)": 46048,
+        "Equalization grants/capita (DKK)": -3547
       },
       "Health": {
         "GP utilization (%)": 82.1
@@ -3584,7 +3620,8 @@
         "Health care/capita (DKK)": 5829,
         "Education spending/pupil (DKK)": 79467,
         "Day care/child (DKK)": 43583,
-        "Elderly care/capita (DKK)": 53468
+        "Elderly care/capita (DKK)": 53468,
+        "Equalization grants/capita (DKK)": -1658
       },
       "Health": {
         "GP utilization (%)": 83.6
@@ -3682,7 +3719,8 @@
         "Health care/capita (DKK)": 7345,
         "Education spending/pupil (DKK)": 105249,
         "Day care/child (DKK)": 46362,
-        "Elderly care/capita (DKK)": 49533
+        "Elderly care/capita (DKK)": 49533,
+        "Equalization grants/capita (DKK)": -6778
       },
       "Health": {
         "GP utilization (%)": 84.4
@@ -3780,7 +3818,8 @@
         "Health care/capita (DKK)": 7518,
         "Education spending/pupil (DKK)": 105873,
         "Day care/child (DKK)": 49173,
-        "Elderly care/capita (DKK)": 49703
+        "Elderly care/capita (DKK)": 49703,
+        "Equalization grants/capita (DKK)": -25129
       },
       "Health": {
         "GP utilization (%)": 84.4
@@ -3878,7 +3917,8 @@
         "Health care/capita (DKK)": 5814,
         "Education spending/pupil (DKK)": 90974,
         "Day care/child (DKK)": 47266,
-        "Elderly care/capita (DKK)": 44321
+        "Elderly care/capita (DKK)": 44321,
+        "Equalization grants/capita (DKK)": -19849
       },
       "Health": {
         "GP utilization (%)": 83.2
@@ -3976,7 +4016,8 @@
         "Health care/capita (DKK)": 6113,
         "Education spending/pupil (DKK)": 88162,
         "Day care/child (DKK)": 41842,
-        "Elderly care/capita (DKK)": 45617
+        "Elderly care/capita (DKK)": 45617,
+        "Equalization grants/capita (DKK)": -22186
       },
       "Health": {
         "GP utilization (%)": 81.5
@@ -4074,7 +4115,8 @@
         "Health care/capita (DKK)": 6451,
         "Education spending/pupil (DKK)": 94213,
         "Day care/child (DKK)": 43348,
-        "Elderly care/capita (DKK)": 48750
+        "Elderly care/capita (DKK)": 48750,
+        "Equalization grants/capita (DKK)": -25214
       },
       "Health": {
         "GP utilization (%)": 83
@@ -4172,7 +4214,8 @@
         "Health care/capita (DKK)": 6134,
         "Education spending/pupil (DKK)": 77017,
         "Day care/child (DKK)": 42608,
-        "Elderly care/capita (DKK)": 52945
+        "Elderly care/capita (DKK)": 52945,
+        "Equalization grants/capita (DKK)": -21442
       },
       "Health": {
         "GP utilization (%)": 82.5
@@ -4270,7 +4313,8 @@
         "Health care/capita (DKK)": 6229,
         "Education spending/pupil (DKK)": 76771,
         "Day care/child (DKK)": 51074,
-        "Elderly care/capita (DKK)": 55269
+        "Elderly care/capita (DKK)": 55269,
+        "Equalization grants/capita (DKK)": -26657
       },
       "Health": {
         "GP utilization (%)": 83.3
@@ -4368,7 +4412,8 @@
         "Health care/capita (DKK)": 6017,
         "Education spending/pupil (DKK)": 92362,
         "Day care/child (DKK)": 45486,
-        "Elderly care/capita (DKK)": 46987
+        "Elderly care/capita (DKK)": 46987,
+        "Equalization grants/capita (DKK)": -16557
       },
       "Health": {
         "GP utilization (%)": 82.2
@@ -4466,7 +4511,8 @@
         "Health care/capita (DKK)": 6392,
         "Education spending/pupil (DKK)": 90351,
         "Day care/child (DKK)": 42022,
-        "Elderly care/capita (DKK)": 50668
+        "Elderly care/capita (DKK)": 50668,
+        "Equalization grants/capita (DKK)": -20564
       },
       "Health": {
         "GP utilization (%)": 83
@@ -4564,7 +4610,8 @@
         "Health care/capita (DKK)": 6247,
         "Education spending/pupil (DKK)": 80412,
         "Day care/child (DKK)": 45528,
-        "Elderly care/capita (DKK)": 42857
+        "Elderly care/capita (DKK)": 42857,
+        "Equalization grants/capita (DKK)": -8161
       },
       "Health": {
         "GP utilization (%)": 81.9
@@ -4662,7 +4709,8 @@
         "Health care/capita (DKK)": 9054,
         "Education spending/pupil (DKK)": 116786,
         "Day care/child (DKK)": 47765,
-        "Elderly care/capita (DKK)": 52292
+        "Elderly care/capita (DKK)": 52292,
+        "Equalization grants/capita (DKK)": -52965
       },
       "Health": {
         "GP utilization (%)": 83.8
@@ -4760,7 +4808,8 @@
         "Health care/capita (DKK)": 6565,
         "Education spending/pupil (DKK)": 79017,
         "Day care/child (DKK)": 44214,
-        "Elderly care/capita (DKK)": 50930
+        "Elderly care/capita (DKK)": 50930,
+        "Equalization grants/capita (DKK)": -22218
       },
       "Health": {
         "GP utilization (%)": 84.1
@@ -4858,7 +4907,8 @@
         "Health care/capita (DKK)": 7464,
         "Education spending/pupil (DKK)": 99159,
         "Day care/child (DKK)": 44314,
-        "Elderly care/capita (DKK)": 46898
+        "Elderly care/capita (DKK)": 46898,
+        "Equalization grants/capita (DKK)": -33796
       },
       "Health": {
         "GP utilization (%)": 82.8
@@ -4956,7 +5006,8 @@
         "Health care/capita (DKK)": 7121,
         "Education spending/pupil (DKK)": 86672,
         "Day care/child (DKK)": 41491,
-        "Elderly care/capita (DKK)": 48886
+        "Elderly care/capita (DKK)": 48886,
+        "Equalization grants/capita (DKK)": -28355
       },
       "Health": {
         "GP utilization (%)": 84.8
@@ -5054,7 +5105,8 @@
         "Health care/capita (DKK)": 7417,
         "Education spending/pupil (DKK)": 93078,
         "Day care/child (DKK)": 45849,
-        "Elderly care/capita (DKK)": 51699
+        "Elderly care/capita (DKK)": 51699,
+        "Equalization grants/capita (DKK)": -34780
       },
       "Health": {
         "GP utilization (%)": 80.5
@@ -5152,7 +5204,8 @@
         "Health care/capita (DKK)": 6701,
         "Education spending/pupil (DKK)": 84462,
         "Day care/child (DKK)": 43925,
-        "Elderly care/capita (DKK)": 44426
+        "Elderly care/capita (DKK)": 44426,
+        "Equalization grants/capita (DKK)": -12060
       },
       "Health": {
         "GP utilization (%)": 85
@@ -5250,7 +5303,8 @@
         "Health care/capita (DKK)": {},
         "Education spending/pupil (DKK)": {},
         "Day care/child (DKK)": {},
-        "Elderly care/capita (DKK)": {}
+        "Elderly care/capita (DKK)": {},
+        "Equalization grants/capita (DKK)": {}
       },
       "Health": {
         "GP utilization (%)": {}
@@ -5348,7 +5402,8 @@
         "Health care/capita (DKK)": 7137,
         "Education spending/pupil (DKK)": 92861,
         "Day care/child (DKK)": 44861,
-        "Elderly care/capita (DKK)": 43417
+        "Elderly care/capita (DKK)": 43417,
+        "Equalization grants/capita (DKK)": -25656
       },
       "Health": {
         "GP utilization (%)": 86.3
@@ -5446,7 +5501,8 @@
         "Health care/capita (DKK)": 6691,
         "Education spending/pupil (DKK)": 83812,
         "Day care/child (DKK)": 39627,
-        "Elderly care/capita (DKK)": 45267
+        "Elderly care/capita (DKK)": 45267,
+        "Equalization grants/capita (DKK)": -26936
       },
       "Health": {
         "GP utilization (%)": 85.5
@@ -5544,7 +5600,8 @@
         "Health care/capita (DKK)": 7346,
         "Education spending/pupil (DKK)": 90788,
         "Day care/child (DKK)": 49321,
-        "Elderly care/capita (DKK)": 47398
+        "Elderly care/capita (DKK)": 47398,
+        "Equalization grants/capita (DKK)": -20609
       },
       "Health": {
         "GP utilization (%)": 84
@@ -5642,7 +5699,8 @@
         "Health care/capita (DKK)": 7196,
         "Education spending/pupil (DKK)": 87330,
         "Day care/child (DKK)": 45127,
-        "Elderly care/capita (DKK)": 55169
+        "Elderly care/capita (DKK)": 55169,
+        "Equalization grants/capita (DKK)": -26845
       },
       "Health": {
         "GP utilization (%)": 86.1
@@ -5740,7 +5798,8 @@
         "Health care/capita (DKK)": 6171,
         "Education spending/pupil (DKK)": 84964,
         "Day care/child (DKK)": 45399,
-        "Elderly care/capita (DKK)": 51554
+        "Elderly care/capita (DKK)": 51554,
+        "Equalization grants/capita (DKK)": -21566
       },
       "Health": {
         "GP utilization (%)": 83.9
@@ -5838,7 +5897,8 @@
         "Health care/capita (DKK)": 6235,
         "Education spending/pupil (DKK)": 81082,
         "Day care/child (DKK)": 43341,
-        "Elderly care/capita (DKK)": 48382
+        "Elderly care/capita (DKK)": 48382,
+        "Equalization grants/capita (DKK)": -25602
       },
       "Health": {
         "GP utilization (%)": 85.3
@@ -5936,7 +5996,8 @@
         "Health care/capita (DKK)": 7097,
         "Education spending/pupil (DKK)": 72486,
         "Day care/child (DKK)": 43306,
-        "Elderly care/capita (DKK)": 45081
+        "Elderly care/capita (DKK)": 45081,
+        "Equalization grants/capita (DKK)": -25420
       },
       "Health": {
         "GP utilization (%)": 87.3
@@ -6034,7 +6095,8 @@
         "Health care/capita (DKK)": 8682,
         "Education spending/pupil (DKK)": 120021,
         "Day care/child (DKK)": 51488,
-        "Elderly care/capita (DKK)": 54339
+        "Elderly care/capita (DKK)": 54339,
+        "Equalization grants/capita (DKK)": -46293
       },
       "Health": {
         "GP utilization (%)": 88.1
@@ -6132,7 +6194,8 @@
         "Health care/capita (DKK)": 8521,
         "Education spending/pupil (DKK)": 115469,
         "Day care/child (DKK)": 50109,
-        "Elderly care/capita (DKK)": 62225
+        "Elderly care/capita (DKK)": 62225,
+        "Equalization grants/capita (DKK)": -48760
       },
       "Health": {
         "GP utilization (%)": 85.3
@@ -6230,7 +6293,8 @@
         "Health care/capita (DKK)": 6824,
         "Education spending/pupil (DKK)": 87407,
         "Day care/child (DKK)": 48553,
-        "Elderly care/capita (DKK)": 50375
+        "Elderly care/capita (DKK)": 50375,
+        "Equalization grants/capita (DKK)": -29098
       },
       "Health": {
         "GP utilization (%)": 86
@@ -6328,7 +6392,8 @@
         "Health care/capita (DKK)": 6379,
         "Education spending/pupil (DKK)": 96731,
         "Day care/child (DKK)": 41785,
-        "Elderly care/capita (DKK)": 55459
+        "Elderly care/capita (DKK)": 55459,
+        "Equalization grants/capita (DKK)": -15244
       },
       "Health": {
         "GP utilization (%)": 84.9
@@ -6426,7 +6491,8 @@
         "Health care/capita (DKK)": 7109,
         "Education spending/pupil (DKK)": 87090,
         "Day care/child (DKK)": 49889,
-        "Elderly care/capita (DKK)": 52485
+        "Elderly care/capita (DKK)": 52485,
+        "Equalization grants/capita (DKK)": -26982
       },
       "Health": {
         "GP utilization (%)": 84.8
@@ -6524,7 +6590,8 @@
         "Health care/capita (DKK)": 7245,
         "Education spending/pupil (DKK)": 87708,
         "Day care/child (DKK)": 47448,
-        "Elderly care/capita (DKK)": 47239
+        "Elderly care/capita (DKK)": 47239,
+        "Equalization grants/capita (DKK)": -32070
       },
       "Health": {
         "GP utilization (%)": 84.1
@@ -6622,7 +6689,8 @@
         "Health care/capita (DKK)": 6778,
         "Education spending/pupil (DKK)": 84503,
         "Day care/child (DKK)": 45977,
-        "Elderly care/capita (DKK)": 51875
+        "Elderly care/capita (DKK)": 51875,
+        "Equalization grants/capita (DKK)": -21579
       },
       "Health": {
         "GP utilization (%)": 85.7
@@ -6720,7 +6788,8 @@
         "Health care/capita (DKK)": 9403,
         "Education spending/pupil (DKK)": 102637,
         "Day care/child (DKK)": 54709,
-        "Elderly care/capita (DKK)": 48061
+        "Elderly care/capita (DKK)": 48061,
+        "Equalization grants/capita (DKK)": -14360
       },
       "Health": {
         "GP utilization (%)": 86.9
@@ -6818,7 +6887,8 @@
         "Health care/capita (DKK)": 6767,
         "Education spending/pupil (DKK)": 82886,
         "Day care/child (DKK)": 42230,
-        "Elderly care/capita (DKK)": 49972
+        "Elderly care/capita (DKK)": 49972,
+        "Equalization grants/capita (DKK)": -20869
       },
       "Health": {
         "GP utilization (%)": 84.6
@@ -6916,7 +6986,8 @@
         "Health care/capita (DKK)": 6461,
         "Education spending/pupil (DKK)": 86834,
         "Day care/child (DKK)": 43448,
-        "Elderly care/capita (DKK)": 52593
+        "Elderly care/capita (DKK)": 52593,
+        "Equalization grants/capita (DKK)": -22323
       },
       "Health": {
         "GP utilization (%)": 84.9
@@ -7014,7 +7085,8 @@
         "Health care/capita (DKK)": 6916,
         "Education spending/pupil (DKK)": 82704,
         "Day care/child (DKK)": 47060,
-        "Elderly care/capita (DKK)": 52182
+        "Elderly care/capita (DKK)": 52182,
+        "Equalization grants/capita (DKK)": -27758
       },
       "Health": {
         "GP utilization (%)": 83.9
@@ -7112,7 +7184,8 @@
         "Health care/capita (DKK)": 6296,
         "Education spending/pupil (DKK)": 80753,
         "Day care/child (DKK)": 51315,
-        "Elderly care/capita (DKK)": 52466
+        "Elderly care/capita (DKK)": 52466,
+        "Equalization grants/capita (DKK)": -22537
       },
       "Health": {
         "GP utilization (%)": 84.8
@@ -7210,7 +7283,8 @@
         "Health care/capita (DKK)": 5494,
         "Education spending/pupil (DKK)": 78207,
         "Day care/child (DKK)": 47910,
-        "Elderly care/capita (DKK)": 52979
+        "Elderly care/capita (DKK)": 52979,
+        "Equalization grants/capita (DKK)": -20560
       },
       "Health": {
         "GP utilization (%)": 84.1
@@ -7308,7 +7382,8 @@
         "Health care/capita (DKK)": 6197,
         "Education spending/pupil (DKK)": 69017,
         "Day care/child (DKK)": 44614,
-        "Elderly care/capita (DKK)": 51694
+        "Elderly care/capita (DKK)": 51694,
+        "Equalization grants/capita (DKK)": -16898
       },
       "Health": {
         "GP utilization (%)": 84.4
@@ -7406,7 +7481,8 @@
         "Health care/capita (DKK)": 6057,
         "Education spending/pupil (DKK)": 81176,
         "Day care/child (DKK)": 46081,
-        "Elderly care/capita (DKK)": 45706
+        "Elderly care/capita (DKK)": 45706,
+        "Equalization grants/capita (DKK)": -14842
       },
       "Health": {
         "GP utilization (%)": 83.4
@@ -7504,7 +7580,8 @@
         "Health care/capita (DKK)": 5462,
         "Education spending/pupil (DKK)": 84194,
         "Day care/child (DKK)": 44772,
-        "Elderly care/capita (DKK)": 47346
+        "Elderly care/capita (DKK)": 47346,
+        "Equalization grants/capita (DKK)": -17146
       },
       "Health": {
         "GP utilization (%)": 85
@@ -7602,7 +7679,8 @@
         "Health care/capita (DKK)": 6120,
         "Education spending/pupil (DKK)": 74954,
         "Day care/child (DKK)": 44161,
-        "Elderly care/capita (DKK)": 45757
+        "Elderly care/capita (DKK)": 45757,
+        "Equalization grants/capita (DKK)": -19528
       },
       "Health": {
         "GP utilization (%)": 85.3
@@ -7700,7 +7778,8 @@
         "Health care/capita (DKK)": 7707,
         "Education spending/pupil (DKK)": 101594,
         "Day care/child (DKK)": 45543,
-        "Elderly care/capita (DKK)": 44751
+        "Elderly care/capita (DKK)": 44751,
+        "Equalization grants/capita (DKK)": -20406
       },
       "Health": {
         "GP utilization (%)": 85.2
@@ -7798,7 +7877,8 @@
         "Health care/capita (DKK)": 6729,
         "Education spending/pupil (DKK)": 100775,
         "Day care/child (DKK)": 42690,
-        "Elderly care/capita (DKK)": 44034
+        "Elderly care/capita (DKK)": 44034,
+        "Equalization grants/capita (DKK)": -28151
       },
       "Health": {
         "GP utilization (%)": 87.1
@@ -7896,7 +7976,8 @@
         "Health care/capita (DKK)": 6785,
         "Education spending/pupil (DKK)": 84301,
         "Day care/child (DKK)": 42924,
-        "Elderly care/capita (DKK)": 43278
+        "Elderly care/capita (DKK)": 43278,
+        "Equalization grants/capita (DKK)": -16485
       },
       "Health": {
         "GP utilization (%)": 84.8
@@ -7994,7 +8075,8 @@
         "Health care/capita (DKK)": 6807,
         "Education spending/pupil (DKK)": 96563,
         "Day care/child (DKK)": 46751,
-        "Elderly care/capita (DKK)": 50662
+        "Elderly care/capita (DKK)": 50662,
+        "Equalization grants/capita (DKK)": -31070
       },
       "Health": {
         "GP utilization (%)": 86.6
@@ -8092,7 +8174,8 @@
         "Health care/capita (DKK)": 5580,
         "Education spending/pupil (DKK)": 83206,
         "Day care/child (DKK)": 44497,
-        "Elderly care/capita (DKK)": 44659
+        "Elderly care/capita (DKK)": 44659,
+        "Equalization grants/capita (DKK)": -10418
       },
       "Health": {
         "GP utilization (%)": 84.4
@@ -8190,7 +8273,8 @@
         "Health care/capita (DKK)": 5826,
         "Education spending/pupil (DKK)": 90558,
         "Day care/child (DKK)": 39166,
-        "Elderly care/capita (DKK)": 47883
+        "Elderly care/capita (DKK)": 47883,
+        "Equalization grants/capita (DKK)": -14911
       },
       "Health": {
         "GP utilization (%)": 85.7
@@ -8288,7 +8372,8 @@
         "Health care/capita (DKK)": 6145,
         "Education spending/pupil (DKK)": 90783,
         "Day care/child (DKK)": 48767,
-        "Elderly care/capita (DKK)": 56179
+        "Elderly care/capita (DKK)": 56179,
+        "Equalization grants/capita (DKK)": -25023
       },
       "Health": {
         "GP utilization (%)": 86.8
@@ -8386,7 +8471,8 @@
         "Health care/capita (DKK)": 5441,
         "Education spending/pupil (DKK)": 79673,
         "Day care/child (DKK)": 47971,
-        "Elderly care/capita (DKK)": 46981
+        "Elderly care/capita (DKK)": 46981,
+        "Equalization grants/capita (DKK)": -11583
       },
       "Health": {
         "GP utilization (%)": 85
@@ -8484,7 +8570,8 @@
         "Health care/capita (DKK)": 7746,
         "Education spending/pupil (DKK)": 165284,
         "Day care/child (DKK)": 51038,
-        "Elderly care/capita (DKK)": 54891
+        "Elderly care/capita (DKK)": 54891,
+        "Equalization grants/capita (DKK)": -41226
       },
       "Health": {
         "GP utilization (%)": 88.1
@@ -8582,7 +8669,8 @@
         "Health care/capita (DKK)": 5189,
         "Education spending/pupil (DKK)": 74742,
         "Day care/child (DKK)": 45531,
-        "Elderly care/capita (DKK)": 45113
+        "Elderly care/capita (DKK)": 45113,
+        "Equalization grants/capita (DKK)": -6467
       },
       "Health": {
         "GP utilization (%)": 84.5
@@ -8680,7 +8768,8 @@
         "Health care/capita (DKK)": 5282,
         "Education spending/pupil (DKK)": 79511,
         "Day care/child (DKK)": 49412,
-        "Elderly care/capita (DKK)": 52772
+        "Elderly care/capita (DKK)": 52772,
+        "Equalization grants/capita (DKK)": -8612
       },
       "Health": {
         "GP utilization (%)": 83.2
@@ -8778,7 +8867,8 @@
         "Health care/capita (DKK)": 5666,
         "Education spending/pupil (DKK)": 80386,
         "Day care/child (DKK)": 48101,
-        "Elderly care/capita (DKK)": 48978
+        "Elderly care/capita (DKK)": 48978,
+        "Equalization grants/capita (DKK)": -20583
       },
       "Health": {
         "GP utilization (%)": 83.4
@@ -8876,7 +8966,8 @@
         "Health care/capita (DKK)": 6315,
         "Education spending/pupil (DKK)": 84968,
         "Day care/child (DKK)": 40712,
-        "Elderly care/capita (DKK)": 49808
+        "Elderly care/capita (DKK)": 49808,
+        "Equalization grants/capita (DKK)": -20323
       },
       "Health": {
         "GP utilization (%)": 84.7
@@ -8974,7 +9065,8 @@
         "Health care/capita (DKK)": 5569,
         "Education spending/pupil (DKK)": 92409,
         "Day care/child (DKK)": 45538,
-        "Elderly care/capita (DKK)": 47865
+        "Elderly care/capita (DKK)": 47865,
+        "Equalization grants/capita (DKK)": -11709
       },
       "Health": {
         "GP utilization (%)": 83.9
@@ -9072,7 +9164,8 @@
         "Health care/capita (DKK)": 6663,
         "Education spending/pupil (DKK)": 92651,
         "Day care/child (DKK)": 49796,
-        "Elderly care/capita (DKK)": 57653
+        "Elderly care/capita (DKK)": 57653,
+        "Equalization grants/capita (DKK)": -34547
       },
       "Health": {
         "GP utilization (%)": 87.7
@@ -9170,7 +9263,8 @@
         "Health care/capita (DKK)": 6782,
         "Education spending/pupil (DKK)": 82803,
         "Day care/child (DKK)": 44849,
-        "Elderly care/capita (DKK)": 47734
+        "Elderly care/capita (DKK)": 47734,
+        "Equalization grants/capita (DKK)": -28024
       },
       "Health": {
         "GP utilization (%)": 87.7
@@ -9268,7 +9362,8 @@
         "Health care/capita (DKK)": 6615,
         "Education spending/pupil (DKK)": 76151,
         "Day care/child (DKK)": 44615,
-        "Elderly care/capita (DKK)": 52621
+        "Elderly care/capita (DKK)": 52621,
+        "Equalization grants/capita (DKK)": -25997
       },
       "Health": {
         "GP utilization (%)": 86.4
@@ -9366,7 +9461,8 @@
         "Health care/capita (DKK)": 6098,
         "Education spending/pupil (DKK)": 84594,
         "Day care/child (DKK)": 49459,
-        "Elderly care/capita (DKK)": 48401
+        "Elderly care/capita (DKK)": 48401,
+        "Equalization grants/capita (DKK)": -19615
       },
       "Health": {
         "GP utilization (%)": 85.8
@@ -9464,7 +9560,8 @@
         "Health care/capita (DKK)": 6188,
         "Education spending/pupil (DKK)": 86883,
         "Day care/child (DKK)": 39432,
-        "Elderly care/capita (DKK)": 54446
+        "Elderly care/capita (DKK)": 54446,
+        "Equalization grants/capita (DKK)": -28643
       },
       "Health": {
         "GP utilization (%)": 85.7
@@ -9562,7 +9659,8 @@
         "Health care/capita (DKK)": 6756,
         "Education spending/pupil (DKK)": 89215,
         "Day care/child (DKK)": 44325,
-        "Elderly care/capita (DKK)": 48454
+        "Elderly care/capita (DKK)": 48454,
+        "Equalization grants/capita (DKK)": -28342
       },
       "Health": {
         "GP utilization (%)": 86.4
@@ -9660,7 +9758,8 @@
         "Health care/capita (DKK)": 6511,
         "Education spending/pupil (DKK)": 78828,
         "Day care/child (DKK)": 48021,
-        "Elderly care/capita (DKK)": 50153
+        "Elderly care/capita (DKK)": 50153,
+        "Equalization grants/capita (DKK)": -30647
       },
       "Health": {
         "GP utilization (%)": 86.1
@@ -9758,7 +9857,8 @@
         "Health care/capita (DKK)": 7696,
         "Education spending/pupil (DKK)": 174060,
         "Day care/child (DKK)": 50482,
-        "Elderly care/capita (DKK)": 66385
+        "Elderly care/capita (DKK)": 66385,
+        "Equalization grants/capita (DKK)": -68340
       },
       "Health": {
         "GP utilization (%)": 87.9
@@ -9856,7 +9956,8 @@
         "Health care/capita (DKK)": 5582,
         "Education spending/pupil (DKK)": 83305,
         "Day care/child (DKK)": 39931,
-        "Elderly care/capita (DKK)": 50329
+        "Elderly care/capita (DKK)": 50329,
+        "Equalization grants/capita (DKK)": -13327
       },
       "Health": {
         "GP utilization (%)": 84.8
@@ -9954,7 +10055,8 @@
         "Health care/capita (DKK)": 6431,
         "Education spending/pupil (DKK)": 92883,
         "Day care/child (DKK)": 44157,
-        "Elderly care/capita (DKK)": 49365
+        "Elderly care/capita (DKK)": 49365,
+        "Equalization grants/capita (DKK)": -23432
       },
       "Health": {
         "GP utilization (%)": 86.5
@@ -10052,7 +10154,8 @@
         "Health care/capita (DKK)": 6463,
         "Education spending/pupil (DKK)": 87129,
         "Day care/child (DKK)": 44862,
-        "Elderly care/capita (DKK)": 46164
+        "Elderly care/capita (DKK)": 46164,
+        "Equalization grants/capita (DKK)": -25792
       },
       "Health": {
         "GP utilization (%)": 85.9
@@ -10150,7 +10253,8 @@
         "Health care/capita (DKK)": 5229,
         "Education spending/pupil (DKK)": 88955,
         "Day care/child (DKK)": 53094,
-        "Elderly care/capita (DKK)": 59350
+        "Elderly care/capita (DKK)": 59350,
+        "Equalization grants/capita (DKK)": -16781
       },
       "Health": {
         "GP utilization (%)": 84.7
@@ -10248,7 +10352,8 @@
         "Health care/capita (DKK)": 6676,
         "Education spending/pupil (DKK)": 81271,
         "Day care/child (DKK)": 45213,
-        "Elderly care/capita (DKK)": 51634
+        "Elderly care/capita (DKK)": 51634,
+        "Equalization grants/capita (DKK)": -26567
       },
       "Health": {
         "GP utilization (%)": 86.6

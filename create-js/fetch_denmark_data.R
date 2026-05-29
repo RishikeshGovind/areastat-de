@@ -88,7 +88,8 @@ VARIABLE_MAP <- list(
     `Health care/capita (DKK)`        = "FIN_HEALTH",
     `Education spending/pupil (DKK)`  = "FIN_EDUCATION",
     `Day care/child (DKK)`            = "FIN_DAYCARE",
-    `Elderly care/capita (DKK)`       = "FIN_ELDERLY"
+    `Elderly care/capita (DKK)`       = "FIN_ELDERLY",
+    `Equalization grants/capita (DKK)` = "FIN_GRANTS"
   ),
   Health = list(
     `GP utilization (%)` = "GP_UTILIZATION"
@@ -144,6 +145,7 @@ AGGREGATION_TYPE <- list(
   SOCIAL_HOUSING_PCT = "pct",
   DWELLINGS          = "sum",
   CRIMES_PER_1K      = "pct",
+  FIN_GRANTS         = "pct",
   FIN_OPERATING      = "pct",
   FIN_SERVICE        = "pct",
   FIN_DEBT           = "pct",
@@ -845,7 +847,7 @@ message("Fetching NGLK (municipal finances) from DST...")
 # NGLK BNØGLE codes → internal column names
 NGLK_CODES <- c(DRI="FIN_OPERATING", SER="FIN_SERVICE", LAN="FIN_DEBT",
                  ANL="FIN_CAPITAL",  SUN="FIN_HEALTH",  FOL="FIN_EDUCATION",
-                 DAG="FIN_DAYCARE",  ÆLD="FIN_ELDERLY")
+                 DAG="FIN_DAYCARE",  ÆLD="FIN_ELDERLY", UDL="FIN_GRANTS")
 
 finance_df <- tryCatch({
   raw <- dst_post("NGLK", list(
