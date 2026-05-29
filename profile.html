@@ -1349,10 +1349,27 @@
         ];
 
         try {
+          // HF free-tier spaces can take 60-90s to wake from cold. Use AbortController
+          // with 90s timeout so we don't fail silently on a cold start.
+          const withTimeout = (promise, ms) => {
+            const ctrl = new AbortController();
+            const timer = setTimeout(() => ctrl.abort(), ms);
+            return promise.finally(() => clearTimeout(timer));
+          };
+
           const [clusterRes, mlRes, shapRes] = await Promise.allSettled([
-            fetch(`${PLUMBER_BASE}/cluster_typology?ids=${encodeURIComponent(idsParam)}`).then(r => r.json()),
-            fetch(`${ML_BASE}/predict_distress`, { method:'POST', headers:{'Content-Type':'application/json'}, body: idsBody }).then(r => r.json()),
-            fetch(`${ML_BASE}/shap_explain`,     { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ ids: analysisIds, top_n: 6 }) }).then(r => r.json()),
+            withTimeout(
+              fetch(`${PLUMBER_BASE}/cluster_typology?ids=${encodeURIComponent(idsParam)}`).then(r => r.json()),
+              90000
+            ),
+            withTimeout(
+              fetch(`${ML_BASE}/predict_distress`, { method:'POST', headers:{'Content-Type':'application/json'}, body: idsBody }).then(r => r.json()),
+              90000
+            ),
+            withTimeout(
+              fetch(`${ML_BASE}/shap_explain`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ ids: analysisIds, top_n: 6 }) }).then(r => r.json()),
+              90000
+            ),
           ]);
 
           clearTimeout(warmupTimer);
@@ -1412,9 +1429,10 @@
           if (rDown || mDown) {
             const banner = document.createElement('div');
             banner.className = 'analysis-api-banner';
+            const retryNote = ' HF free-tier spaces sleep after inactivity — wait 60s then <button onclick="window._retryAnalysis()" style="background:none;border:none;color:#4f46e5;cursor:pointer;font-weight:600;text-decoration:underline;padding:0">retry</button>.';
             banner.innerHTML = [
-              rDown ? '⚠ R API not responding — clustering unavailable.' : '',
-              mDown ? '⚠ Python ML API not responding — predictions unavailable.' : '',
+              rDown ? `⚠ R API not responding — clustering unavailable.${retryNote}` : '',
+              mDown ? `⚠ Python ML API not responding — predictions unavailable.${retryNote}` : '',
             ].filter(Boolean).join('<br>');
             container.appendChild(banner);
           }
@@ -1987,11 +2005,11 @@
       document.addEventListener('DOMContentLoaded', async () => {
         applyLang();
 
-        // Pre-warm HuggingFace Spaces silently — free tier goes cold after inactivity,
-        // cold start takes 30-60s. Pinging now means the Space is ready by the time
+        // Pre-warm HuggingFace Spaces — free tier sleeps after inactivity,
+        // cold start takes 30-90s. Pinging now means the Space is ready by the time
         // the user clicks the Analysis tab.
         Promise.allSettled([
-          fetch(`${PLUMBER_BASE}/fiscal_risk_summary?ids=10101`).catch(() => {}),
+          fetch(`${PLUMBER_BASE}/health`).catch(() => {}),
           fetch(`${ML_BASE}/health`).catch(() => {}),
         ]);
 
@@ -2022,6 +2040,13 @@
           explore:      document.getElementById('explorer-container'),
         };
         const _rendered = new Set();
+
+        // Exposed for retry button in analysis error banner
+        window._retryAnalysis = () => {
+          _rendered.delete('analysis');
+          document.getElementById('analysis-container').innerHTML = '';
+          showTab('analysis');
+        };
 
         const showTab = (view) => {
           document.querySelectorAll('.view-tab').forEach(btn => {
