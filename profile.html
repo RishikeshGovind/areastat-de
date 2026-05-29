@@ -2837,7 +2837,7 @@
 
         const canvas = document.createElement('canvas');
         canvas.id = 'sfc_debt_ts';
-        canvas.style.maxHeight = '220px';
+        canvas.style.height = '360px';
         wrap.appendChild(canvas);
         container.appendChild(wrap);
 
@@ -3005,7 +3005,8 @@
           const src = currentZoneType === 'region' ? regionData : kommuneData;
           const taxRate = (() => {
             const v = src[z.id]?.FiscalPolicy?.['Municipal income tax rate (%)'];
-            return typeof v === 'number' ? v : (Array.isArray(v) ? v[0] : null);
+            const raw = typeof v === 'number' ? v : (Array.isArray(v) ? v[0] : null);
+            return raw != null ? (raw > 100 ? raw / 100 : raw) : null;
           })();
           const avgIncome = (() => {
             const v = src[z.id]?.Economy?.['Avg income (DKK)'];

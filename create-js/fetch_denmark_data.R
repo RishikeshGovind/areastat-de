@@ -1216,7 +1216,8 @@ tax_rate_df <- tryCatch({
     mutate(
       value        = suppressWarnings(as.numeric(gsub(",",".",value))),
       kommune_kode = coalesce(area_code, pad4(area)),
-      TAX_RATE_PCT = round(value, 2)
+      # DST stores rate in hundredths of a percent (2360 = 23.60%) when lang=da
+      TAX_RATE_PCT = round(ifelse(!is.na(value) & value > 100, value / 100, value), 2)
     ) |>
     filter(kommune_kode %in% kommune_lookup$kommune_kode, !is.na(TAX_RATE_PCT)) |>
     select(kommune_kode, TAX_RATE_PCT)
