@@ -3459,6 +3459,314 @@
         });
       }
 
+      // ══ SFC SCENARIO TAB ════════════════════════════════════════════════════
+
+      function renderSFCScenario() {
+        const container = document.getElementById('sfc-scenario-container');
+        if (!container) return;
+        container.innerHTML = '';
+
+        try {
+        const scen = window.sfcScenario || {};
+        if (!scen.high_exposure) {
+          container.innerHTML = '<div style="padding:2rem 1.5rem;color:#6b7280;font-size:.85rem;">SFC scenario data not loaded — push data.json to deploy first.</div>';
+          return;
+        }
+        const hi   = scen.high_exposure || {};
+        const lo   = scen.low_exposure  || {};
+        const meth = scen.methodology   || {};
+
+        const sfcFmtDK = v => v == null ? '–' : Number(Math.round(v)).toLocaleString('da-DK') + ' DKK';
+
+        // Header
+        const header = document.createElement('div');
+        header.style.cssText = 'padding:1.5rem 1.5rem .5rem;border-bottom:1px solid #e5e7eb;';
+        const hTitle = document.createElement('div');
+        hTitle.style.cssText = 'font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#9ca3af;margin-bottom:.4rem;';
+        hTitle.textContent = 'Phase 3 — SFC Framing';
+        header.appendChild(hTitle);
+        const hH2 = document.createElement('h2');
+        hH2.style.cssText = 'margin:0 0 .5rem;font-size:1.05rem;color:#1e3a5f;';
+        hH2.textContent = 'Prototype Two-Sector SFC Scenario';
+        header.appendChild(hH2);
+        const hP = document.createElement('p');
+        hP.style.cssText = 'margin:0 0 .75rem;font-size:.8rem;color:#6b7280;line-height:1.55;max-width:820px;';
+        hP.textContent = 'A Stock-Flow Consistent model calibrated to two archetype municipalities — one with high climate exposure (high fossil-sector dependency, low renewables) and one with low exposure (dominant renewable capacity). The simulation shows how fiscal stocks and flows diverge under BAU vs a Green Transition shock.';
+        header.appendChild(hP);
+        const hBadge = document.createElement('div');
+        hBadge.style.cssText = 'display:flex;flex-wrap:wrap;gap:.4rem;font-size:.72rem;color:#6b7280;';
+        hBadge.innerHTML = '<span style="background:#f0fdf4;color:#166534;border:1px solid #bbf7d0;border-radius:4px;padding:.15rem .55rem;font-weight:600;">SFC identity: ΔL(t) = G(t) + I(t) − T(t)</span>';
+        header.appendChild(hBadge);
+        container.appendChild(header);
+
+        // Archetype comparison cards
+        const cardGrid = document.createElement('div');
+        cardGrid.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;gap:1rem;padding:1.25rem 1.5rem;';
+
+        [
+          { d: hi, label: 'High Climate Exposure', accent: '#dc2626', bg: '#fef2f2', border: '#fecaca', icon: '🔴' },
+          { d: lo, label: 'Low Climate Exposure',  accent: '#16a34a', bg: '#f0fdf4', border: '#bbf7d0', icon: '🟢' },
+        ].forEach(({ d, label, accent, bg, border, icon }) => {
+          const ki  = d.key_indicators || {};
+          const card = document.createElement('div');
+          card.style.cssText = 'background:' + bg + ';border:1px solid ' + border + ';border-radius:10px;padding:1rem 1.1rem;';
+
+          const hdrDiv = document.createElement('div');
+          hdrDiv.style.cssText = 'font-size:.78rem;font-weight:700;color:' + accent + ';margin-bottom:.6rem;';
+          hdrDiv.textContent = icon + ' ' + label;
+          card.appendChild(hdrDiv);
+
+          const nameDiv = document.createElement('div');
+          nameDiv.style.cssText = 'font-size:.9rem;font-weight:700;color:#111827;margin-bottom:.2rem;';
+          nameDiv.textContent = (d.name || '') + ' (' + (d.id || '') + ')';
+          card.appendChild(nameDiv);
+
+          const regDiv = document.createElement('div');
+          regDiv.style.cssText = 'font-size:.72rem;color:#6b7280;margin-bottom:.75rem;';
+          regDiv.textContent = d.region || '';
+          card.appendChild(regDiv);
+
+          const kpiRows = [
+            ['Fossil-sector share', ki.fossil_linked_sector_share_pct != null ? ki.fossil_linked_sector_share_pct + ' %' : '–', accent],
+            ['Renewable intensity', ki.renewable_intensity_mw_per_1000 != null ? ki.renewable_intensity_mw_per_1000 + ' MW/1k' : '–', null],
+            ['Baseline debt/capita', sfcFmtDK(ki.baseline_debt_per_capita), null],
+            ['Operating exp/capita', sfcFmtDK(ki.baseline_ops_per_capita), null],
+            ['Est. tax revenue/cap', sfcFmtDK(ki.estimated_tax_revenue_per_capita), null],
+            ['Transition vulnerability', ki.transition_vulnerability_index != null ? ki.transition_vulnerability_index.toFixed(3) : '–', accent],
+          ];
+          const kpiGrid = document.createElement('div');
+          kpiGrid.style.cssText = 'display:grid;grid-template-columns:1fr auto;gap:.3rem .5rem;font-size:.75rem;';
+          kpiRows.forEach(([lbl, val, color]) => {
+            const l = document.createElement('span'); l.style.color = '#6b7280'; l.textContent = lbl;
+            const v = document.createElement('span'); v.style.cssText = 'font-weight:700;font-family:monospace;color:' + (color || '#111827');
+            v.textContent = val;
+            kpiGrid.appendChild(l); kpiGrid.appendChild(v);
+          });
+          card.appendChild(kpiGrid);
+
+          const descDiv = document.createElement('div');
+          descDiv.style.cssText = 'margin-top:.75rem;font-size:.68rem;color:#9ca3af;font-style:italic;';
+          descDiv.textContent = d.archetype_description || '';
+          card.appendChild(descDiv);
+
+          cardGrid.appendChild(card);
+        });
+        container.appendChild(cardGrid);
+
+        // Scenario charts
+        const chartSection = document.createElement('div');
+        chartSection.style.cssText = 'padding:0 1.5rem 1.5rem;';
+        const chartHdr = document.createElement('div');
+        chartHdr.style.cssText = 'font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#9ca3af;margin-bottom:.75rem;';
+        chartHdr.textContent = 'SFC Scenario Projections — 2024–2034';
+        chartSection.appendChild(chartHdr);
+        const chartGrid = document.createElement('div');
+        chartGrid.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;';
+
+        const years = (hi.years || []).map(String);
+        const hiB = (hi.scenarios || {}).bau             || {};
+        const hiG = (hi.scenarios || {}).green_transition || {};
+        const loB = (lo.scenarios || {}).bau             || {};
+        const loG = (lo.scenarios || {}).green_transition || {};
+
+        function sfcMakeCard(title, sub) {
+          const w = document.createElement('div');
+          w.style.cssText = 'background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:1rem;';
+          const t = document.createElement('div'); t.style.cssText = 'font-size:.78rem;font-weight:700;color:#1e3a5f;margin-bottom:.2rem;'; t.textContent = title; w.appendChild(t);
+          const s = document.createElement('div'); s.style.cssText = 'font-size:.68rem;color:#9ca3af;margin-bottom:.75rem;'; s.textContent = sub; w.appendChild(s);
+          const cw = document.createElement('div'); cw.style.cssText = 'position:relative;height:240px;';
+          const cv = document.createElement('canvas');
+          const cvId = 'sfcsc_' + Math.random().toString(36).slice(2);
+          cv.id = cvId; cw.appendChild(cv); w.appendChild(cw);
+          return { w, cv, cvId };
+        }
+
+        const c1 = sfcMakeCard('Long-term Debt / Capita (DKK)', 'ΔL(t) = G(t)+I(t)−T(t) · BAU: 0.5% surplus pa · Phase 1 shock visible as debt rise');
+        chartGrid.appendChild(c1.w);
+        setTimeout(function() {
+          destroyChart(c1.cvId);
+          _chartInstMap[c1.cvId] = new Chart(c1.cv, {
+            type: 'line',
+            data: { labels: years, datasets: [
+              { label: (hi.name||'') + ' BAU', data: hiB.debt, borderColor: '#9ca3af', borderDash: [5,3], borderWidth: 1.5, pointRadius: 2, tension: 0.3, backgroundColor: 'transparent' },
+              { label: (hi.name||'') + ' GT',  data: hiG.debt, borderColor: '#dc2626', borderWidth: 2, pointRadius: 2, tension: 0.3, backgroundColor: 'transparent' },
+              { label: (lo.name||'') + ' BAU', data: loB.debt, borderColor: '#6b7280', borderDash: [5,3], borderWidth: 1.5, pointRadius: 2, tension: 0.3, backgroundColor: 'transparent' },
+              { label: (lo.name||'') + ' GT',  data: loG.debt, borderColor: '#16a34a', borderWidth: 2, pointRadius: 2, tension: 0.3, backgroundColor: 'transparent' },
+            ]},
+            options: { responsive: true, maintainAspectRatio: false,
+              plugins: { legend: { position: 'bottom', labels: { font: { size: 10 }, boxWidth: 12 } },
+                tooltip: { mode: 'index', intersect: false } },
+              scales: {
+                x: { grid: { color: '#f0f0f0' }, ticks: { font: { size: 10 } } },
+                y: { grid: { color: '#f0f0f0' }, ticks: { font: { size: 10 }, callback: function(v) { return Math.round(v/1000)+'k'; } },
+                  title: { display: true, text: 'DKK / capita', font: { size: 9 }, color: '#9ca3af' } }
+              }
+            }
+          });
+        }, 50);
+
+        const c2 = sfcMakeCard('Fiscal Balance / Capita (DKK)', 'Positive = surplus (debt-reducing) · Negative = deficit (debt-increasing)');
+        chartGrid.appendChild(c2.w);
+        setTimeout(function() {
+          destroyChart(c2.cvId);
+          _chartInstMap[c2.cvId] = new Chart(c2.cv, {
+            type: 'line',
+            data: { labels: years, datasets: [
+              { label: (hi.name||'') + ' BAU', data: hiB.fiscal_balance, borderColor: '#9ca3af', borderDash: [5,3], borderWidth: 1.5, pointRadius: 2, tension: 0.3, backgroundColor: 'transparent' },
+              { label: (hi.name||'') + ' GT',  data: hiG.fiscal_balance, borderColor: '#dc2626', borderWidth: 2, pointRadius: 2, tension: 0.3, backgroundColor: 'transparent' },
+              { label: (lo.name||'') + ' BAU', data: loB.fiscal_balance, borderColor: '#6b7280', borderDash: [5,3], borderWidth: 1.5, pointRadius: 2, tension: 0.3, backgroundColor: 'transparent' },
+              { label: (lo.name||'') + ' GT',  data: loG.fiscal_balance, borderColor: '#16a34a', borderWidth: 2, pointRadius: 2, tension: 0.3, backgroundColor: 'transparent' },
+            ]},
+            options: { responsive: true, maintainAspectRatio: false,
+              plugins: { legend: { position: 'bottom', labels: { font: { size: 10 }, boxWidth: 12 } },
+                tooltip: { mode: 'index', intersect: false } },
+              scales: {
+                x: { grid: { color: '#f0f0f0' }, ticks: { font: { size: 10 } } },
+                y: { grid: { color: '#f0f0f0' }, ticks: { font: { size: 10 }, callback: function(v) { return Math.round(v/1000)+'k'; } },
+                  title: { display: true, text: 'DKK / capita', font: { size: 9 }, color: '#9ca3af' } }
+              }
+            }
+          });
+        }, 50);
+
+        chartSection.appendChild(chartGrid);
+        container.appendChild(chartSection);
+
+        // TFM
+        const tfmSection = document.createElement('div');
+        tfmSection.style.cssText = 'padding:0 1.5rem 1.5rem;';
+        const tfmHdr = document.createElement('div');
+        tfmHdr.style.cssText = 'font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#9ca3af;margin-bottom:.75rem;';
+        tfmHdr.textContent = 'Transaction Flow Matrix — Government Sector (per capita, DKK)';
+        tfmSection.appendChild(tfmHdr);
+        tfmSection.appendChild(buildTFMTable(hi, lo));
+        container.appendChild(tfmSection);
+
+        // BSM
+        const bsmSection = document.createElement('div');
+        bsmSection.style.cssText = 'padding:0 1.5rem 1.5rem;';
+        const bsmHdr = document.createElement('div');
+        bsmHdr.style.cssText = 'font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#9ca3af;margin-bottom:.75rem;';
+        bsmHdr.textContent = 'Balance Sheet Matrix (per capita, DKK)';
+        bsmSection.appendChild(bsmHdr);
+        bsmSection.appendChild(buildBSMTable(hi, lo));
+        container.appendChild(bsmSection);
+
+        // Methodology
+        const methDiv = document.createElement('div');
+        methDiv.style.cssText = 'margin:0 1.5rem 2rem;background:#f8fafc;border:1px solid #e5e7eb;border-radius:8px;padding:.9rem 1.1rem;';
+        const methTitle = document.createElement('div');
+        methTitle.style.cssText = 'font-size:.72rem;font-weight:700;color:#374151;margin-bottom:.5rem;text-transform:uppercase;letter-spacing:.05em;';
+        methTitle.textContent = 'Methodology & References';
+        methDiv.appendChild(methTitle);
+        const methGrid = document.createElement('div');
+        methGrid.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;gap:.3rem .75rem;font-size:.72rem;color:#6b7280;';
+        Object.entries(meth).forEach(function(kv) {
+          const k = kv[0], v = kv[1];
+          const kEl = document.createElement('span'); kEl.style.cssText = 'font-weight:600;color:#374151;'; kEl.textContent = k.replace(/_/g,' ');
+          const vEl = document.createElement('span'); vEl.textContent = String(v);
+          methGrid.appendChild(kEl); methGrid.appendChild(vEl);
+        });
+        methDiv.appendChild(methGrid);
+        container.appendChild(methDiv);
+
+        } catch (err) {
+          container.innerHTML = '';
+          const errDiv = document.createElement('div');
+          errDiv.style.cssText = 'margin:2rem 1.5rem;padding:1rem;background:#fef2f2;border:1px solid #fecaca;border-radius:8px;font-size:.8rem;color:#dc2626;';
+          errDiv.textContent = 'Render error: ' + String(err);
+          container.appendChild(errDiv);
+          console.error('renderSFCScenario:', err);
+        }
+      }
+
+      function buildTFMTable(hi, lo) {
+        var tfmHi = hi.transaction_flow_matrix || {};
+        var tfmLo = lo.transaction_flow_matrix || {};
+        var rowsHi = tfmHi.rows || [];
+        var rowsLo = tfmLo.rows || [];
+        var fmt = function(v) {
+          if (v == null) return '–';
+          if (typeof v === 'string') return v;
+          var n = Math.round(v);
+          return (n >= 0 ? '+' : '') + Number(n).toLocaleString('da-DK');
+        };
+        var tbl = document.createElement('div');
+        tbl.style.cssText = 'overflow-x:auto;';
+        var table = document.createElement('table');
+        table.style.cssText = 'width:100%;border-collapse:collapse;font-size:.76rem;background:#fff;border:1px solid #e5e7eb;border-radius:8px;overflow:hidden;';
+        table.innerHTML = '<thead><tr style="background:#1e3a5f;color:#fff;"><th style="padding:.5rem .75rem;text-align:left;">Transaction</th><th colspan="2" style="padding:.5rem .75rem;text-align:center;border-left:1px solid #2d4e7a;">🔴 ' + escapeHtml(hi.name||'') + ' (High)</th><th colspan="2" style="padding:.5rem .75rem;text-align:center;border-left:1px solid #2d4e7a;">🟢 ' + escapeHtml(lo.name||'') + ' (Low)</th></tr><tr style="background:#2d4e7a;color:#cbd5e1;font-size:.68rem;"><th style="padding:.3rem .75rem;text-align:left;">Flow (DKK/cap)</th><th style="padding:.3rem .5rem;text-align:right;border-left:1px solid #3d5e8a;">Gov</th><th style="padding:.3rem .5rem;text-align:right;">HH</th><th style="padding:.3rem .5rem;text-align:right;border-left:1px solid #3d5e8a;">Gov</th><th style="padding:.3rem .5rem;text-align:right;">HH</th></tr></thead>';
+        var tbody = document.createElement('tbody');
+        rowsHi.forEach(function(row, i) {
+          var rlo = rowsLo[i] || {};
+          var tr = document.createElement('tr');
+          tr.style.cssText = 'border-top:1px solid #f0f0f0;' + (i%2===0?'background:#fafafa;':'');
+          var colG = function(v) { return typeof v==='number' ? (v>=0?'#0891b2':'#dc2626') : '#374151'; };
+          tr.innerHTML = '<td style="padding:.4rem .75rem;color:#374151;font-weight:500;">' + escapeHtml(row.label||'') + '</td>' +
+            '<td style="padding:.4rem .5rem;text-align:right;font-family:monospace;color:' + colG(row.gov) + ';border-left:1px solid #f0f0f0;">' + escapeHtml(fmt(row.gov)) + '</td>' +
+            '<td style="padding:.4rem .5rem;text-align:right;font-family:monospace;color:' + colG(row.hh) + ';">' + escapeHtml(fmt(row.hh)) + '</td>' +
+            '<td style="padding:.4rem .5rem;text-align:right;font-family:monospace;color:' + colG(rlo.gov) + ';border-left:1px solid #f0f0f0;">' + escapeHtml(fmt(rlo.gov)) + '</td>' +
+            '<td style="padding:.4rem .5rem;text-align:right;font-family:monospace;color:' + colG(rlo.hh) + ';">' + escapeHtml(fmt(rlo.hh)) + '</td>';
+          tbody.appendChild(tr);
+        });
+        var tfoot = document.createElement('tfoot');
+        var footTr = document.createElement('tr');
+        footTr.style.cssText = 'background:#f8fafc;border-top:2px solid #e5e7eb;';
+        footTr.innerHTML = '<td style="padding:.45rem .75rem;font-size:.7rem;font-weight:600;color:#6b7280;">Debt stock L (per capita)</td>' +
+          '<td colspan="2" style="padding:.45rem .5rem;text-align:center;font-family:monospace;font-weight:700;color:#7c3aed;border-left:1px solid #e5e7eb;">' + (tfmHi.debt_stock!=null ? Number(Math.round(tfmHi.debt_stock)).toLocaleString('da-DK')+' DKK' : '–') + '</td>' +
+          '<td colspan="2" style="padding:.45rem .5rem;text-align:center;font-family:monospace;font-weight:700;color:#7c3aed;border-left:1px solid #e5e7eb;">' + (tfmLo.debt_stock!=null ? Number(Math.round(tfmLo.debt_stock)).toLocaleString('da-DK')+' DKK' : '–') + '</td>';
+        tfoot.appendChild(footTr);
+        table.appendChild(tbody); table.appendChild(tfoot);
+        tbl.appendChild(table);
+        var note = document.createElement('div');
+        note.style.cssText = 'font-size:.68rem;color:#9ca3af;margin-top:.4rem;';
+        note.textContent = '+ inflow to sector · − outflow from sector · Block grants are a calibrated residual.';
+        tbl.appendChild(note);
+        return tbl;
+      }
+
+      function buildBSMTable(hi, lo) {
+        var bsmHi = hi.balance_sheet_matrix || {};
+        var bsmLo = lo.balance_sheet_matrix || {};
+        var govHi = bsmHi.government || {}, govLo = bsmLo.government || {};
+        var hhHi  = bsmHi.households || {}, hhLo  = bsmLo.households || {};
+        var fmt = function(v) {
+          if (v == null) return '–';
+          var n = Math.round(v);
+          return (n >= 0 ? '+' : '') + Number(Math.abs(n)).toLocaleString('da-DK') + (n < 0 ? ' (−)' : '');
+        };
+        var rows = [
+          { label: 'Public capital stock (K)', hiGov: govHi.capital_stock, loGov: govLo.capital_stock, hiHH: null, loHH: null },
+          { label: 'Long-term debt (−L)',    hiGov: govHi.long_term_debt_neg, loGov: govLo.long_term_debt_neg, hiHH: null, loHH: null },
+          { label: 'Net financial worth',      hiGov: govHi.net_financial_worth, loGov: govLo.net_financial_worth, hiHH: null, loHH: null },
+          { label: 'HH financial wealth',      hiGov: null, loGov: null, hiHH: hhHi.financial_wealth_proxy, loHH: hhLo.financial_wealth_proxy },
+        ];
+        var tbl = document.createElement('div');
+        tbl.style.cssText = 'overflow-x:auto;';
+        var table = document.createElement('table');
+        table.style.cssText = 'width:100%;border-collapse:collapse;font-size:.76rem;background:#fff;border:1px solid #e5e7eb;border-radius:8px;overflow:hidden;';
+        table.innerHTML = '<thead><tr style="background:#1e3a5f;color:#fff;"><th style="padding:.5rem .75rem;text-align:left;">Balance Sheet Item</th><th colspan="2" style="padding:.5rem .75rem;text-align:center;border-left:1px solid #2d4e7a;">🔴 ' + escapeHtml(hi.name||'') + ' (High)</th><th colspan="2" style="padding:.5rem .75rem;text-align:center;border-left:1px solid #2d4e7a;">🟢 ' + escapeHtml(lo.name||'') + ' (Low)</th></tr><tr style="background:#2d4e7a;color:#cbd5e1;font-size:.68rem;"><th style="padding:.3rem .75rem;text-align:left;">Stock (DKK/cap)</th><th style="padding:.3rem .5rem;text-align:right;border-left:1px solid #3d5e8a;">Gov</th><th style="padding:.3rem .5rem;text-align:right;">HH</th><th style="padding:.3rem .5rem;text-align:right;border-left:1px solid #3d5e8a;">Gov</th><th style="padding:.3rem .5rem;text-align:right;">HH</th></tr></thead>';
+        var tbody = document.createElement('tbody');
+        rows.forEach(function(row, i) {
+          var tr = document.createElement('tr');
+          tr.style.cssText = 'border-top:1px solid #f0f0f0;' + (i%2===0?'background:#fafafa;':'');
+          var neg = function(v) { return v!=null && v<0; };
+          tr.innerHTML = '<td style="padding:.4rem .75rem;color:#374151;font-weight:500;">' + escapeHtml(row.label) + '</td>' +
+            '<td style="padding:.4rem .5rem;text-align:right;font-family:monospace;color:' + (neg(row.hiGov)?'#dc2626':'#1e3a5f') + ';border-left:1px solid #f0f0f0;">' + escapeHtml(fmt(row.hiGov)) + '</td>' +
+            '<td style="padding:.4rem .5rem;text-align:right;font-family:monospace;color:#0891b2;">' + escapeHtml(fmt(row.hiHH)) + '</td>' +
+            '<td style="padding:.4rem .5rem;text-align:right;font-family:monospace;color:' + (neg(row.loGov)?'#dc2626':'#1e3a5f') + ';border-left:1px solid #f0f0f0;">' + escapeHtml(fmt(row.loGov)) + '</td>' +
+            '<td style="padding:.4rem .5rem;text-align:right;font-family:monospace;color:#0891b2;">' + escapeHtml(fmt(row.loHH)) + '</td>';
+          tbody.appendChild(tr);
+        });
+        table.appendChild(tbody);
+        tbl.appendChild(table);
+        var note = document.createElement('div');
+        note.style.cssText = 'font-size:.68rem;color:#9ca3af;margin-top:.4rem;';
+        note.textContent = 'Capital stock = debt + 8× annual capex. HH wealth = 2.5× avg income.';
+        tbl.appendChild(note);
+        return tbl;
+      }
+
     </script>
 
   <!-- Chart zoom overlay -->
@@ -3568,374 +3876,6 @@
             paint: { 'line-color': '#86198f', 'line-width': 1.2 } });
         });
       };
-
-      // ══ SFC SCENARIO TAB ════════════════════════════════════════════════════
-
-      function renderSFCScenario() {
-        const container = document.getElementById('sfc-scenario-container');
-        if (!container) return;
-        container.innerHTML = '';
-
-        try {
-        const scen = window.sfcScenario || {};
-        if (!scen.high_exposure) {
-          container.innerHTML = '<div style="padding:2rem 1.5rem;color:#6b7280;font-size:.85rem;">SFC scenario data not loaded — push data.json to deploy first.</div>';
-          return;
-        }
-        const hi   = scen.high_exposure || {};
-        const lo   = scen.low_exposure  || {};
-        const meth = scen.methodology   || {};
-
-        const sfcFmtDK = v => v == null ? '–' : Number(Math.round(v)).toLocaleString('da-DK') + ' DKK';
-
-        // ── Header ───────────────────────────────────────────────────────────
-        const header = document.createElement('div');
-        header.style.cssText = 'padding:1.5rem 1.5rem .5rem;border-bottom:1px solid #e5e7eb;';
-        header.innerHTML = `
-          <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#9ca3af;margin-bottom:.4rem;">Phase 3 — SFC Framing</div>
-          <h2 style="margin:0 0 .5rem;font-size:1.05rem;color:#1e3a5f;">Prototype Two-Sector SFC Scenario</h2>
-          <p style="margin:0 0 .75rem;font-size:.8rem;color:#6b7280;line-height:1.55;max-width:820px;">
-            A Stock-Flow Consistent model calibrated to two archetype municipalities — one with high climate exposure
-            (high fossil-sector dependency, low renewables) and one with low exposure (dominant renewable capacity).
-            The simulation shows how fiscal stocks and flows diverge under Business-As-Usual vs a Green Transition shock.
-          </p>
-          <div style="display:flex;flex-wrap:wrap;gap:.4rem;font-size:.72rem;color:#6b7280;">
-            <span style="background:#f0fdf4;color:#166534;border:1px solid #bbf7d0;border-radius:4px;padding:.15rem .55rem;font-weight:600;">SFC identity: ΔL(t) = G(t) + I(t) − T(t)</span>
-            <span style="background:#eff6ff;color:#1e40af;border:1px solid #bfdbfe;border-radius:4px;padding:.15rem .55rem;">${escapeHtml(meth.phase1_2024_2026 || '')}</span>
-          </div>`;
-        container.appendChild(header);
-
-        // ── Archetype comparison cards ────────────────────────────────────────
-        const cardGrid = document.createElement('div');
-        cardGrid.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;gap:1rem;padding:1.25rem 1.5rem;';
-
-        [
-          { data: hi, label: 'High Climate Exposure', accent: '#dc2626', bg: '#fef2f2', border: '#fecaca', icon: '🔴' },
-          { data: lo, label: 'Low Climate Exposure',  accent: '#16a34a', bg: '#f0fdf4', border: '#bbf7d0', icon: '🟢' },
-        ].forEach(({ data, label, accent, bg, border, icon }) => {
-          const ki  = data.key_indicators || {};
-          const card = document.createElement('div');
-          card.style.cssText = `background:${bg};border:1px solid ${border};border-radius:10px;padding:1rem 1.1rem;`;
-          card.innerHTML = `
-            <div style="font-size:.78rem;font-weight:700;color:${accent};margin-bottom:.6rem;display:flex;align-items:center;gap:.4rem;">
-              <span>${icon}</span><span>${escapeHtml(label)}</span>
-            </div>
-            <div style="font-size:.9rem;font-weight:700;color:#111827;margin-bottom:.2rem;">${escapeHtml(data.name || '')} <span style="font-size:.72rem;color:#6b7280;font-weight:400;">(${escapeHtml(data.id || '')})</span></div>
-            <div style="font-size:.72rem;color:#6b7280;margin-bottom:.75rem;line-height:1.4;">${escapeHtml(data.region || '')}</div>
-            <div style="display:grid;grid-template-columns:1fr auto;gap:.3rem .5rem;font-size:.75rem;">
-              <span style="color:#6b7280;">Fossil-sector share</span>
-              <span style="font-weight:700;color:${accent};font-family:monospace;">${ki.fossil_linked_sector_share_pct != null ? ki.fossil_linked_sector_share_pct + ' %' : '–'}</span>
-              <span style="color:#6b7280;">Renewable intensity</span>
-              <span style="font-weight:700;font-family:monospace;">${ki.renewable_intensity_mw_per_1000 != null ? ki.renewable_intensity_mw_per_1000 + ' MW/1k' : '–'}</span>
-              <span style="color:#6b7280;">Baseline debt/capita</span>
-              <span style="font-weight:700;font-family:monospace;">${sfcFmtDK(ki.baseline_debt_per_capita)}</span>
-              <span style="color:#6b7280;">Operating exp/capita</span>
-              <span style="font-weight:700;font-family:monospace;">${sfcFmtDK(ki.baseline_ops_per_capita)}</span>
-              <span style="color:#6b7280;">Est. tax revenue/cap</span>
-              <span style="font-weight:700;font-family:monospace;">${sfcFmtDK(ki.estimated_tax_revenue_per_capita)}</span>
-              <span style="color:#6b7280;">Transition vulnerability</span>
-              <span style="font-weight:700;color:${accent};font-family:monospace;">${ki.transition_vulnerability_index != null ? ki.transition_vulnerability_index.toFixed(3) : '–'}</span>
-            </div>
-            <div style="margin-top:.75rem;font-size:.68rem;color:#9ca3af;font-style:italic;">${escapeHtml(data.archetype_description || '')}</div>`;
-          cardGrid.appendChild(card);
-        });
-        container.appendChild(cardGrid);
-
-        // ── Scenario Projection Charts ────────────────────────────────────────
-        const chartSection = document.createElement('div');
-        chartSection.style.cssText = 'padding:0 1.5rem 1.5rem;';
-
-        const chartHdr = document.createElement('div');
-        chartHdr.style.cssText = 'font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#9ca3af;margin-bottom:.75rem;';
-        chartHdr.textContent = 'SFC Scenario Projections — 2024 – 2034';
-        chartSection.appendChild(chartHdr);
-
-        const chartGrid = document.createElement('div');
-        chartGrid.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;';
-
-        // Build chart data
-        const years  = (hi.years || []).map(String);
-        const hiB    = (hi.scenarios || {}).bau             || {};
-        const hiG    = (hi.scenarios || {}).green_transition || {};
-        const loB    = (lo.scenarios || {}).bau             || {};
-        const loG    = (lo.scenarios || {}).green_transition || {};
-
-        const PALETTE_HI_BAU = '#9ca3af';
-        const PALETTE_HI_GT  = '#dc2626';
-        const PALETTE_LO_BAU = '#6b7280';
-        const PALETTE_LO_GT  = '#16a34a';
-
-        function makeSFCChartCard(title, subtitle) {
-          const wrap = document.createElement('div');
-          wrap.style.cssText = 'background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:1rem;';
-          const h = document.createElement('div');
-          h.style.cssText = 'font-size:.78rem;font-weight:700;color:#1e3a5f;margin-bottom:.2rem;';
-          h.textContent = title;
-          wrap.appendChild(h);
-          const s = document.createElement('div');
-          s.style.cssText = 'font-size:.68rem;color:#9ca3af;margin-bottom:.75rem;';
-          s.textContent = subtitle;
-          wrap.appendChild(s);
-          const canvasWrap = document.createElement('div');
-          canvasWrap.style.cssText = 'position:relative;height:240px;';
-          const cv = document.createElement('canvas');
-          const cvId = 'sfc_scen_' + Math.random().toString(36).slice(2);
-          cv.id = cvId;
-          canvasWrap.appendChild(cv);
-          wrap.appendChild(canvasWrap);
-          return { wrap, canvas: cv, canvasId: cvId };
-        }
-
-        // Chart 1: Debt per capita
-        const c1 = makeSFCChartCard(
-          'Long-term Debt / Capita (DKK)',
-          'ΔL(t) = G(t)+I(t)−T(t) · BAU: 0.5% surplus pa · Phase 1 shock visible as debt rise'
-        );
-        chartGrid.appendChild(c1.wrap);
-        setTimeout(() => {
-          destroyChart(c1.canvasId);
-          _chartInstMap[c1.canvasId] = new Chart(c1.canvas, {
-            type: 'line',
-            data: {
-              labels: years,
-              datasets: [
-                { label: hi.name + ' BAU',     data: hiB.debt, borderColor: PALETTE_HI_BAU, borderDash: [5,3], borderWidth: 1.5, pointRadius: 2, tension: 0.3, backgroundColor: 'transparent' },
-                { label: hi.name + ' GT',      data: hiG.debt, borderColor: PALETTE_HI_GT,  borderWidth: 2,   pointRadius: 2, tension: 0.3, backgroundColor: 'transparent' },
-                { label: lo.name + ' BAU',     data: loB.debt, borderColor: PALETTE_LO_BAU, borderDash: [5,3], borderWidth: 1.5, pointRadius: 2, tension: 0.3, backgroundColor: 'transparent' },
-                { label: lo.name + ' GT',      data: loG.debt, borderColor: PALETTE_LO_GT,  borderWidth: 2,   pointRadius: 2, tension: 0.3, backgroundColor: 'transparent' },
-              ]
-            },
-            options: {
-              responsive: true, maintainAspectRatio: false,
-              plugins: {
-                legend: { position: 'bottom', labels: { font: { size: 10 }, boxWidth: 12, padding: 6 } },
-                tooltip: { mode: 'index', intersect: false, callbacks: {
-                  label: ctx => ` ${ctx.dataset.label}: ${Number(ctx.parsed.y).toLocaleString('da-DK')} DKK`
-                }}
-              },
-              scales: {
-                x: { grid: { color: '#f0f0f0' }, ticks: { font: { size: 10 } } },
-                y: { grid: { color: '#f0f0f0' }, ticks: { font: { size: 10 }, callback: v => Math.round(v/1000) + 'k' },
-                     title: { display: true, text: 'DKK / capita', font: { size: 9 }, color: '#9ca3af' } }
-              }
-            }
-          });
-        }, 0);
-
-        // Chart 2: Fiscal balance per capita
-        const c2 = makeSFCChartCard(
-          'Fiscal Balance / Capita (DKK)',
-          'Positive = surplus (debt-reducing) · Negative = deficit (debt-increasing) · Phase annotations shown'
-        );
-        chartGrid.appendChild(c2.wrap);
-        setTimeout(() => {
-          destroyChart(c2.canvasId);
-          _chartInstMap[c2.canvasId] = new Chart(c2.canvas, {
-            type: 'line',
-            data: {
-              labels: years,
-              datasets: [
-                { label: hi.name + ' BAU',  data: hiB.fiscal_balance, borderColor: PALETTE_HI_BAU, borderDash: [5,3], borderWidth: 1.5, pointRadius: 2, tension: 0.3, backgroundColor: 'transparent' },
-                { label: hi.name + ' GT',   data: hiG.fiscal_balance, borderColor: PALETTE_HI_GT,  borderWidth: 2,   pointRadius: 2, tension: 0.3, backgroundColor: 'transparent' },
-                { label: lo.name + ' BAU',  data: loB.fiscal_balance, borderColor: PALETTE_LO_BAU, borderDash: [5,3], borderWidth: 1.5, pointRadius: 2, tension: 0.3, backgroundColor: 'transparent' },
-                { label: lo.name + ' GT',   data: loG.fiscal_balance, borderColor: PALETTE_LO_GT,  borderWidth: 2,   pointRadius: 2, tension: 0.3, backgroundColor: 'transparent' },
-              ]
-            },
-            options: {
-              responsive: true, maintainAspectRatio: false,
-              plugins: {
-                legend: { position: 'bottom', labels: { font: { size: 10 }, boxWidth: 12, padding: 6 } },
-                tooltip: { mode: 'index', intersect: false, callbacks: {
-                  label: ctx => ` ${ctx.dataset.label}: ${Number(ctx.parsed.y).toLocaleString('da-DK')} DKK`
-                }},
-                annotation: {
-                  annotations: {
-                    phase1: { type: 'box', xMin: 0, xMax: 2, backgroundColor: 'rgba(239,68,68,.06)',
-                              borderColor: 'rgba(239,68,68,.2)', borderWidth: 1,
-                              label: { display: true, content: 'Phase 1', font: { size: 9 }, color: '#ef4444', position: { x: 'start', y: 'start' } } },
-                    phase2: { type: 'box', xMin: 3, xMax: 6, backgroundColor: 'rgba(245,158,11,.06)',
-                              borderColor: 'rgba(245,158,11,.2)', borderWidth: 1,
-                              label: { display: true, content: 'Phase 2', font: { size: 9 }, color: '#d97706', position: { x: 'start', y: 'start' } } },
-                    phase3: { type: 'box', xMin: 7, xMax: 10, backgroundColor: 'rgba(22,163,74,.06)',
-                              borderColor: 'rgba(22,163,74,.2)', borderWidth: 1,
-                              label: { display: true, content: 'Phase 3', font: { size: 9 }, color: '#16a34a', position: { x: 'start', y: 'start' } } },
-                    zero:   { type: 'line', yMin: 0, yMax: 0, borderColor: '#374151', borderWidth: 1, borderDash: [2,2] },
-                  }
-                }
-              },
-              scales: {
-                x: { grid: { color: '#f0f0f0' }, ticks: { font: { size: 10 } } },
-                y: { grid: { color: '#f0f0f0' }, ticks: { font: { size: 10 }, callback: v => Math.round(v/1000) + 'k' },
-                     title: { display: true, text: 'DKK / capita', font: { size: 9 }, color: '#9ca3af' } }
-              }
-            }
-          });
-        }, 0);
-
-        chartSection.appendChild(chartGrid);
-        container.appendChild(chartSection);
-
-        // ── Transaction Flow Matrix ───────────────────────────────────────────
-        const tfmSection = document.createElement('div');
-        tfmSection.style.cssText = 'padding:0 1.5rem 1.5rem;';
-        const tfmHdr = document.createElement('div');
-        tfmHdr.style.cssText = 'font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#9ca3af;margin-bottom:.75rem;';
-        tfmHdr.textContent = 'Transaction Flow Matrix — Government Sector (per capita, DKK)';
-        tfmSection.appendChild(tfmHdr);
-        tfmSection.appendChild(buildTFMTable(hi, lo));
-        container.appendChild(tfmSection);
-
-        // ── Balance Sheet Matrix ──────────────────────────────────────────────
-        const bsmSection = document.createElement('div');
-        bsmSection.style.cssText = 'padding:0 1.5rem 1.5rem;';
-        const bsmHdr = document.createElement('div');
-        bsmHdr.style.cssText = 'font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#9ca3af;margin-bottom:.75rem;';
-        bsmHdr.textContent = 'Balance Sheet Matrix (per capita, DKK)';
-        bsmSection.appendChild(bsmHdr);
-        bsmSection.appendChild(buildBSMTable(hi, lo));
-        container.appendChild(bsmSection);
-
-        // ── SFC Framework note + methodology ─────────────────────────────────
-        const methDiv = document.createElement('div');
-        methDiv.style.cssText = 'margin:0 1.5rem 2rem;background:#f8fafc;border:1px solid #e5e7eb;border-radius:8px;padding:.9rem 1.1rem;';
-        methDiv.innerHTML = `
-          <div style="font-size:.72rem;font-weight:700;color:#374151;margin-bottom:.5rem;text-transform:uppercase;letter-spacing:.05em;">Methodology & References</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.3rem .75rem;font-size:.72rem;color:#6b7280;">
-            ${Object.entries(meth).map(([k, v]) =>
-              `<span style="font-weight:600;color:#374151;">${escapeHtml(k.replace(/_/g,' '))}</span><span>${escapeHtml(String(v))}</span>`
-            ).join('')}
-          </div>`;
-        container.appendChild(methDiv);
-        } catch (err) {
-          container.innerHTML = `<div style="margin:2rem 1.5rem;padding:1rem;background:#fef2f2;border:1px solid #fecaca;border-radius:8px;font-size:.8rem;color:#dc2626;">
-            <strong>Render error:</strong> ${escapeHtml(String(err))}</div>`;
-          console.error('renderSFCScenario error:', err);
-        }
-      }
-
-      function buildTFMTable(hi, lo) {
-        const tfmHi = hi.transaction_flow_matrix || {};
-        const tfmLo = lo.transaction_flow_matrix || {};
-        const rowsHi = tfmHi.rows || [];
-        const rowsLo = tfmLo.rows || [];
-
-        const fmt = v => {
-          if (v == null) return '–';
-          if (typeof v === 'string') return v;
-          const n = Math.round(v);
-          return (n >= 0 ? '+' : '') + Number(n).toLocaleString('da-DK');
-        };
-
-        const tbl = document.createElement('div');
-        tbl.style.cssText = 'overflow-x:auto;';
-        tbl.innerHTML = `
-          <table style="width:100%;border-collapse:collapse;font-size:.76rem;background:#fff;border:1px solid #e5e7eb;border-radius:8px;overflow:hidden;">
-            <thead>
-              <tr style="background:#1e3a5f;color:#fff;">
-                <th style="padding:.5rem .75rem;text-align:left;font-weight:600;">Transaction</th>
-                <th colspan="2" style="padding:.5rem .75rem;text-align:center;border-left:1px solid #2d4e7a;">
-                  🔴 ${escapeHtml(hi.name || '')} (High Exposure)
-                </th>
-                <th colspan="2" style="padding:.5rem .75rem;text-align:center;border-left:1px solid #2d4e7a;">
-                  🟢 ${escapeHtml(lo.name || '')} (Low Exposure)
-                </th>
-              </tr>
-              <tr style="background:#2d4e7a;color:#cbd5e1;font-size:.68rem;">
-                <th style="padding:.3rem .75rem;text-align:left;font-weight:500;">Flow (per capita, DKK)</th>
-                <th style="padding:.3rem .5rem;text-align:right;border-left:1px solid #3d5e8a;">Government</th>
-                <th style="padding:.3rem .5rem;text-align:right;">Households</th>
-                <th style="padding:.3rem .5rem;text-align:right;border-left:1px solid #3d5e8a;">Government</th>
-                <th style="padding:.3rem .5rem;text-align:right;">Households</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${rowsHi.map((row, i) => {
-                const rlo = rowsLo[i] || {};
-                const isGov = v => typeof v === 'number' && v < 0;
-                const colorGov = (v) => typeof v === 'number' ? (v >= 0 ? '#0891b2' : '#dc2626') : '#374151';
-                const colorHH  = (v) => typeof v === 'number' ? (v >= 0 ? '#0891b2' : '#dc2626') : '#374151';
-                return `<tr style="border-top:1px solid #f0f0f0;${i % 2 === 0 ? 'background:#fafafa;' : ''}">
-                  <td style="padding:.4rem .75rem;color:#374151;font-weight:500;">${escapeHtml(row.label || '')}</td>
-                  <td style="padding:.4rem .5rem;text-align:right;font-family:monospace;color:${colorGov(row.gov)};border-left:1px solid #f0f0f0;">${escapeHtml(fmt(row.gov))}</td>
-                  <td style="padding:.4rem .5rem;text-align:right;font-family:monospace;color:${colorHH(row.hh)};">${escapeHtml(fmt(row.hh))}</td>
-                  <td style="padding:.4rem .5rem;text-align:right;font-family:monospace;color:${colorGov(rlo.gov)};border-left:1px solid #f0f0f0;">${escapeHtml(fmt(rlo.gov))}</td>
-                  <td style="padding:.4rem .5rem;text-align:right;font-family:monospace;color:${colorHH(rlo.hh)};">${escapeHtml(fmt(rlo.hh))}</td>
-                </tr>`;
-              }).join('')}
-            </tbody>
-            <tfoot>
-              <tr style="background:#f8fafc;border-top:2px solid #e5e7eb;">
-                <td style="padding:.45rem .75rem;font-size:.7rem;font-weight:600;color:#6b7280;">Debt stock L (per capita)</td>
-                <td colspan="2" style="padding:.45rem .5rem;text-align:center;font-family:monospace;font-weight:700;color:#7c3aed;border-left:1px solid #e5e7eb;">
-                  ${escapeHtml(tfmHi.debt_stock != null ? Number(Math.round(tfmHi.debt_stock)).toLocaleString('da-DK') + ' DKK' : '–')}
-                </td>
-                <td colspan="2" style="padding:.45rem .5rem;text-align:center;font-family:monospace;font-weight:700;color:#7c3aed;border-left:1px solid #e5e7eb;">
-                  ${escapeHtml(tfmLo.debt_stock != null ? Number(Math.round(tfmLo.debt_stock)).toLocaleString('da-DK') + ' DKK' : '–')}
-                </td>
-              </tr>
-            </tfoot>
-          </table>
-          <div style="font-size:.68rem;color:#9ca3af;margin-top:.4rem;">
-            + inflow to sector · − outflow from sector · Block grants from central government not separately observable (calibrated residual).
-          </div>`;
-        return tbl;
-      }
-
-      function buildBSMTable(hi, lo) {
-        const bsmHi = hi.balance_sheet_matrix || {};
-        const bsmLo = lo.balance_sheet_matrix || {};
-        const govHi = bsmHi.government || {};
-        const govLo = bsmLo.government || {};
-        const hhHi  = bsmHi.households || {};
-        const hhLo  = bsmLo.households || {};
-
-        const fmt = v => {
-          if (v == null) return '–';
-          const n = Math.round(v);
-          return (n >= 0 ? '+' : '') + Number(Math.abs(n)).toLocaleString('da-DK') + (n < 0 ? ' (−)' : '');
-        };
-
-        const rows = [
-          { label: 'Public capital stock (K)', hiGov: govHi.capital_stock, loGov: govLo.capital_stock, hiHH: null, loHH: null },
-          { label: 'Long-term debt (−L)', hiGov: govHi.long_term_debt_neg, loGov: govLo.long_term_debt_neg, hiHH: null, loHH: null },
-          { label: 'Net financial worth', hiGov: govHi.net_financial_worth, loGov: govLo.net_financial_worth, hiHH: null, loHH: null },
-          { label: 'Household financial wealth', hiGov: null, loGov: null, hiHH: hhHi.financial_wealth_proxy, loHH: hhLo.financial_wealth_proxy },
-        ];
-
-        const tbl = document.createElement('div');
-        tbl.style.cssText = 'overflow-x:auto;';
-        tbl.innerHTML = `
-          <table style="width:100%;border-collapse:collapse;font-size:.76rem;background:#fff;border:1px solid #e5e7eb;border-radius:8px;overflow:hidden;">
-            <thead>
-              <tr style="background:#1e3a5f;color:#fff;">
-                <th style="padding:.5rem .75rem;text-align:left;font-weight:600;">Balance Sheet Item</th>
-                <th colspan="2" style="padding:.5rem .75rem;text-align:center;border-left:1px solid #2d4e7a;">🔴 ${escapeHtml(hi.name || '')} (High)</th>
-                <th colspan="2" style="padding:.5rem .75rem;text-align:center;border-left:1px solid #2d4e7a;">🟢 ${escapeHtml(lo.name || '')} (Low)</th>
-              </tr>
-              <tr style="background:#2d4e7a;color:#cbd5e1;font-size:.68rem;">
-                <th style="padding:.3rem .75rem;text-align:left;font-weight:500;">Stock (per capita, DKK)</th>
-                <th style="padding:.3rem .5rem;text-align:right;border-left:1px solid #3d5e8a;">Government</th>
-                <th style="padding:.3rem .5rem;text-align:right;">Households</th>
-                <th style="padding:.3rem .5rem;text-align:right;border-left:1px solid #3d5e8a;">Government</th>
-                <th style="padding:.3rem .5rem;text-align:right;">Households</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${rows.map((row, i) => `
-                <tr style="border-top:1px solid #f0f0f0;${i % 2 === 0 ? 'background:#fafafa;' : ''}">
-                  <td style="padding:.4rem .75rem;color:#374151;font-weight:500;">${escapeHtml(row.label)}</td>
-                  <td style="padding:.4rem .5rem;text-align:right;font-family:monospace;color:${row.hiGov != null && row.hiGov < 0 ? '#dc2626' : '#1e3a5f'};border-left:1px solid #f0f0f0;">${escapeHtml(fmt(row.hiGov))}</td>
-                  <td style="padding:.4rem .5rem;text-align:right;font-family:monospace;color:#0891b2;">${escapeHtml(fmt(row.hiHH))}</td>
-                  <td style="padding:.4rem .5rem;text-align:right;font-family:monospace;color:${row.loGov != null && row.loGov < 0 ? '#dc2626' : '#1e3a5f'};border-left:1px solid #f0f0f0;">${escapeHtml(fmt(row.loGov))}</td>
-                  <td style="padding:.4rem .5rem;text-align:right;font-family:monospace;color:#0891b2;">${escapeHtml(fmt(row.loHH))}</td>
-                </tr>`).join('')}
-            </tbody>
-          </table>
-          <div style="font-size:.68rem;color:#9ca3af;margin-top:.4rem;">
-            Capital stock proxy = debt + 8× annual capex (accumulated-investment estimate). Household wealth proxy = 2.5× average income.
-          </div>`;
-        return tbl;
-      }
 
     })();
   </script>
