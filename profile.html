@@ -1420,6 +1420,10 @@
                   Temporal train/test split: train 2012–2018, test 2020–2023.</li>
                 <li><strong>Clustering:</strong> K-means (k=3) on all indicator domains from data.json
                   via the R Plumber API. Trait interpretation uses Danish policy context.</li>
+                <li><strong>Multi-year forecasts (if used):</strong> Scenario simulation only — not a
+                  statistical forecast. Each step nudges unemployment by a fixed rule (+4% if high-risk,
+                  −3% if low-risk). These multipliers are not learned from data. Uncertainty compounds
+                  with each year; treat projections beyond 1 year as indicative only.</li>
               </ul>
             </div>`;
           container.appendChild(dataNoteEl);
@@ -1521,7 +1525,7 @@
       function renderMLRiskSection(container, ml, shap) {
         const predYr = (ml.year || 2023) + 1;
         const sec  = makeSection('ML Unemployment Risk Prediction',
-          `XGBoost · Above-median unemployment risk in ${predYr} · trained on DST panel 2012–2024`);
+          `XGBoost · Above-median unemployment risk in ${predYr} · trained on DST panel 2012–2024 · indicative only — see model notes below`);
         const grid = document.createElement('div');
         grid.className = 'analysis-risk-grid';
 
@@ -1706,10 +1710,11 @@
           // Header
           const hdr = document.createElement('div');
           hdr.className = 'fcb2-hdr';
+          const clTraits = [].concat(cl.common_traits || []).filter(Boolean);
           hdr.innerHTML = `
             <span class="fcb2-badge" style="background:${clr}">${escapeHtml(clKey.replace('_',' '))}</span>
             <span class="fcb2-count">${nZ} zone${nZ !== 1 ? 's' : ''}</span>
-            ${(cl.common_traits||[]).slice(0,2).map(t =>
+            ${clTraits.slice(0,2).map(t =>
               `<span class="fcb2-top">${escapeHtml(t)}</span>`).join('')}
           `;
           block.appendChild(hdr);
@@ -1740,16 +1745,20 @@
           }).join('');
           left.innerHTML = `<div class="shap-section"><div class="shap-title">Distinctive indicators vs Denmark avg</div>${driverRows}</div>`;
 
-          if ((cl.challenges||[]).length) {
+          // [].concat() handles both string (unboxed) and array from R
+          const clChallenges   = [].concat(cl.challenges   || []).filter(Boolean);
+          const clOpportunities= [].concat(cl.opportunities|| []).filter(Boolean);
+
+          if (clChallenges.length) {
             left.innerHTML += `<div style="margin-top:.75rem;font-size:.75rem;color:#6b7280;font-weight:600;text-transform:uppercase;letter-spacing:.05em">Challenges</div>
               <ul style="margin:.3rem 0 0;padding-left:1rem;font-size:.78rem;color:#374151;line-height:1.6">
-                ${(cl.challenges||[]).map(c=>`<li>${escapeHtml(c)}</li>`).join('')}
+                ${clChallenges.map(c=>`<li>${escapeHtml(c)}</li>`).join('')}
               </ul>`;
           }
-          if ((cl.opportunities||[]).length) {
+          if (clOpportunities.length) {
             left.innerHTML += `<div style="margin-top:.75rem;font-size:.75rem;color:#16a34a;font-weight:600;text-transform:uppercase;letter-spacing:.05em">Opportunities</div>
               <ul style="margin:.3rem 0 0;padding-left:1rem;font-size:.78rem;color:#374151;line-height:1.6">
-                ${(cl.opportunities||[]).map(o=>`<li>${escapeHtml(o)}</li>`).join('')}
+                ${clOpportunities.map(o=>`<li>${escapeHtml(o)}</li>`).join('')}
               </ul>`;
           }
           body.appendChild(left);

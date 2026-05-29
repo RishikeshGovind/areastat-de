@@ -34,9 +34,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from sklearn.metrics import (
     average_precision_score,
+    brier_score_loss,
     classification_report,
     roc_auc_score,
 )
+from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import LabelEncoder
 from xgboost import XGBClassifier
 
@@ -87,10 +89,18 @@ app.add_middleware(
 panel: pd.DataFrame = None
 panel_featured: pd.DataFrame = None
 model: XGBClassifier = None
+platt_scaler: LogisticRegression = None
 explainer: shap.TreeExplainer = None
 label_encoders: dict = {}
 test_results: dict = {}
 national_median_by_year: dict = {}
+classification_threshold: float = 0.5  # overwritten during training with class prevalence
+
+
+def _calibrated_proba(X: pd.DataFrame) -> np.ndarray:
+    """Raw XGBoost probability → Platt-scaled calibrated probability."""
+    raw = model.predict_proba(X)[:, 1].reshape(-1, 1)
+    return platt_scaler.predict_proba(raw)[:, 1]
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -124,6 +134,20 @@ def engineer_features(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
+def _expected_calibration_error(y_true: np.ndarray, y_prob: np.ndarray, n_bins: int = 10) -> float:
+    """Weighted mean absolute difference between predicted probability and observed frequency."""
+    bins    = np.linspace(0.0, 1.0 + 1e-8, n_bins + 1)
+    bin_idx = np.clip(np.digitize(y_prob, bins) - 1, 0, n_bins - 1)
+    n       = len(y_true)
+    ece     = 0.0
+    for b in range(n_bins):
+        mask = bin_idx == b
+        if not mask.any():
+            continue
+        ece += (mask.sum() / n) * abs(y_true[mask].mean() - y_prob[mask].mean())
+    return float(ece)
+
+
 # ══════════════════════════════════════════════════════════════════════════════
 # Data preparation
 # ══════════════════════════════════════════════════════════════════════════════
@@ -134,13 +158,21 @@ def prepare_data(df: pd.DataFrame):
     df = engineer_features(df)
     panel_featured = df
 
-    # National median unemployment per year
+    # Cross-sectional median per year — kept for display in prediction endpoints only.
     med = df.groupby("year")["unemployment_rate_pct"].median()
     national_median_by_year = med.to_dict()
 
-    # Target: is next-year unemployment above that year's national median?
+    # Expanding-window threshold: for year Y, estimate next year's median using only data ≤ Y.
+    # Prevents validation/test-year statistics from leaking into training targets.
+    years_sorted = sorted(df["year"].unique())
+    expanding_threshold = {
+        y + 1: df[df["year"] <= y]["unemployment_rate_pct"].median()
+        for y in years_sorted
+    }
+
+    # Target: is next-year unemployment above the expanding-window estimate for that year?
     df["unemp_next"] = df.groupby("zone_code")["unemployment_rate_pct"].shift(-1)
-    df["med_next"]   = (df["year"] + 1).map(national_median_by_year)
+    df["med_next"]   = (df["year"] + 1).map(expanding_threshold)
     df["target"]     = (df["unemp_next"] > df["med_next"]).astype(float)
     df = df.dropna(subset=["target"])
     df["target"] = df["target"].astype(int)
@@ -168,7 +200,7 @@ def prepare_data(df: pd.DataFrame):
 # ══════════════════════════════════════════════════════════════════════════════
 
 def train_model(X: pd.DataFrame, y: pd.Series, meta: pd.DataFrame):
-    global model, explainer, test_results, MODEL_META
+    global model, platt_scaler, explainer, test_results, MODEL_META, classification_threshold
 
     train_m = meta["year"] <= 2018
     val_m   = meta["year"] == 2019
@@ -198,24 +230,49 @@ def train_model(X: pd.DataFrame, y: pd.Series, meta: pd.DataFrame):
     )
     model.fit(X_tr, y_tr, eval_set=[(X_va, y_va)], verbose=False)
 
-    y_prob = model.predict_proba(X_te)[:, 1]
-    y_pred = (y_prob >= 0.5).astype(int)
+    # Platt scaling: fit on train+val combined.
+    # Val-only (99 samples, 12 positives) gives raw probs in a too-narrow range [0.43, 0.55]
+    # for the LR to find a meaningful slope. Train+val gives more spread and reliable fit.
+    X_trval   = pd.concat([X_tr, X_va])
+    y_trval   = pd.concat([y_tr, y_va])
+    raw_trval = model.predict_proba(X_trval)[:, 1].reshape(-1, 1)
+    platt_scaler = LogisticRegression()
+    platt_scaler.fit(raw_trval, y_trval)
+
+    # Evaluate on test set using calibrated probabilities
+    raw_te  = model.predict_proba(X_te)[:, 1]
+    ece_raw = _expected_calibration_error(y_te.to_numpy(), raw_te)
+    y_prob  = platt_scaler.predict_proba(raw_te.reshape(-1, 1))[:, 1]
+
+    # Use training prevalence as threshold — correct after Platt scaling pulls probs to true prevalence
+    classification_threshold = float(y_tr.mean())
+    y_pred = (y_prob >= classification_threshold).astype(int)
     auc    = roc_auc_score(y_te, y_prob)
     ap     = average_precision_score(y_te, y_prob)
     report = classification_report(y_te, y_pred, output_dict=True)
+    brier  = brier_score_loss(y_te, y_prob)
+    ece    = _expected_calibration_error(y_te.to_numpy(), y_prob)
 
     test_results = {
-        "auc_roc":        round(auc, 4),
-        "avg_precision":  round(ap,  4),
-        "accuracy":       round(report["accuracy"], 4),
-        "precision_high": round(report.get("1", {}).get("precision", 0), 4),
-        "recall_high":    round(report.get("1", {}).get("recall",    0), 4),
-        "f1_high":        round(report.get("1", {}).get("f1-score",  0), 4),
-        "n_test":         int(len(y_te)),
-        "train_years":    "2012–2018",
-        "test_years":     "2020–2023",
+        "auc_roc":          round(auc,     4),
+        "avg_precision":    round(ap,      4),
+        "brier_score":      round(brier,   4),
+        "ece":              round(ece,     4),
+        "ece_pre_calibration": round(ece_raw, 4),
+        "accuracy":         round(report["accuracy"], 4),
+        "precision_high":   round(report.get("1", {}).get("precision", 0), 4),
+        "recall_high":      round(report.get("1", {}).get("recall",    0), 4),
+        "f1_high":          round(report.get("1", {}).get("f1-score",  0), 4),
+        "n_test":                    int(len(y_te)),
+        "train_years":               "2012–2018",
+        "test_years":                "2020–2023",
+        "calibration":               "Platt scaling (logistic regression on validation probabilities)",
+        "classification_threshold":  round(classification_threshold, 4),
     }
-    logger.info(f"Test AUC: {auc:.4f} | AP: {ap:.4f}")
+    logger.info(
+        f"Test AUC: {auc:.4f} | AP: {ap:.4f} | Brier: {brier:.4f} "
+        f"| ECE raw: {ece_raw:.4f} → calibrated: {ece:.4f}"
+    )
 
     explainer = shap.TreeExplainer(model)
     MODEL_META = {
@@ -226,8 +283,10 @@ def train_model(X: pd.DataFrame, y: pd.Series, meta: pd.DataFrame):
         "scale_pos_weight": round(scale_pos, 2),
     }
     joblib.dump(
-        {"model": model, "label_encoders": label_encoders,
-         "features": ALL_FEATURES, "national_median": national_median_by_year},
+        {"model": model, "platt_scaler": platt_scaler,
+         "label_encoders": label_encoders, "features": ALL_FEATURES,
+         "national_median": national_median_by_year,
+         "classification_threshold": classification_threshold},
         MODEL_PATH,
     )
     logger.info(f"Model saved → {MODEL_PATH}")
@@ -283,12 +342,14 @@ async def startup():
         logger.info("Loading cached model …")
         try:
             cached = joblib.load(MODEL_PATH)
-            global model, explainer, label_encoders, ALL_FEATURES
-            global national_median_by_year, panel_featured
-            model                   = cached["model"]
-            label_encoders          = cached["label_encoders"]
-            ALL_FEATURES            = cached["features"]
-            national_median_by_year = cached.get("national_median", {})
+            global model, platt_scaler, explainer, label_encoders, ALL_FEATURES
+            global national_median_by_year, panel_featured, classification_threshold
+            model                    = cached["model"]
+            platt_scaler             = cached["platt_scaler"]
+            label_encoders           = cached["label_encoders"]
+            ALL_FEATURES             = cached["features"]
+            national_median_by_year  = cached.get("national_median", {})
+            classification_threshold = cached.get("classification_threshold", 0.5)
             explainer               = shap.TreeExplainer(model)
             panel_featured          = engineer_features(panel)
             logger.info("Cached model loaded.")
@@ -349,6 +410,8 @@ def model_performance():
             "auc_roc":        "1.0 = perfect, 0.5 = random guess",
             "avg_precision":  "Better metric when classes are imbalanced",
             "recall_high":    "% of true high-unemployment cases the model catches",
+            "brier_score":    "Mean squared error of predicted probabilities; 0.0 = perfect, 0.25 = uninformative baseline for balanced classes",
+            "ece":            "Expected Calibration Error (10 bins); measures how well predicted probabilities match observed frequencies — 0.0 = perfectly calibrated",
         },
     }
 
@@ -357,19 +420,40 @@ def model_performance():
 def feature_importance():
     if model is None or panel_featured is None:
         raise HTTPException(503, "Model not loaded.")
-    sample = panel_featured[panel_featured["year"] <= 2018].copy()
+
+    sample = panel_featured.copy()
     sample = _encode(sample)
     avail  = [f for f in ALL_FEATURES if f in sample.columns]
-    X_s    = sample[avail].fillna(0).head(2000)
-    sv     = explainer.shap_values(X_s)
+
+    # Stratified sample: up to 200 rows per year so all temporal periods are represented
+    strat = (
+        sample
+        .groupby("year", group_keys=False)
+        .apply(lambda g: g.sample(n=min(len(g), 200), random_state=42))
+        .reset_index(drop=True)
+    )
+
+    # Impute NaNs: ffill then bfill within each zone's time-ordered rows, then column median
+    feat_df = strat[["zone_code", "year"] + avail].sort_values(["zone_code", "year"])
+    feat_df[avail] = (
+        feat_df.groupby("zone_code")[avail]
+        .transform(lambda s: s.ffill().bfill())
+    )
+    col_medians = feat_df[avail].median()
+    X_s = feat_df[avail].fillna(col_medians)
+
+    sv       = explainer.shap_values(X_s)
     mean_abs = np.abs(sv).mean(axis=0)
     importance = sorted(
         [{"feature": f, "mean_shap": round(float(v), 5)}
          for f, v in zip(avail, mean_abs)],
         key=lambda x: x["mean_shap"], reverse=True,
     )
-    return {"method": "mean |SHAP| over training sample",
-            "n_samples": len(X_s), "importance": importance}
+    return {
+        "method":    "mean |SHAP| over stratified sample (all years, ≤200 rows/year)",
+        "n_samples": len(X_s),
+        "importance": importance,
+    }
 
 
 @app.post("/predict_distress")
@@ -391,7 +475,7 @@ def predict_distress(req: ZoneRequest):
 
     data  = _encode(data)
     avail = [f for f in ALL_FEATURES if f in data.columns]
-    probs = model.predict_proba(data[avail])[:, 1]
+    probs = _calibrated_proba(data[avail])
     nat_med = national_median_by_year.get(yr + 1, np.nan)
 
     results = []
@@ -404,7 +488,7 @@ def predict_distress(req: ZoneRequest):
             "year_used":              yr,
             "predicts_year":          yr + 1,
             "high_unemp_probability": round(prob, 4),
-            "predicted_high_unemp":   int(prob >= 0.5),
+            "predicted_high_unemp":   int(prob >= classification_threshold),
             "risk_category": (
                 "High"   if prob >= 0.65 else
                 "Medium" if prob >= 0.35 else
@@ -443,9 +527,9 @@ def shap_explain(req: ShapRequest):
     data  = _encode(data)
     avail = [f for f in ALL_FEATURES if f in data.columns]
     X     = data[avail]
-    sv    = explainer.shap_values(X)
+    sv    = explainer.shap_values(X)          # SHAP uses raw model internally
     base  = float(explainer.expected_value)
-    probs = model.predict_proba(X)[:, 1]
+    probs = _calibrated_proba(X)
 
     explanations = []
     for i, (_, row) in enumerate(data.iterrows()):
@@ -503,8 +587,8 @@ def fiscal_forecast(req: ForecastRequest):
         current = _encode(current)
         avail   = [f for f in ALL_FEATURES if f in current.columns]
         X       = current[avail]
-        probs   = model.predict_proba(X)[:, 1]
-        preds   = (probs >= 0.5).astype(int)
+        probs   = _calibrated_proba(X)
+        preds   = (probs >= classification_threshold).astype(int)
 
         for i, (_, row) in enumerate(current.iterrows()):
             forecasts[row["zone_code"]].append({
@@ -536,6 +620,22 @@ def fiscal_forecast(req: ForecastRequest):
     return {
         "base_year": latest,
         "horizon":   horizon,
-        "note":      "Uncertainty compounds each step — use for indicative planning only.",
-        "zones":     output,
+        "note": (
+            "Multi-year forecasts are scenario simulations, not statistical predictions. "
+            "Uncertainty compounds at each step — treat as indicative planning only."
+        ),
+        "methodology": {
+            "roll_forward": (
+                "At each step the model classifies each zone as high/low risk (threshold 0.5). "
+                "Unemployment is then nudged by a fixed heuristic: +4% if high-risk, -3% if low-risk. "
+                "These multipliers (1.04 / 0.97) are not learned from data — they are rule-based scenario "
+                "assumptions. Confidence intervals are not provided; true uncertainty grows non-linearly "
+                "with horizon."
+            ),
+            "high_risk_unemployment_multiplier": 1.04,
+            "low_risk_unemployment_multiplier":  0.97,
+            "classification_threshold":          0.5,
+            "max_horizon_years":                 5,
+        },
+        "zones": output,
     }

@@ -4,6 +4,7 @@ library(here)
 library(stats)
 library(dplyr)
 library(tidyr)
+library(cluster)
 
 #* @filter cors
 cors <- function(req, res) {
@@ -54,6 +55,37 @@ build_zone_matrix <- function(sel_zones) {
   mat           <- do.call(rbind, zone_vecs)
   colnames(mat) <- var_names
   mat
+}
+
+# ── Clustering helpers ────────────────────────────────────────────────────────
+
+# Impute each column's NAs with that column's median, then centre/scale.
+# Zero-variance columns (sd=0) produce NaN after scale(); those are zeroed out.
+prep_scaled_matrix <- function(mat) {
+  for (j in seq_len(ncol(mat))) {
+    na_idx <- is.na(mat[, j])
+    if (any(na_idx)) {
+      col_med <- median(mat[, j], na.rm = TRUE)
+      mat[na_idx, j] <- if (is.finite(col_med)) col_med else 0
+    }
+  }
+  sc <- scale(mat, center = TRUE, scale = TRUE)
+  sc[!is.finite(sc)] <- 0   # guard for zero-variance columns
+  sc
+}
+
+# Try k = 2..min(8, n-1) and return the k with the highest mean silhouette width.
+select_k_silhouette <- function(scaled_mat) {
+  n     <- nrow(scaled_mat)
+  k_max <- min(8L, n - 1L)
+  if (k_max < 2L) return(2L)
+  d <- dist(scaled_mat)
+  scores <- vapply(2L:k_max, function(k_try) {
+    set.seed(123)
+    km_try <- kmeans(scaled_mat, centers = k_try, nstart = 25)
+    mean(silhouette(km_try$cluster, d)[, "sil_width"])
+  }, numeric(1))
+  (2L:k_max)[which.max(scores)]
 }
 
 # ── Danish cluster interpretation ─────────────────────────────────────────────
@@ -210,12 +242,10 @@ cluster_typology <- function(ids = "", res) {
   }
 
   mat        <- build_zone_matrix(sel_zones)
-  scaled_mat <- scale(mat, center = TRUE, scale = TRUE)
-  scaled_mat[!is.finite(scaled_mat)] <- 0   # replace NA/NaN/Inf from missing indicators
-
-  k <- max(2L, min(3L, nrow(scaled_mat) - 1L))
+  scaled_mat <- prep_scaled_matrix(mat)
+  k          <- select_k_silhouette(scaled_mat)
   set.seed(123)
-  km <- kmeans(scaled_mat, centers = k, nstart = 25)
+  km         <- kmeans(scaled_mat, centers = k, nstart = 25)
 
   assignments <- data.frame(
     zone    = names(sel_zones),
@@ -248,7 +278,8 @@ cluster_typology <- function(ids = "", res) {
     summary     = summary_out,
     assignments = assignments,
     profiles    = profiles,
-    dk_profile  = as.list(at_vector)
+    dk_profile  = as.list(at_vector),
+    k_selected  = k
   )
   }, error = function(e) {
     res$status <- 500
@@ -269,12 +300,10 @@ cluster_plot_data <- function(ids = "", res) {
   }
 
   mat        <- build_zone_matrix(sel_zones)
-  scaled_mat <- scale(mat, center = TRUE, scale = TRUE)
-  scaled_mat[!is.finite(scaled_mat)] <- 0
-
-  k  <- min(3, nrow(scaled_mat))
+  scaled_mat <- prep_scaled_matrix(mat)
+  k          <- select_k_silhouette(scaled_mat)
   set.seed(123)
-  km  <- kmeans(scaled_mat, centers = k, nstart = 25)
+  km         <- kmeans(scaled_mat, centers = k, nstart = 25)
   pca <- prcomp(scaled_mat, center = FALSE, scale. = FALSE)
 
   pts         <- as.data.frame(pca$x[, 1:2])
