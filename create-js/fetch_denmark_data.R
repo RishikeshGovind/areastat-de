@@ -1218,9 +1218,10 @@ sector_df <- tryCatch({
     ) |>
     filter(kommune_kode %in% kommune_lookup$kommune_kode, !is.na(value), !is.na(branch_id))
 
-  # Total workplaces per municipality (all sectors)
+  # Total workplaces per municipality — sum sectors 1-10 directly.
+  # The TOT row has branch_id=NA after gsub and is filtered out, so we can't use it.
   totals <- df |>
-    filter(branch_id == 0 | grepl("i alt|total|ialt", branch, ignore.case=TRUE)) |>
+    filter(branch_id >= 1, branch_id <= 10) |>
     group_by(kommune_kode) |>
     summarise(total_wp = sum(value, na.rm=TRUE), .groups="drop")
 

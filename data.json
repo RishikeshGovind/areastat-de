@@ -66,13 +66,13 @@
       "Cars per 1,000": 487.2
     },
     "IndustrySectors": {
-      "Agriculture, forestry & fishing (%)": {},
-      "Manufacturing & utilities (%)": {},
-      "Construction (%)": {},
-      "Trade & transport (%)": {},
-      "ICT (%)": {},
-      "Finance & insurance (%)": {},
-      "Public admin, edu & health (%)": {}
+      "Agriculture, forestry & fishing (%)": 7,
+      "Manufacturing & utilities (%)": 5.8,
+      "Construction (%)": 10.2,
+      "Trade & transport (%)": 23.3,
+      "ICT (%)": 5.5,
+      "Finance & insurance (%)": 3.1,
+      "Public admin, edu & health (%)": 13.9
     },
     "GreenEnergy": {
       "Onshore wind capacity (MW)": 4908.17,
@@ -88,7 +88,7 @@
       "Heating degree days": 2685.2
     },
     "GreenTransition": {
-      "Fossil-linked sector share (%)": {},
+      "Fossil-linked sector share (%)": 29,
       "Renewable intensity (MW/1,000)": 2.1
     }
   },
@@ -165,13 +165,13 @@
         "Cars per 1,000": 387.66
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 1.25,
+        "Manufacturing & utilities (%)": 3.8,
+        "Construction (%)": 9.11,
+        "Trade & transport (%)": 23.45,
+        "ICT (%)": 8.92,
+        "Finance & insurance (%)": 3.24,
+        "Public admin, edu & health (%)": 14
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 65.69,
@@ -187,7 +187,7 @@
         "Heating degree days": 2599.06
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 27.27,
         "Renewable intensity (MW/1,000)": 0.21
       }
     },
@@ -263,13 +263,13 @@
         "Cars per 1,000": 542.86
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 8.46,
+        "Manufacturing & utilities (%)": 5.84,
+        "Construction (%)": 14.71,
+        "Trade & transport (%)": 21.94,
+        "ICT (%)": 3.67,
+        "Finance & insurance (%)": 1.99,
+        "Public admin, edu & health (%)": 13.94
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 679.45,
@@ -285,7 +285,7 @@
         "Heating degree days": 2648.46
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 27.78,
         "Renewable intensity (MW/1,000)": 3.29
       }
     },
@@ -361,13 +361,13 @@
         "Cars per 1,000": 542.24
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 9.8,
+        "Manufacturing & utilities (%)": 6.96,
+        "Construction (%)": 9.76,
+        "Trade & transport (%)": 24.26,
+        "ICT (%)": 3.42,
+        "Finance & insurance (%)": 3.09,
+        "Public admin, edu & health (%)": 13.51
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 981.44,
@@ -383,7 +383,7 @@
         "Heating degree days": 2612.34
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 31.21,
         "Renewable intensity (MW/1,000)": 2.81
       }
     },
@@ -459,13 +459,13 @@
         "Cars per 1,000": 521.25
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 9.34,
+        "Manufacturing & utilities (%)": 6.67,
+        "Construction (%)": 9.48,
+        "Trade & transport (%)": 23.08,
+        "ICT (%)": 4.48,
+        "Finance & insurance (%)": 3.38,
+        "Public admin, edu & health (%)": 14.31
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 1929.22,
@@ -481,7 +481,7 @@
         "Heating degree days": 2828.36
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 29.77,
         "Renewable intensity (MW/1,000)": 3.14
       }
     },
@@ -557,13 +557,13 @@
         "Cars per 1,000": 539.23
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 12.23,
+        "Manufacturing & utilities (%)": 7.47,
+        "Construction (%)": 9.97,
+        "Trade & transport (%)": 23.01,
+        "ICT (%)": 3.22,
+        "Finance & insurance (%)": 3.16,
+        "Public admin, edu & health (%)": 13.8
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 1252.37,
@@ -579,7 +579,7 @@
         "Heating degree days": 2839.93
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 30.46,
         "Renewable intensity (MW/1,000)": 2.87
       }
     }
@@ -657,13 +657,13 @@
         "Cars per 1,000": 238
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 0.1,
+        "Manufacturing & utilities (%)": 2.8,
+        "Construction (%)": 4.3,
+        "Trade & transport (%)": 22.6,
+        "ICT (%)": 12.3,
+        "Finance & insurance (%)": 3.4,
+        "Public admin, edu & health (%)": 14.2
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 10.65,
@@ -679,7 +679,7 @@
         "Heating degree days": 2519.2
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 25.4,
         "Renewable intensity (MW/1,000)": 0.13
       }
     },
@@ -755,13 +755,13 @@
         "Cars per 1,000": 276.4
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 0.1,
+        "Manufacturing & utilities (%)": 2.6,
+        "Construction (%)": 4.1,
+        "Trade & transport (%)": 20.1,
+        "ICT (%)": 10,
+        "Finance & insurance (%)": 3.6,
+        "Public admin, edu & health (%)": 16.8
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 0,
@@ -777,7 +777,7 @@
         "Heating degree days": 2491.4
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 22.8,
         "Renewable intensity (MW/1,000)": 0.03
       }
     },
@@ -853,13 +853,13 @@
         "Cars per 1,000": 460.4
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 0.4,
+        "Manufacturing & utilities (%)": 4.9,
+        "Construction (%)": 13.1,
+        "Trade & transport (%)": 27,
+        "ICT (%)": 9.7,
+        "Finance & insurance (%)": 2.5,
+        "Public admin, edu & health (%)": 12.7
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 0,
@@ -875,7 +875,7 @@
         "Heating degree days": 2650.6
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 32,
         "Renewable intensity (MW/1,000)": 0.22
       }
     },
@@ -951,13 +951,13 @@
         "Cars per 1,000": 525.3
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 0.2,
+        "Manufacturing & utilities (%)": 5.8,
+        "Construction (%)": 11.8,
+        "Trade & transport (%)": 36.1,
+        "ICT (%)": 4.9,
+        "Finance & insurance (%)": 1.7,
+        "Public admin, edu & health (%)": 10
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 0,
@@ -973,7 +973,7 @@
         "Heating degree days": 2569
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 41.9,
         "Renewable intensity (MW/1,000)": 0.17
       }
     },
@@ -1049,13 +1049,13 @@
         "Cars per 1,000": 483.1
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 1.2,
+        "Manufacturing & utilities (%)": 4.3,
+        "Construction (%)": 13.6,
+        "Trade & transport (%)": 17.9,
+        "ICT (%)": 7.4,
+        "Finance & insurance (%)": 4.7,
+        "Public admin, edu & health (%)": 12.7
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 0,
@@ -1071,7 +1071,7 @@
         "Heating degree days": 2561.7
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 22.2,
         "Renewable intensity (MW/1,000)": 0.16
       }
     },
@@ -1147,13 +1147,13 @@
         "Cars per 1,000": 440.7
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 0.3,
+        "Manufacturing & utilities (%)": 2.4,
+        "Construction (%)": 5.1,
+        "Trade & transport (%)": 17,
+        "ICT (%)": 8.2,
+        "Finance & insurance (%)": 7.1,
+        "Public admin, edu & health (%)": 15.5
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 0,
@@ -1169,7 +1169,7 @@
         "Heating degree days": 2626.2
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 19.5,
         "Renewable intensity (MW/1,000)": 0.09
       }
     },
@@ -1245,13 +1245,13 @@
         "Cars per 1,000": 424.6
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 0.1,
+        "Manufacturing & utilities (%)": 4.6,
+        "Construction (%)": 12.2,
+        "Trade & transport (%)": 23.3,
+        "ICT (%)": 8.7,
+        "Finance & insurance (%)": 2.5,
+        "Public admin, edu & health (%)": 15.1
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 0,
@@ -1267,7 +1267,7 @@
         "Heating degree days": 2626.9
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 27.9,
         "Renewable intensity (MW/1,000)": 0.12
       }
     },
@@ -1343,13 +1343,13 @@
         "Cars per 1,000": 442.4
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 0,
+        "Manufacturing & utilities (%)": 3,
+        "Construction (%)": 12.9,
+        "Trade & transport (%)": 29.4,
+        "ICT (%)": 7.6,
+        "Finance & insurance (%)": 2.3,
+        "Public admin, edu & health (%)": 13.7
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 0.9,
@@ -1365,7 +1365,7 @@
         "Heating degree days": 2599
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 32.4,
         "Renewable intensity (MW/1,000)": 0.22
       }
     },
@@ -1441,13 +1441,13 @@
         "Cars per 1,000": 441.9
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 0.2,
+        "Manufacturing & utilities (%)": 6,
+        "Construction (%)": 12.9,
+        "Trade & transport (%)": 27.9,
+        "ICT (%)": 9.8,
+        "Finance & insurance (%)": 2.2,
+        "Public admin, edu & health (%)": 10.9
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 0,
@@ -1463,7 +1463,7 @@
         "Heating degree days": 2624.1
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 34,
         "Renewable intensity (MW/1,000)": 0.21
       }
     },
@@ -1539,13 +1539,13 @@
         "Cars per 1,000": 537
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 0.1,
+        "Manufacturing & utilities (%)": 4.2,
+        "Construction (%)": 12.3,
+        "Trade & transport (%)": 38.5,
+        "ICT (%)": 7.4,
+        "Finance & insurance (%)": 1.1,
+        "Public admin, edu & health (%)": 11.1
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 0,
@@ -1561,7 +1561,7 @@
         "Heating degree days": 2640.6
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 42.7,
         "Renewable intensity (MW/1,000)": 0.2
       }
     },
@@ -1637,13 +1637,13 @@
         "Cars per 1,000": 400.2
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 0.1,
+        "Manufacturing & utilities (%)": 5.1,
+        "Construction (%)": 15.5,
+        "Trade & transport (%)": 30,
+        "ICT (%)": 5.6,
+        "Finance & insurance (%)": 1.6,
+        "Public admin, edu & health (%)": 12.6
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 1.98,
@@ -1659,7 +1659,7 @@
         "Heating degree days": 2536.6
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 35.1,
         "Renewable intensity (MW/1,000)": 0.42
       }
     },
@@ -1735,13 +1735,13 @@
         "Cars per 1,000": 462
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 1.1,
+        "Manufacturing & utilities (%)": 5.2,
+        "Construction (%)": 13.3,
+        "Trade & transport (%)": 33.3,
+        "ICT (%)": 4.6,
+        "Finance & insurance (%)": 2.2,
+        "Public admin, edu & health (%)": 12.8
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 0.85,
@@ -1757,7 +1757,7 @@
         "Heating degree days": 2728.3
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 38.5,
         "Renewable intensity (MW/1,000)": 0.26
       }
     },
@@ -1833,13 +1833,13 @@
         "Cars per 1,000": 430.2
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 0.3,
+        "Manufacturing & utilities (%)": 3.1,
+        "Construction (%)": 5.5,
+        "Trade & transport (%)": 19.9,
+        "ICT (%)": 9.6,
+        "Finance & insurance (%)": 5,
+        "Public admin, edu & health (%)": 16.6
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 0,
@@ -1855,7 +1855,7 @@
         "Heating degree days": 2654.9
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 23,
         "Renewable intensity (MW/1,000)": 0.1
       }
     },
@@ -1931,13 +1931,13 @@
         "Cars per 1,000": 385.5
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 0.2,
+        "Manufacturing & utilities (%)": 4.3,
+        "Construction (%)": 18.9,
+        "Trade & transport (%)": 28.9,
+        "ICT (%)": 4.8,
+        "Finance & insurance (%)": 1.8,
+        "Public admin, edu & health (%)": 12.3
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 0,
@@ -1953,7 +1953,7 @@
         "Heating degree days": 2562.2
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 33.2,
         "Renewable intensity (MW/1,000)": 0.11
       }
     },
@@ -2029,13 +2029,13 @@
         "Cars per 1,000": 407.5
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 0.9,
+        "Manufacturing & utilities (%)": 4.4,
+        "Construction (%)": 15.3,
+        "Trade & transport (%)": 35.7,
+        "ICT (%)": 4.3,
+        "Finance & insurance (%)": 2,
+        "Public admin, edu & health (%)": 9.6
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 0,
@@ -2051,7 +2051,7 @@
         "Heating degree days": 2660.2
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 40.1,
         "Renewable intensity (MW/1,000)": 0.19
       }
     },
@@ -2127,13 +2127,13 @@
         "Cars per 1,000": 450.9
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 0.7,
+        "Manufacturing & utilities (%)": 4.2,
+        "Construction (%)": 15.7,
+        "Trade & transport (%)": 32.1,
+        "ICT (%)": 5.8,
+        "Finance & insurance (%)": 1.9,
+        "Public admin, edu & health (%)": 13.1
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 0,
@@ -2149,7 +2149,7 @@
         "Heating degree days": 2558
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 36.3,
         "Renewable intensity (MW/1,000)": 0.31
       }
     },
@@ -2225,13 +2225,13 @@
         "Cars per 1,000": 447.3
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 0,
+        "Manufacturing & utilities (%)": 4.2,
+        "Construction (%)": 9.2,
+        "Trade & transport (%)": 35.3,
+        "ICT (%)": 5.5,
+        "Finance & insurance (%)": 1.9,
+        "Public admin, edu & health (%)": 14.1
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 0,
@@ -2247,7 +2247,7 @@
         "Heating degree days": 2595.6
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 39.5,
         "Renewable intensity (MW/1,000)": 0.12
       }
     },
@@ -2323,13 +2323,13 @@
         "Cars per 1,000": 479.5
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 0.9,
+        "Manufacturing & utilities (%)": 3.9,
+        "Construction (%)": 8.3,
+        "Trade & transport (%)": 20.2,
+        "ICT (%)": 9.7,
+        "Finance & insurance (%)": 4.3,
+        "Public admin, edu & health (%)": 15.6
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 0,
@@ -2345,7 +2345,7 @@
         "Heating degree days": 2699.8
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 24.2,
         "Renewable intensity (MW/1,000)": 0.18
       }
     },
@@ -2421,13 +2421,13 @@
         "Cars per 1,000": 522.5
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 2.7,
+        "Manufacturing & utilities (%)": 7,
+        "Construction (%)": 10.7,
+        "Trade & transport (%)": 19.3,
+        "ICT (%)": 8.8,
+        "Finance & insurance (%)": 4.4,
+        "Public admin, edu & health (%)": 14.1
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 2.72,
@@ -2443,7 +2443,7 @@
         "Heating degree days": 2732.1
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 26.3,
         "Renewable intensity (MW/1,000)": 0.41
       }
     },
@@ -2519,13 +2519,13 @@
         "Cars per 1,000": 510.5
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 4.3,
+        "Manufacturing & utilities (%)": 3.4,
+        "Construction (%)": 11.5,
+        "Trade & transport (%)": 17.1,
+        "ICT (%)": 8.2,
+        "Finance & insurance (%)": 3.8,
+        "Public admin, edu & health (%)": 14.4
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 0.03,
@@ -2541,7 +2541,7 @@
         "Heating degree days": 2723.9
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 20.6,
         "Renewable intensity (MW/1,000)": 0.18
       }
     },
@@ -2617,13 +2617,13 @@
         "Cars per 1,000": 496.4
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 1.7,
+        "Manufacturing & utilities (%)": 3.7,
+        "Construction (%)": 12.2,
+        "Trade & transport (%)": 22.1,
+        "ICT (%)": 5.3,
+        "Finance & insurance (%)": 2.8,
+        "Public admin, edu & health (%)": 15.6
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 0,
@@ -2639,7 +2639,7 @@
         "Heating degree days": 2704.3
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 25.8,
         "Renewable intensity (MW/1,000)": 0.18
       }
     },
@@ -2715,13 +2715,13 @@
         "Cars per 1,000": 502.9
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 3.7,
+        "Manufacturing & utilities (%)": 4.4,
+        "Construction (%)": 13.5,
+        "Trade & transport (%)": 21.2,
+        "ICT (%)": 5.7,
+        "Finance & insurance (%)": 3.3,
+        "Public admin, edu & health (%)": 16.9
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 4.02,
@@ -2737,7 +2737,7 @@
         "Heating degree days": 2729.6
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 25.6,
         "Renewable intensity (MW/1,000)": 0.32
       }
     },
@@ -2813,13 +2813,13 @@
         "Cars per 1,000": 607
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 1.2,
+        "Manufacturing & utilities (%)": 2,
+        "Construction (%)": 6.5,
+        "Trade & transport (%)": 19.1,
+        "ICT (%)": 7.7,
+        "Finance & insurance (%)": 7.1,
+        "Public admin, edu & health (%)": 15.6
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 0,
@@ -2835,7 +2835,7 @@
         "Heating degree days": 2714.2
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 21.1,
         "Renewable intensity (MW/1,000)": 0.15
       }
     },
@@ -2911,13 +2911,13 @@
         "Cars per 1,000": 523.3
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 0.5,
+        "Manufacturing & utilities (%)": 4,
+        "Construction (%)": 5.6,
+        "Trade & transport (%)": 16.2,
+        "ICT (%)": 9.8,
+        "Finance & insurance (%)": 6.6,
+        "Public admin, edu & health (%)": 14.7
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 0,
@@ -2933,7 +2933,7 @@
         "Heating degree days": 2692.5
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 20.2,
         "Renewable intensity (MW/1,000)": 0.17
       }
     },
@@ -3009,13 +3009,13 @@
         "Cars per 1,000": 527.4
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 4.6,
+        "Manufacturing & utilities (%)": 6.4,
+        "Construction (%)": 16.8,
+        "Trade & transport (%)": 19.2,
+        "ICT (%)": 7,
+        "Finance & insurance (%)": 1.8,
+        "Public admin, edu & health (%)": 13.5
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 0.13,
@@ -3031,7 +3031,7 @@
         "Heating degree days": 2709.2
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 25.6,
         "Renewable intensity (MW/1,000)": 0.26
       }
     },
@@ -3107,13 +3107,13 @@
         "Cars per 1,000": 572
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 7.4,
+        "Manufacturing & utilities (%)": 5.5,
+        "Construction (%)": 17.8,
+        "Trade & transport (%)": 19.6,
+        "ICT (%)": 4.5,
+        "Finance & insurance (%)": 1.8,
+        "Public admin, edu & health (%)": 11.8
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 2.98,
@@ -3129,7 +3129,7 @@
         "Heating degree days": 2685.6
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 25.1,
         "Renewable intensity (MW/1,000)": 0.48
       }
     },
@@ -3205,13 +3205,13 @@
         "Cars per 1,000": 509.2
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 1.4,
+        "Manufacturing & utilities (%)": 5.2,
+        "Construction (%)": 15,
+        "Trade & transport (%)": 27.4,
+        "ICT (%)": 5.7,
+        "Finance & insurance (%)": 2.7,
+        "Public admin, edu & health (%)": 11.7
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 0.36,
@@ -3227,7 +3227,7 @@
         "Heating degree days": 2714.7
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 32.6,
         "Renewable intensity (MW/1,000)": 0.31
       }
     },
@@ -3303,13 +3303,13 @@
         "Cars per 1,000": 511.5
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 4.5,
+        "Manufacturing & utilities (%)": 5.9,
+        "Construction (%)": 14.2,
+        "Trade & transport (%)": 25.4,
+        "ICT (%)": 4.8,
+        "Finance & insurance (%)": 2.2,
+        "Public admin, edu & health (%)": 13
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 3.95,
@@ -3325,7 +3325,7 @@
         "Heating degree days": 2697.6
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 31.3,
         "Renewable intensity (MW/1,000)": 0.46
       }
     },
@@ -3401,13 +3401,13 @@
         "Cars per 1,000": 571.1
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 3.9,
+        "Manufacturing & utilities (%)": 5.3,
+        "Construction (%)": 21.1,
+        "Trade & transport (%)": 21.2,
+        "ICT (%)": 4.3,
+        "Finance & insurance (%)": 1.1,
+        "Public admin, edu & health (%)": 10.4
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 4.15,
@@ -3423,7 +3423,7 @@
         "Heating degree days": 2669.7
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 26.5,
         "Renewable intensity (MW/1,000)": 0.42
       }
     },
@@ -3499,13 +3499,13 @@
         "Cars per 1,000": 493.3
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 2.7,
+        "Manufacturing & utilities (%)": 4.5,
+        "Construction (%)": 12.8,
+        "Trade & transport (%)": 22.4,
+        "ICT (%)": 6,
+        "Finance & insurance (%)": 2.8,
+        "Public admin, edu & health (%)": 15.8
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 7.46,
@@ -3521,7 +3521,7 @@
         "Heating degree days": 2754.6
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 26.9,
         "Renewable intensity (MW/1,000)": 0.37
       }
     },
@@ -3597,13 +3597,13 @@
         "Cars per 1,000": 503.6
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 2,
+        "Manufacturing & utilities (%)": 4.5,
+        "Construction (%)": 15,
+        "Trade & transport (%)": 19.5,
+        "ICT (%)": 7.3,
+        "Finance & insurance (%)": 3.2,
+        "Public admin, edu & health (%)": 14.3
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 0.3,
@@ -3619,7 +3619,7 @@
         "Heating degree days": 2740.5
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 24,
         "Renewable intensity (MW/1,000)": 0.24
       }
     },
@@ -3695,13 +3695,13 @@
         "Cars per 1,000": 608.1
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 6.8,
+        "Manufacturing & utilities (%)": 4.5,
+        "Construction (%)": 20.4,
+        "Trade & transport (%)": 17.1,
+        "ICT (%)": 5.1,
+        "Finance & insurance (%)": 2.2,
+        "Public admin, edu & health (%)": 11.5
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 0.6,
@@ -3717,7 +3717,7 @@
         "Heating degree days": 2711.7
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 21.6,
         "Renewable intensity (MW/1,000)": 0.36
       }
     },
@@ -3793,13 +3793,13 @@
         "Cars per 1,000": 600.3
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 10.2,
+        "Manufacturing & utilities (%)": 6,
+        "Construction (%)": 17.9,
+        "Trade & transport (%)": 19.9,
+        "ICT (%)": 1.3,
+        "Finance & insurance (%)": 1.5,
+        "Public admin, edu & health (%)": 14.3
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 4.67,
@@ -3815,7 +3815,7 @@
         "Heating degree days": 2599.9
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 25.9,
         "Renewable intensity (MW/1,000)": 0.54
       }
     },
@@ -3891,13 +3891,13 @@
         "Cars per 1,000": 555.1
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 8.5,
+        "Manufacturing & utilities (%)": 5.7,
+        "Construction (%)": 15.5,
+        "Trade & transport (%)": 20.1,
+        "ICT (%)": 3.6,
+        "Finance & insurance (%)": 2.4,
+        "Public admin, edu & health (%)": 15.4
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 59.05,
@@ -3913,7 +3913,7 @@
         "Heating degree days": 2656.4
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 25.8,
         "Renewable intensity (MW/1,000)": 1.48
       }
     },
@@ -3989,13 +3989,13 @@
         "Cars per 1,000": 586.5
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 7.9,
+        "Manufacturing & utilities (%)": 6.2,
+        "Construction (%)": 19.5,
+        "Trade & transport (%)": 19.5,
+        "ICT (%)": 2.7,
+        "Finance & insurance (%)": 1.3,
+        "Public admin, edu & health (%)": 12.8
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 35.11,
@@ -4011,7 +4011,7 @@
         "Heating degree days": 2676.1
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 25.7,
         "Renewable intensity (MW/1,000)": 4.64
       }
     },
@@ -4087,13 +4087,13 @@
         "Cars per 1,000": 582.1
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 13.1,
+        "Manufacturing & utilities (%)": 8.1,
+        "Construction (%)": 16.8,
+        "Trade & transport (%)": 20.2,
+        "ICT (%)": 1.7,
+        "Finance & insurance (%)": 1.4,
+        "Public admin, edu & health (%)": 12.3
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 80.28,
@@ -4109,7 +4109,7 @@
         "Heating degree days": 2580.5
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 28.2,
         "Renewable intensity (MW/1,000)": 2.96
       }
     },
@@ -4185,13 +4185,13 @@
         "Cars per 1,000": 535.3
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 7.9,
+        "Manufacturing & utilities (%)": 5.6,
+        "Construction (%)": 15,
+        "Trade & transport (%)": 24.1,
+        "ICT (%)": 3.9,
+        "Finance & insurance (%)": 1.8,
+        "Public admin, edu & health (%)": 13.1
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 8.99,
@@ -4207,7 +4207,7 @@
         "Heating degree days": 2696.4
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 29.7,
         "Renewable intensity (MW/1,000)": 0.6
       }
     },
@@ -4283,13 +4283,13 @@
         "Cars per 1,000": 522.1
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 7.9,
+        "Manufacturing & utilities (%)": 6.4,
+        "Construction (%)": 12.6,
+        "Trade & transport (%)": 24.9,
+        "ICT (%)": 2.9,
+        "Finance & insurance (%)": 2,
+        "Public admin, edu & health (%)": 14.8
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 42.42,
@@ -4305,7 +4305,7 @@
         "Heating degree days": 2584.9
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 31.3,
         "Renewable intensity (MW/1,000)": 1.7
       }
     },
@@ -4381,13 +4381,13 @@
         "Cars per 1,000": 583.5
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 11.8,
+        "Manufacturing & utilities (%)": 5.5,
+        "Construction (%)": 19.3,
+        "Trade & transport (%)": 17.4,
+        "ICT (%)": 4.1,
+        "Finance & insurance (%)": 1.6,
+        "Public admin, edu & health (%)": 10.8
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 9.8,
@@ -4403,7 +4403,7 @@
         "Heating degree days": 2651.3
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 22.9,
         "Renewable intensity (MW/1,000)": 0.77
       }
     },
@@ -4479,13 +4479,13 @@
         "Cars per 1,000": 566
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 11.4,
+        "Manufacturing & utilities (%)": 6.1,
+        "Construction (%)": 16,
+        "Trade & transport (%)": 19.1,
+        "ICT (%)": 3.1,
+        "Finance & insurance (%)": 1.3,
+        "Public admin, edu & health (%)": 14.5
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 6.8,
@@ -4501,7 +4501,7 @@
         "Heating degree days": 2661.4
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 25.3,
         "Renewable intensity (MW/1,000)": 3.43
       }
     },
@@ -4577,13 +4577,13 @@
         "Cars per 1,000": 562.4
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 8.8,
+        "Manufacturing & utilities (%)": 5.4,
+        "Construction (%)": 19.1,
+        "Trade & transport (%)": 15.7,
+        "ICT (%)": 6.2,
+        "Finance & insurance (%)": 1.8,
+        "Public admin, edu & health (%)": 12.8
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 5.42,
@@ -4599,7 +4599,7 @@
         "Heating degree days": 2721.9
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 21.1,
         "Renewable intensity (MW/1,000)": 0.55
       }
     },
@@ -4675,13 +4675,13 @@
         "Cars per 1,000": 542.6
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 20,
+        "Manufacturing & utilities (%)": 7,
+        "Construction (%)": 11,
+        "Trade & transport (%)": 21.2,
+        "ICT (%)": 1.2,
+        "Finance & insurance (%)": 0.7,
+        "Public admin, edu & health (%)": 13.3
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 270.52,
@@ -4697,7 +4697,7 @@
         "Heating degree days": 2488.9
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 28.2,
         "Renewable intensity (MW/1,000)": 24.48
       }
     },
@@ -4773,13 +4773,13 @@
         "Cars per 1,000": 541.5
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 8.5,
+        "Manufacturing & utilities (%)": 6.1,
+        "Construction (%)": 14.4,
+        "Trade & transport (%)": 22.7,
+        "ICT (%)": 2.8,
+        "Finance & insurance (%)": 2.4,
+        "Public admin, edu & health (%)": 14.6
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 68.55,
@@ -4795,7 +4795,7 @@
         "Heating degree days": 2662.2
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 28.8,
         "Renewable intensity (MW/1,000)": 2.49
       }
     },
@@ -4871,13 +4871,13 @@
         "Cars per 1,000": 574.2
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 14.8,
+        "Manufacturing & utilities (%)": 6.3,
+        "Construction (%)": 12,
+        "Trade & transport (%)": 21.8,
+        "ICT (%)": 1.8,
+        "Finance & insurance (%)": 1.1,
+        "Public admin, edu & health (%)": 13.1
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 58.05,
@@ -4893,7 +4893,7 @@
         "Heating degree days": 2531
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 28.1,
         "Renewable intensity (MW/1,000)": 1.96
       }
     },
@@ -4969,13 +4969,13 @@
         "Cars per 1,000": 567.1
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 11.6,
+        "Manufacturing & utilities (%)": 4.8,
+        "Construction (%)": 13.7,
+        "Trade & transport (%)": 20.2,
+        "ICT (%)": 3.4,
+        "Finance & insurance (%)": 1.7,
+        "Public admin, edu & health (%)": 15.5
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 17.72,
@@ -4991,7 +4991,7 @@
         "Heating degree days": 2578.4
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 25,
         "Renewable intensity (MW/1,000)": 16.12
       }
     },
@@ -5067,13 +5067,13 @@
         "Cars per 1,000": 533.5
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 12.2,
+        "Manufacturing & utilities (%)": 6.8,
+        "Construction (%)": 8.5,
+        "Trade & transport (%)": 26.8,
+        "ICT (%)": 3.2,
+        "Finance & insurance (%)": 1.6,
+        "Public admin, edu & health (%)": 13.1
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 36.68,
@@ -5089,7 +5089,7 @@
         "Heating degree days": 2618.7
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 33.7,
         "Renewable intensity (MW/1,000)": 1.77
       }
     },
@@ -5165,13 +5165,13 @@
         "Cars per 1,000": 586
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 8.7,
+        "Manufacturing & utilities (%)": 8,
+        "Construction (%)": 9.7,
+        "Trade & transport (%)": 25.2,
+        "ICT (%)": 2.7,
+        "Finance & insurance (%)": 2.6,
+        "Public admin, edu & health (%)": 13
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 13.6,
@@ -5187,7 +5187,7 @@
         "Heating degree days": 2556
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 33.1,
         "Renewable intensity (MW/1,000)": 1.12
       }
     },
@@ -5263,13 +5263,13 @@
         "Cars per 1,000": 252.7
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 0,
+        "Manufacturing & utilities (%)": 12.5,
+        "Construction (%)": 0,
+        "Trade & transport (%)": 37.5,
+        "ICT (%)": 12.5,
+        "Finance & insurance (%)": 0,
+        "Public admin, edu & health (%)": 25
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": {},
@@ -5285,7 +5285,7 @@
         "Heating degree days": {}
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 50,
         "Renewable intensity (MW/1,000)": {}
       }
     },
@@ -5361,13 +5361,13 @@
         "Cars per 1,000": 599.7
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 12.5,
+        "Manufacturing & utilities (%)": 9.5,
+        "Construction (%)": 12.7,
+        "Trade & transport (%)": 20.4,
+        "ICT (%)": 2.9,
+        "Finance & insurance (%)": 2.5,
+        "Public admin, edu & health (%)": 12.7
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 30.86,
@@ -5383,7 +5383,7 @@
         "Heating degree days": 2540.6
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 29.9,
         "Renewable intensity (MW/1,000)": 2.35
       }
     },
@@ -5459,13 +5459,13 @@
         "Cars per 1,000": 585.8
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 12.7,
+        "Manufacturing & utilities (%)": 8.3,
+        "Construction (%)": 13.5,
+        "Trade & transport (%)": 20.5,
+        "ICT (%)": 3,
+        "Finance & insurance (%)": 2,
+        "Public admin, edu & health (%)": 13.3
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 15.68,
@@ -5481,7 +5481,7 @@
         "Heating degree days": 2563.9
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 28.8,
         "Renewable intensity (MW/1,000)": 0.64
       }
     },
@@ -5557,13 +5557,13 @@
         "Cars per 1,000": 572.2
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 9.9,
+        "Manufacturing & utilities (%)": 7.6,
+        "Construction (%)": 10.9,
+        "Trade & transport (%)": 22.7,
+        "ICT (%)": 3.4,
+        "Finance & insurance (%)": 1.9,
+        "Public admin, edu & health (%)": 14.4
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 24.95,
@@ -5579,7 +5579,7 @@
         "Heating degree days": 2587.2
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 30.3,
         "Renewable intensity (MW/1,000)": 1.27
       }
     },
@@ -5655,13 +5655,13 @@
         "Cars per 1,000": 541.5
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 11.1,
+        "Manufacturing & utilities (%)": 7.2,
+        "Construction (%)": 9.6,
+        "Trade & transport (%)": 22.6,
+        "ICT (%)": 3.2,
+        "Finance & insurance (%)": 2.4,
+        "Public admin, edu & health (%)": 15.5
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 28.98,
@@ -5677,7 +5677,7 @@
         "Heating degree days": 2554.6
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 29.8,
         "Renewable intensity (MW/1,000)": 1.12
       }
     },
@@ -5753,13 +5753,13 @@
         "Cars per 1,000": 433.9
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 1.8,
+        "Manufacturing & utilities (%)": 4.5,
+        "Construction (%)": 8.1,
+        "Trade & transport (%)": 26.6,
+        "ICT (%)": 6.1,
+        "Finance & insurance (%)": 3.6,
+        "Public admin, edu & health (%)": 16.5
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 11.13,
@@ -5775,7 +5775,7 @@
         "Heating degree days": 2632.4
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 31.1,
         "Renewable intensity (MW/1,000)": 0.62
       }
     },
@@ -5851,13 +5851,13 @@
         "Cars per 1,000": 517.9
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 7.9,
+        "Manufacturing & utilities (%)": 6.7,
+        "Construction (%)": 9.7,
+        "Trade & transport (%)": 22,
+        "ICT (%)": 3.5,
+        "Finance & insurance (%)": 3.1,
+        "Public admin, edu & health (%)": 15.5
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 34.53,
@@ -5873,7 +5873,7 @@
         "Heating degree days": 2500.4
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 28.7,
         "Renewable intensity (MW/1,000)": 1.45
       }
     },
@@ -5949,13 +5949,13 @@
         "Cars per 1,000": 595.5
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 17.1,
+        "Manufacturing & utilities (%)": 8.2,
+        "Construction (%)": 15,
+        "Trade & transport (%)": 18.5,
+        "ICT (%)": 1.8,
+        "Finance & insurance (%)": 2.3,
+        "Public admin, edu & health (%)": 11
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 26.3,
@@ -5971,7 +5971,7 @@
         "Heating degree days": 2634.8
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 26.7,
         "Renewable intensity (MW/1,000)": 1.33
       }
     },
@@ -6047,13 +6047,13 @@
         "Cars per 1,000": 572.6
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 19.8,
+        "Manufacturing & utilities (%)": 8.4,
+        "Construction (%)": 10.8,
+        "Trade & transport (%)": 22.7,
+        "ICT (%)": 1.1,
+        "Finance & insurance (%)": 2.2,
+        "Public admin, edu & health (%)": 11
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 43.62,
@@ -6069,7 +6069,7 @@
         "Heating degree days": 2447.9
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 31.1,
         "Renewable intensity (MW/1,000)": 4.07
       }
     },
@@ -6145,13 +6145,13 @@
         "Cars per 1,000": 495.3
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 12.9,
+        "Manufacturing & utilities (%)": 8,
+        "Construction (%)": 11.5,
+        "Trade & transport (%)": 26.6,
+        "ICT (%)": 2.7,
+        "Finance & insurance (%)": 1.6,
+        "Public admin, edu & health (%)": 11.5
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 12,
@@ -6167,7 +6167,7 @@
         "Heating degree days": 2460.9
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 34.6,
         "Renewable intensity (MW/1,000)": 2.51
       }
     },
@@ -6243,13 +6243,13 @@
         "Cars per 1,000": 583.6
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 15.4,
+        "Manufacturing & utilities (%)": 7.2,
+        "Construction (%)": 10.3,
+        "Trade & transport (%)": 21.4,
+        "ICT (%)": 2,
+        "Finance & insurance (%)": 2.6,
+        "Public admin, edu & health (%)": 12.7
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 40.57,
@@ -6265,7 +6265,7 @@
         "Heating degree days": 2646.4
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 28.6,
         "Renewable intensity (MW/1,000)": 1.09
       }
     },
@@ -6341,13 +6341,13 @@
         "Cars per 1,000": 617.3
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 14.4,
+        "Manufacturing & utilities (%)": 7.5,
+        "Construction (%)": 10.9,
+        "Trade & transport (%)": 25.4,
+        "ICT (%)": 2.7,
+        "Finance & insurance (%)": 3.6,
+        "Public admin, edu & health (%)": 10.2
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 93.92,
@@ -6363,7 +6363,7 @@
         "Heating degree days": 2774.2
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 32.8,
         "Renewable intensity (MW/1,000)": 5.89
       }
     },
@@ -6439,13 +6439,13 @@
         "Cars per 1,000": 554.6
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 10,
+        "Manufacturing & utilities (%)": 7.5,
+        "Construction (%)": 8.6,
+        "Trade & transport (%)": 22.8,
+        "ICT (%)": 3.5,
+        "Finance & insurance (%)": 3,
+        "Public admin, edu & health (%)": 16
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 13.85,
@@ -6461,7 +6461,7 @@
         "Heating degree days": 2463.3
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 30.3,
         "Renewable intensity (MW/1,000)": 1.57
       }
     },
@@ -6537,13 +6537,13 @@
         "Cars per 1,000": 586.2
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 26.7,
+        "Manufacturing & utilities (%)": 7.8,
+        "Construction (%)": 9,
+        "Trade & transport (%)": 21,
+        "ICT (%)": 1,
+        "Finance & insurance (%)": 1.5,
+        "Public admin, edu & health (%)": 10.6
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 173.83,
@@ -6559,7 +6559,7 @@
         "Heating degree days": 2557.9
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 28.8,
         "Renewable intensity (MW/1,000)": 5.4
       }
     },
@@ -6635,13 +6635,13 @@
         "Cars per 1,000": 525.5
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 7,
+        "Manufacturing & utilities (%)": 7.3,
+        "Construction (%)": 9.6,
+        "Trade & transport (%)": 26.2,
+        "ICT (%)": 2.1,
+        "Finance & insurance (%)": 4.4,
+        "Public admin, edu & health (%)": 13.9
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 81.52,
@@ -6657,7 +6657,7 @@
         "Heating degree days": 2556.7
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 33.4,
         "Renewable intensity (MW/1,000)": 7.73
       }
     },
@@ -6733,13 +6733,13 @@
         "Cars per 1,000": 446.9
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 2.5,
+        "Manufacturing & utilities (%)": 4.9,
+        "Construction (%)": 10.3,
+        "Trade & transport (%)": 34.2,
+        "ICT (%)": 1.6,
+        "Finance & insurance (%)": 0.4,
+        "Public admin, edu & health (%)": 10.3
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 1.98,
@@ -6755,7 +6755,7 @@
         "Heating degree days": 2449.4
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 39.1,
         "Renewable intensity (MW/1,000)": 1.01
       }
     },
@@ -6831,13 +6831,13 @@
         "Cars per 1,000": 593.2
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 19.7,
+        "Manufacturing & utilities (%)": 7,
+        "Construction (%)": 11.5,
+        "Trade & transport (%)": 22,
+        "ICT (%)": 1,
+        "Finance & insurance (%)": 2.6,
+        "Public admin, edu & health (%)": 10.1
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 99.11,
@@ -6853,7 +6853,7 @@
         "Heating degree days": 2597
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 29,
         "Renewable intensity (MW/1,000)": 3.47
       }
     },
@@ -6929,13 +6929,13 @@
         "Cars per 1,000": 609.3
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 19.1,
+        "Manufacturing & utilities (%)": 8.9,
+        "Construction (%)": 11.7,
+        "Trade & transport (%)": 21.6,
+        "ICT (%)": 2,
+        "Finance & insurance (%)": 1.7,
+        "Public admin, edu & health (%)": 11
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 61.02,
@@ -6951,7 +6951,7 @@
         "Heating degree days": 2680.3
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 30.5,
         "Renewable intensity (MW/1,000)": 7.65
       }
     },
@@ -7027,13 +7027,13 @@
         "Cars per 1,000": 605.6
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 16.2,
+        "Manufacturing & utilities (%)": 7.9,
+        "Construction (%)": 7.6,
+        "Trade & transport (%)": 26.6,
+        "ICT (%)": 1.7,
+        "Finance & insurance (%)": 2.7,
+        "Public admin, edu & health (%)": 12.7
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 84.32,
@@ -7049,7 +7049,7 @@
         "Heating degree days": 2565.9
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 34.5,
         "Renewable intensity (MW/1,000)": 7.58
       }
     },
@@ -7125,13 +7125,13 @@
         "Cars per 1,000": 541.6
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 2.8,
+        "Manufacturing & utilities (%)": 7,
+        "Construction (%)": 9.9,
+        "Trade & transport (%)": 28.5,
+        "ICT (%)": 4.2,
+        "Finance & insurance (%)": 3.3,
+        "Public admin, edu & health (%)": 13.4
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 2.25,
@@ -7147,7 +7147,7 @@
         "Heating degree days": 2655.7
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 35.5,
         "Renewable intensity (MW/1,000)": 0.29
       }
     },
@@ -7223,13 +7223,13 @@
         "Cars per 1,000": 520.8
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 6.9,
+        "Manufacturing & utilities (%)": 6.4,
+        "Construction (%)": 10.8,
+        "Trade & transport (%)": 26.9,
+        "ICT (%)": 3.6,
+        "Finance & insurance (%)": 3,
+        "Public admin, edu & health (%)": 13
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 3.56,
@@ -7245,7 +7245,7 @@
         "Heating degree days": 2849.7
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 33.3,
         "Renewable intensity (MW/1,000)": 0.61
       }
     },
@@ -7321,13 +7321,13 @@
         "Cars per 1,000": 554.5
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 7.3,
+        "Manufacturing & utilities (%)": 7.6,
+        "Construction (%)": 8.9,
+        "Trade & transport (%)": 26.1,
+        "ICT (%)": 4.4,
+        "Finance & insurance (%)": 3.4,
+        "Public admin, edu & health (%)": 11.6
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 33.98,
@@ -7343,7 +7343,7 @@
         "Heating degree days": 2654.5
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 33.7,
         "Renewable intensity (MW/1,000)": 2.9
       }
     },
@@ -7419,13 +7419,13 @@
         "Cars per 1,000": 550.8
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 8.6,
+        "Manufacturing & utilities (%)": 6.2,
+        "Construction (%)": 9.4,
+        "Trade & transport (%)": 24.3,
+        "ICT (%)": 3.9,
+        "Finance & insurance (%)": 3.8,
+        "Public admin, edu & health (%)": 12.5
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 53.44,
@@ -7441,7 +7441,7 @@
         "Heating degree days": 2795.6
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 30.5,
         "Renewable intensity (MW/1,000)": 2.27
       }
     },
@@ -7517,13 +7517,13 @@
         "Cars per 1,000": 558.2
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 12.3,
+        "Manufacturing & utilities (%)": 7.6,
+        "Construction (%)": 9.6,
+        "Trade & transport (%)": 24.3,
+        "ICT (%)": 2.8,
+        "Finance & insurance (%)": 4.2,
+        "Public admin, edu & health (%)": 11.5
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 136.28,
@@ -7539,7 +7539,7 @@
         "Heating degree days": 2787.6
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 32,
         "Renewable intensity (MW/1,000)": 3
       }
     },
@@ -7615,13 +7615,13 @@
         "Cars per 1,000": 540.6
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 14.5,
+        "Manufacturing & utilities (%)": 7.3,
+        "Construction (%)": 9.8,
+        "Trade & transport (%)": 23,
+        "ICT (%)": 2.2,
+        "Finance & insurance (%)": 2.5,
+        "Public admin, edu & health (%)": 15.3
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 230.22,
@@ -7637,7 +7637,7 @@
         "Heating degree days": 2736.9
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 30.3,
         "Renewable intensity (MW/1,000)": 6.87
       }
     },
@@ -7713,13 +7713,13 @@
         "Cars per 1,000": 589.1
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 22.6,
+        "Manufacturing & utilities (%)": 10.6,
+        "Construction (%)": 9.6,
+        "Trade & transport (%)": 20.6,
+        "ICT (%)": 0.6,
+        "Finance & insurance (%)": 2.4,
+        "Public admin, edu & health (%)": 10
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 182.21,
@@ -7735,7 +7735,7 @@
         "Heating degree days": 2681.1
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 31.2,
         "Renewable intensity (MW/1,000)": 28.89
       }
     },
@@ -7811,13 +7811,13 @@
         "Cars per 1,000": 570.5
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 15.9,
+        "Manufacturing & utilities (%)": 8.5,
+        "Construction (%)": 10.4,
+        "Trade & transport (%)": 19.6,
+        "ICT (%)": 2.1,
+        "Finance & insurance (%)": 2.9,
+        "Public admin, edu & health (%)": 15.2
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 61.99,
@@ -7833,7 +7833,7 @@
         "Heating degree days": 2743.9
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 28.1,
         "Renewable intensity (MW/1,000)": 3.39
       }
     },
@@ -7909,13 +7909,13 @@
         "Cars per 1,000": 579.7
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 13.3,
+        "Manufacturing & utilities (%)": 7.3,
+        "Construction (%)": 13.2,
+        "Trade & transport (%)": 19.4,
+        "ICT (%)": 2.9,
+        "Finance & insurance (%)": 2.1,
+        "Public admin, edu & health (%)": 12.4
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 18.6,
@@ -7931,7 +7931,7 @@
         "Heating degree days": 2747.9
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 26.7,
         "Renewable intensity (MW/1,000)": 3.24
       }
     },
@@ -8007,13 +8007,13 @@
         "Cars per 1,000": 579.6
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 17.4,
+        "Manufacturing & utilities (%)": 8.2,
+        "Construction (%)": 12.1,
+        "Trade & transport (%)": 21.2,
+        "ICT (%)": 1.8,
+        "Finance & insurance (%)": 1.6,
+        "Public admin, edu & health (%)": 13
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 52.42,
@@ -8029,7 +8029,7 @@
         "Heating degree days": 2751.3
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 29.4,
         "Renewable intensity (MW/1,000)": 15.05
       }
     },
@@ -8105,13 +8105,13 @@
         "Cars per 1,000": 567.1
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 11.4,
+        "Manufacturing & utilities (%)": 6.5,
+        "Construction (%)": 13.1,
+        "Trade & transport (%)": 21,
+        "ICT (%)": 4.5,
+        "Finance & insurance (%)": 2.3,
+        "Public admin, edu & health (%)": 13.3
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 31.3,
@@ -8127,7 +8127,7 @@
         "Heating degree days": 2839.2
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 27.5,
         "Renewable intensity (MW/1,000)": 1.84
       }
     },
@@ -8203,13 +8203,13 @@
         "Cars per 1,000": 555.1
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 9.6,
+        "Manufacturing & utilities (%)": 6.5,
+        "Construction (%)": 11,
+        "Trade & transport (%)": 22.9,
+        "ICT (%)": 2.9,
+        "Finance & insurance (%)": 2.3,
+        "Public admin, edu & health (%)": 13.5
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 15.66,
@@ -8225,7 +8225,7 @@
         "Heating degree days": 2823.7
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 29.5,
         "Renewable intensity (MW/1,000)": 1.12
       }
     },
@@ -8301,13 +8301,13 @@
         "Cars per 1,000": 533.3
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 9.3,
+        "Manufacturing & utilities (%)": 8.4,
+        "Construction (%)": 10.1,
+        "Trade & transport (%)": 26.1,
+        "ICT (%)": 3.1,
+        "Finance & insurance (%)": 3.2,
+        "Public admin, edu & health (%)": 13.7
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 275,
@@ -8323,7 +8323,7 @@
         "Heating degree days": 2877.3
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 34.4,
         "Renewable intensity (MW/1,000)": 4.1
       }
     },
@@ -8399,13 +8399,13 @@
         "Cars per 1,000": 566.2
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 9.3,
+        "Manufacturing & utilities (%)": 6.3,
+        "Construction (%)": 9.6,
+        "Trade & transport (%)": 22.7,
+        "ICT (%)": 4.6,
+        "Finance & insurance (%)": 3.6,
+        "Public admin, edu & health (%)": 14.8
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 30.93,
@@ -8421,7 +8421,7 @@
         "Heating degree days": 2853.5
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 29,
         "Renewable intensity (MW/1,000)": 0.77
       }
     },
@@ -8497,13 +8497,13 @@
         "Cars per 1,000": 544.3
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 17.7,
+        "Manufacturing & utilities (%)": 5.7,
+        "Construction (%)": 8,
+        "Trade & transport (%)": 26.6,
+        "ICT (%)": 2.6,
+        "Finance & insurance (%)": 1.1,
+        "Public admin, edu & health (%)": 10.3
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 11.03,
@@ -8519,7 +8519,7 @@
         "Heating degree days": 2586.4
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 32.3,
         "Renewable intensity (MW/1,000)": 10.19
       }
     },
@@ -8595,13 +8595,13 @@
         "Cars per 1,000": 549.4
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 7.5,
+        "Manufacturing & utilities (%)": 7.1,
+        "Construction (%)": 10.3,
+        "Trade & transport (%)": 20.8,
+        "ICT (%)": 6.3,
+        "Finance & insurance (%)": 3.2,
+        "Public admin, edu & health (%)": 13.9
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 18.33,
@@ -8617,7 +8617,7 @@
         "Heating degree days": 2885.6
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 27.9,
         "Renewable intensity (MW/1,000)": 0.58
       }
     },
@@ -8693,13 +8693,13 @@
         "Cars per 1,000": 403.2
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 1.5,
+        "Manufacturing & utilities (%)": 4.2,
+        "Construction (%)": 5.9,
+        "Trade & transport (%)": 23.5,
+        "ICT (%)": 8.1,
+        "Finance & insurance (%)": 4.2,
+        "Public admin, edu & health (%)": 18.1
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 11.3,
@@ -8715,7 +8715,7 @@
         "Heating degree days": 2881.8
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 27.8,
         "Renewable intensity (MW/1,000)": 0.2
       }
     },
@@ -8791,13 +8791,13 @@
         "Cars per 1,000": 656.5
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 13.8,
+        "Manufacturing & utilities (%)": 8.5,
+        "Construction (%)": 11.7,
+        "Trade & transport (%)": 24.5,
+        "ICT (%)": 2.4,
+        "Finance & insurance (%)": 4.1,
+        "Public admin, edu & health (%)": 11
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 66.36,
@@ -8813,7 +8813,7 @@
         "Heating degree days": 2849
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 32.9,
         "Renewable intensity (MW/1,000)": 2.08
       }
     },
@@ -8889,13 +8889,13 @@
         "Cars per 1,000": 591.2
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 20.8,
+        "Manufacturing & utilities (%)": 9.5,
+        "Construction (%)": 10.1,
+        "Trade & transport (%)": 22.2,
+        "ICT (%)": 1.1,
+        "Finance & insurance (%)": 2,
+        "Public admin, edu & health (%)": 10.1
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 516.5,
@@ -8911,7 +8911,7 @@
         "Heating degree days": 2618.1
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 31.7,
         "Renewable intensity (MW/1,000)": 15.36
       }
     },
@@ -8987,13 +8987,13 @@
         "Cars per 1,000": 621.7
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 12.5,
+        "Manufacturing & utilities (%)": 9,
+        "Construction (%)": 14.4,
+        "Trade & transport (%)": 22,
+        "ICT (%)": 2.4,
+        "Finance & insurance (%)": 3.9,
+        "Public admin, edu & health (%)": 9.2
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 28.98,
@@ -9009,7 +9009,7 @@
         "Heating degree days": 2807.8
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 31,
         "Renewable intensity (MW/1,000)": 2.08
       }
     },
@@ -9085,13 +9085,13 @@
         "Cars per 1,000": 613.7
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 20.2,
+        "Manufacturing & utilities (%)": 11.6,
+        "Construction (%)": 11.9,
+        "Trade & transport (%)": 19.8,
+        "ICT (%)": 1.3,
+        "Finance & insurance (%)": 2.9,
+        "Public admin, edu & health (%)": 10.1
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 77.71,
@@ -9107,7 +9107,7 @@
         "Heating degree days": 2774.7
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 31.4,
         "Renewable intensity (MW/1,000)": 5.78
       }
     },
@@ -9183,13 +9183,13 @@
         "Cars per 1,000": 582
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 15.8,
+        "Manufacturing & utilities (%)": 8.7,
+        "Construction (%)": 11,
+        "Trade & transport (%)": 22.1,
+        "ICT (%)": 1.7,
+        "Finance & insurance (%)": 3,
+        "Public admin, edu & health (%)": 12.1
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 164.54,
@@ -9205,7 +9205,7 @@
         "Heating degree days": 2770.2
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 30.8,
         "Renewable intensity (MW/1,000)": 5.85
       }
     },
@@ -9281,13 +9281,13 @@
         "Cars per 1,000": 561.7
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 19.4,
+        "Manufacturing & utilities (%)": 9.4,
+        "Construction (%)": 9.4,
+        "Trade & transport (%)": 20.2,
+        "ICT (%)": 2.3,
+        "Finance & insurance (%)": 3.1,
+        "Public admin, edu & health (%)": 10.9
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 218.92,
@@ -9303,7 +9303,7 @@
         "Heating degree days": 2780.9
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 29.5,
         "Renewable intensity (MW/1,000)": 6.58
       }
     },
@@ -9379,13 +9379,13 @@
         "Cars per 1,000": 572.3
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 14.5,
+        "Manufacturing & utilities (%)": 7.2,
+        "Construction (%)": 10.9,
+        "Trade & transport (%)": 20.8,
+        "ICT (%)": 2.9,
+        "Finance & insurance (%)": 3.3,
+        "Public admin, edu & health (%)": 13.6
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 74.01,
@@ -9401,7 +9401,7 @@
         "Heating degree days": 2839
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 28,
         "Renewable intensity (MW/1,000)": 2.49
       }
     },
@@ -9477,13 +9477,13 @@
         "Cars per 1,000": 574.8
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 17.4,
+        "Manufacturing & utilities (%)": 8.3,
+        "Construction (%)": 13.3,
+        "Trade & transport (%)": 18.5,
+        "ICT (%)": 2.3,
+        "Finance & insurance (%)": 2,
+        "Public admin, edu & health (%)": 13.9
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 91.98,
@@ -9499,7 +9499,7 @@
         "Heating degree days": 2873.3
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 26.8,
         "Renewable intensity (MW/1,000)": 3.6
       }
     },
@@ -9575,13 +9575,13 @@
         "Cars per 1,000": 537.9
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 9.8,
+        "Manufacturing & utilities (%)": 8,
+        "Construction (%)": 11.4,
+        "Trade & transport (%)": 28.5,
+        "ICT (%)": 1.5,
+        "Finance & insurance (%)": 3,
+        "Public admin, edu & health (%)": 12.8
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 48.45,
@@ -9597,7 +9597,7 @@
         "Heating degree days": 2862.2
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 36.5,
         "Renewable intensity (MW/1,000)": 2.58
       }
     },
@@ -9673,13 +9673,13 @@
         "Cars per 1,000": 592
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 20.6,
+        "Manufacturing & utilities (%)": 8.6,
+        "Construction (%)": 11.2,
+        "Trade & transport (%)": 20.8,
+        "ICT (%)": 1.4,
+        "Finance & insurance (%)": 2.7,
+        "Public admin, edu & health (%)": 12.6
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 163.81,
@@ -9695,7 +9695,7 @@
         "Heating degree days": 2798
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 29.3,
         "Renewable intensity (MW/1,000)": 5.91
       }
     },
@@ -9771,13 +9771,13 @@
         "Cars per 1,000": 541.9
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 25.3,
+        "Manufacturing & utilities (%)": 4.2,
+        "Construction (%)": 8.4,
+        "Trade & transport (%)": 25.3,
+        "ICT (%)": 1.6,
+        "Finance & insurance (%)": 1.1,
+        "Public admin, edu & health (%)": 12.6
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 0,
@@ -9793,7 +9793,7 @@
         "Heating degree days": 2681.5
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 29.5,
         "Renewable intensity (MW/1,000)": 4.65
       }
     },
@@ -9869,13 +9869,13 @@
         "Cars per 1,000": 593.6
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 19.9,
+        "Manufacturing & utilities (%)": 8.2,
+        "Construction (%)": 11.4,
+        "Trade & transport (%)": 17.7,
+        "ICT (%)": 3.1,
+        "Finance & insurance (%)": 2.7,
+        "Public admin, edu & health (%)": 12.2
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 48.38,
@@ -9891,7 +9891,7 @@
         "Heating degree days": 2853.6
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 25.9,
         "Renewable intensity (MW/1,000)": 2.03
       }
     },
@@ -9967,13 +9967,13 @@
         "Cars per 1,000": 589.3
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 14.9,
+        "Manufacturing & utilities (%)": 11.3,
+        "Construction (%)": 10.9,
+        "Trade & transport (%)": 22.8,
+        "ICT (%)": 1.8,
+        "Finance & insurance (%)": 2.7,
+        "Public admin, edu & health (%)": 11.6
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 104.17,
@@ -9989,7 +9989,7 @@
         "Heating degree days": 2867.7
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 34.1,
         "Renewable intensity (MW/1,000)": 3.26
       }
     },
@@ -10065,13 +10065,13 @@
         "Cars per 1,000": 599.4
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 17.9,
+        "Manufacturing & utilities (%)": 7.3,
+        "Construction (%)": 11.4,
+        "Trade & transport (%)": 21.7,
+        "ICT (%)": 1.2,
+        "Finance & insurance (%)": 2.8,
+        "Public admin, edu & health (%)": 13.1
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 218.66,
@@ -10087,7 +10087,7 @@
         "Heating degree days": 2807.6
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 28.9,
         "Renewable intensity (MW/1,000)": 6.81
       }
     },
@@ -10163,13 +10163,13 @@
         "Cars per 1,000": 470.7
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 5.2,
+        "Manufacturing & utilities (%)": 5.4,
+        "Construction (%)": 7.7,
+        "Trade & transport (%)": 24.4,
+        "ICT (%)": 5.4,
+        "Finance & insurance (%)": 3.9,
+        "Public admin, edu & health (%)": 16.6
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 158.82,
@@ -10185,7 +10185,7 @@
         "Heating degree days": 2839.3
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 29.8,
         "Renewable intensity (MW/1,000)": 0.88
       }
     },
@@ -10261,13 +10261,13 @@
         "Cars per 1,000": 601.9
       },
       "IndustrySectors": {
-        "Agriculture, forestry & fishing (%)": {},
-        "Manufacturing & utilities (%)": {},
-        "Construction (%)": {},
-        "Trade & transport (%)": {},
-        "ICT (%)": {},
-        "Finance & insurance (%)": {},
-        "Public admin, edu & health (%)": {}
+        "Agriculture, forestry & fishing (%)": 15.4,
+        "Manufacturing & utilities (%)": 8,
+        "Construction (%)": 11.8,
+        "Trade & transport (%)": 23.3,
+        "ICT (%)": 2,
+        "Finance & insurance (%)": 2.5,
+        "Public admin, edu & health (%)": 11.1
       },
       "GreenEnergy": {
         "Onshore wind capacity (MW)": 121.47,
@@ -10283,7 +10283,7 @@
         "Heating degree days": 2884.6
       },
       "GreenTransition": {
-        "Fossil-linked sector share (%)": {},
+        "Fossil-linked sector share (%)": 31.3,
         "Renewable intensity (MW/1,000)": 2.49
       }
     }
