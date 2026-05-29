@@ -1190,7 +1190,7 @@
         let colorIdx = 0;
         for (const [clusterId, info] of Object.entries(summary)) {
           const color      = CLUSTER_COLORS[colorIdx++ % CLUSTER_COLORS.length];
-          const zones      = info.zones || [];
+          const zones      = [].concat(info.zones || []);
           const clusterNum = parseInt(clusterId.split('_').pop(), 10);
 
           const zoneChips  = zones.map(z => `<span class="typology-zone-chip">${escapeHtml(z)}</span>`).join('');
@@ -1766,7 +1766,7 @@
           // Right: zone list
           const right = document.createElement('div');
           right.className = 'fcb2-right';
-          const zones  = (cl.zones || []).map(unbox);
+          const zones  = [].concat(cl.zones || []).map(unbox);
           const listId = `dkc-zones-${i}`;
           right.innerHTML = `<div class="fcb2-zones-hdr">
             <span>${nZ} zone${nZ!==1?'s':''} in this cluster</span>
