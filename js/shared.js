@@ -1,11 +1,10 @@
 const _IS_LOCAL = ['localhost', '127.0.0.1'].includes(window.location.hostname);
-// Replace YOUR_HF_USERNAME with your actual Hugging Face username
 const PLUMBER_BASE = _IS_LOCAL
   ? 'http://127.0.0.1:8000'
-  : 'https://YOUR_HF_USERNAME-areastat-dk-r-api.hf.space';
+  : 'https://aetherno-areastat-dk-r-api.hf.space';
 const ML_BASE = _IS_LOCAL
   ? 'http://127.0.0.1:8001'
-  : 'https://YOUR_HF_USERNAME-areastat-dk-python-api.hf.space';
+  : 'https://aetherno-areastat-dk-python-api.hf.space';
 
 const DEFAULT_PROFILE_CATEGORIES = [
   'AgeStructure',

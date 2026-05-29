@@ -7,13 +7,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
 
-RUN mkdir -p data && \
-    curl -L https://github.com/RishikeshGovind/areastat-de/raw/main/data/panel_dataset.csv \
-    -o data/panel_dataset.csv && \
-    curl -L https://github.com/RishikeshGovind/areastat-de/raw/main/data/xgb_fiscal_model.joblib \
-    -o data/xgb_fiscal_model.joblib
-
 COPY fiscal_ml_api.py .
+COPY data/ ./data/
 
 EXPOSE 7860
 
