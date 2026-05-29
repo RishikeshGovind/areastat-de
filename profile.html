@@ -2820,14 +2820,36 @@
           const p = pop(z.id);
           if (!p) return;
 
-          // Derive absolute totals (DKK thousands) from per-capita × population
-          const opEx    = (fin(z, 'Operating expenses/capita (DKK)') ?? 0) * p / 1000;
-          const capEx   = (fin(z, 'Capital expenditures/capita (DKK)') ?? 0) * p / 1000;
-          const grants  = (fin(z, 'Equalization grants/capita (DKK)') ?? 0) * p / 1000;
-          const debt    = (fin(z, 'Long-term debt/capita (DKK)') ?? 0) * p / 1000;
+          const src = currentZoneType === 'region' ? regionData : kommuneData;
+          const taxRate = (() => {
+            const v = src[z.id]?.FiscalPolicy?.['Municipal income tax rate (%)'];
+            return typeof v === 'number' ? v : (Array.isArray(v) ? v[0] : null);
+          })();
+          const avgIncome = (() => {
+            const v = src[z.id]?.Economy?.['Avg income (DKK)'];
+            return typeof v === 'number' ? v : (Array.isArray(v) ? v[0] : null);
+          })();
+          const empRate = (() => {
+            const v = src[z.id]?.LabourMarket?.['Employment rate (%)'];
+            return typeof v === 'number' ? v : (Array.isArray(v) ? v[0] : null);
+          })();
+
+          const fmt = v => v >= 1e6 ? (v/1e6).toFixed(1)+'B' : v >= 1e3 ? (v/1e3).toFixed(0)+'M' : Math.round(v)+'K';
+
+          // Absolute totals (DKK) from per-capita × population
+          const opEx   = (fin(z, 'Operating expenses/capita (DKK)') ?? 0) * p;
+          const capEx  = (fin(z, 'Capital expenditures/capita (DKK)') ?? 0) * p;
+          const grants = (fin(z, 'Equalization grants/capita (DKK)') ?? 0) * p;
+          const debt   = (fin(z, 'Long-term debt/capita (DKK)') ?? 0) * p;
           const totalEx = opEx + capEx;
-          const balance = grants - totalEx;  // proxy: grants vs total expenditure
-          const fmt     = v => v >= 1e6 ? (v/1e6).toFixed(1)+'B' : v >= 1e3 ? (v/1e3).toFixed(0)+'M' : Math.round(v)+'K';
+
+          // Estimated tax revenue = tax_rate × avg_income × employed_population
+          const employed = empRate != null ? p * empRate / 100 : null;
+          const taxRev   = (taxRate != null && avgIncome != null && employed != null)
+            ? taxRate / 100 * avgIncome * employed : null;
+
+          const totalRev = grants + (taxRev ?? 0);
+          const balance  = totalRev - totalEx;
           const balColor = balance >= 0 ? '#16a34a' : '#dc2626';
 
           const card = document.createElement('div');
@@ -2837,19 +2859,26 @@
               ${escapeHtml(z.name)} — Government Sector (DKK)
             </div>
             <div style="display:grid;grid-template-columns:1fr auto;gap:.3rem .75rem;font-size:.78rem;">
-              <span style="color:#6b7280;">Central gov grants (T)</span>
+              <span style="color:#6b7280;">Income tax revenue ~T<sub>tax</sub></span>
+              <span style="font-weight:600;color:#0891b2;font-family:monospace;">${taxRev != null ? escapeHtml(fmt(taxRev)) : '–'}<span style="font-size:.65rem;color:#9ca3af;"> est.</span></span>
+              <span style="color:#6b7280;">Central gov grants T<sub>grants</sub></span>
               <span style="font-weight:600;color:#2563eb;font-family:monospace;">${escapeHtml(fmt(grants))}</span>
-              <span style="color:#6b7280;">Operating expenditure (G)</span>
-              <span style="font-weight:600;color:#374151;font-family:monospace;">${escapeHtml(fmt(opEx))}</span>
+              <span style="color:#6b7280;font-weight:600;">Total revenue (T)</span>
+              <span style="font-weight:700;color:#1e3a5f;font-family:monospace;border-top:1px dashed #e5e7eb;padding-top:.2rem;">${escapeHtml(fmt(totalRev))}</span>
+              <span style="color:#6b7280;margin-top:.3rem;">Operating expenditure (G)</span>
+              <span style="font-family:monospace;margin-top:.3rem;">${escapeHtml(fmt(opEx))}</span>
               <span style="color:#6b7280;">Capital investment (I)</span>
-              <span style="font-weight:600;color:#374151;font-family:monospace;">${escapeHtml(fmt(capEx))}</span>
-              <span style="color:#6b7280;border-top:1px solid #f0f0f0;padding-top:.3rem;">Fiscal balance (T−G−I)</span>
-              <span style="font-weight:700;color:${balColor};font-family:monospace;border-top:1px solid #f0f0f0;padding-top:.3rem;">${balance>=0?'+':''}${escapeHtml(fmt(balance))}</span>
-              <span style="color:#6b7280;margin-top:.4rem;">Debt stock (L)</span>
-              <span style="font-weight:600;color:#7c3aed;font-family:monospace;margin-top:.4rem;">${escapeHtml(fmt(debt))}</span>
+              <span style="font-family:monospace;">${escapeHtml(fmt(capEx))}</span>
+              <span style="color:#6b7280;font-weight:600;">Total expenditure (G+I)</span>
+              <span style="font-weight:700;color:#374151;font-family:monospace;border-top:1px dashed #e5e7eb;padding-top:.2rem;">${escapeHtml(fmt(totalEx))}</span>
+              <span style="color:#6b7280;font-weight:600;margin-top:.4rem;">Fiscal balance (T−G−I)</span>
+              <span style="font-weight:700;color:${balColor};font-family:monospace;margin-top:.4rem;">${balance>=0?'+':''}${escapeHtml(fmt(balance))}</span>
+              <span style="color:#6b7280;margin-top:.2rem;">Debt stock (L)</span>
+              <span style="font-weight:600;color:#7c3aed;font-family:monospace;margin-top:.2rem;">${escapeHtml(fmt(debt))}</span>
+              ${taxRate != null ? `<span style="color:#9ca3af;font-size:.72rem;">Tax rate</span><span style="font-family:monospace;font-size:.72rem;color:#9ca3af;">${escapeHtml(String(taxRate))}%</span>` : ''}
             </div>
             <div style="margin-top:.75rem;background:#f8fafc;border-radius:6px;padding:.4rem .6rem;font-size:.68rem;color:#9ca3af;">
-              SFC identity: ΔL ≈ −(T − G − I) · Deficit adds to debt stock
+              SFC identity: ΔL ≈ −(T − G − I) &nbsp;·&nbsp; ~T<sub>tax</sub> estimated from tax rate × income base
             </div>`;
           grid.appendChild(card);
         });

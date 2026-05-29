@@ -101,6 +101,9 @@ VARIABLE_MAP <- list(
   Vehicles = list(
     `Cars per 1,000` = "CARS_PER_1K"
   ),
+  FiscalPolicy = list(
+    `Municipal income tax rate (%)` = "TAX_RATE_PCT"
+  ),
   IndustrySectors = list(
     `Agriculture, forestry & fishing (%)` = "SECTOR_AGR_PCT",
     `Manufacturing & utilities (%)`        = "SECTOR_MANUF_PCT",
@@ -169,6 +172,7 @@ AGGREGATION_TYPE <- list(
   WORKPLACES          = "sum",
   WORKPLACES_PER_1K   = "pct",
   CARS_PER_1K         = "pct",
+  TAX_RATE_PCT        = "pct",
   # IndustrySectors
   SECTOR_AGR_PCT      = "pct",
   SECTOR_MANUF_PCT    = "pct",
@@ -1191,6 +1195,37 @@ cars_df <- tryCatch({
 
 
 # ============================================================
+# 7a. PSKAT — Municipal income tax rate (FiscalPolicy domain)
+# ============================================================
+message("Fetching PSKAT (municipal tax rates) from DST...")
+
+tax_rate_df <- tryCatch({
+  raw <- dst_post("PSKAT", list(
+    list(code="OMRÅDE",  values=list("*")),
+    list(code="SKATPCT", values=list("KOM")),
+    list(code="Tid",     values=list(""))
+  ))
+  if (is.null(raw)) stop("null response")
+  names(raw) <- janitor::make_clean_names(names(raw))
+  area_c <- grep("omr|area", names(raw), value=TRUE, ignore.case=TRUE)[1]
+  val_c  <- grep("indhold|value|skatte|rate|pct", names(raw), value=TRUE, ignore.case=TRUE)[1]
+
+  raw |>
+    rename(area=!!area_c, value=!!val_c) |>
+    mutate(
+      value        = suppressWarnings(as.numeric(gsub(",",".",value))),
+      kommune_kode = coalesce(area_code, pad4(area)),
+      TAX_RATE_PCT = round(value, 2)
+    ) |>
+    filter(kommune_kode %in% kommune_lookup$kommune_kode, !is.na(TAX_RATE_PCT)) |>
+    select(kommune_kode, TAX_RATE_PCT)
+}, error=function(e){ message("  PSKAT failed: ", conditionMessage(e)); NULL })
+
+if (!is.null(tax_rate_df))
+  message(sprintf("  Tax rates: %d kommuner", nrow(tax_rate_df)))
+
+
+# ============================================================
 # 7b. ERHV6 sector breakdown — IndustrySectors domain
 # ============================================================
 message("Fetching ERHV6 sector breakdown from DST...")
@@ -1377,7 +1412,7 @@ komm_stats <- kommune_lookup |> select(kommune_kode)
 for (df in list(pop_age_df, foreign_df, unemp_df, emp_df, emp_local_df, edu_df,
                 commute_df, income_df, housing_df, crime_df, finance_df,
                 pop_dyn_df, ancestry_df, welfare_df, health_df, business_df, cars_df,
-                sector_df, green_energy_df, climate_df)) {
+                tax_rate_df, sector_df, green_energy_df, climate_df)) {
   if (!is.null(df) && "kommune_kode" %in% names(df))
     komm_stats <- left_join(komm_stats, df, by="kommune_kode")
 }
