@@ -2100,7 +2100,7 @@
             } else if (view === 'green-transition') {
               renderGreenTransition(selectedIds);
             } else if (view === 'sfc-scenario') {
-              renderSFCScenario();
+              renderSFCScenario(selectedIds);
             }
             _rendered.add(view);
           }
@@ -3465,41 +3465,194 @@
 
       // ══ SFC SCENARIO TAB ════════════════════════════════════════════════════
 
-      function renderSFCScenario() {
+      // Compute SFC scenario dynamically for a municipality from its local data
+      function computeSFCScenario(kid) {
+        const src = currentZoneType === 'region' ? regionData : kommuneData;
+        const kd  = src[kid] || {};
+        const scv = function(obj, key) {
+          var v = (obj || {})[key];
+          return typeof v === 'number' ? v : (Array.isArray(v) ? v[0] : null);
+        };
+        const fin = kd.Financial || {};
+        const fp  = kd.FiscalPolicy || {};
+        const eco = kd.Economy || {};
+        const lm  = kd.LabourMarket || {};
+        const gt  = kd.GreenTransition || {};
+        const sfc = kd.SFCAccounts || {};
+
+        var debt0    = scv(fin, 'Long-term debt/capita (DKK)')       || 15000;
+        var ops0     = scv(fin, 'Operating expenses/capita (DKK)')   || 80000;
+        var capex0   = scv(fin, 'Capital expenditures/capita (DKK)') || 3000;
+        var tax_rate = scv(fp,  'Municipal income tax rate (%)')      || 25.0;
+        var avg_inc0 = scv(eco, 'Avg income (DKK)')                  || 250000;
+        var fossil_pct  = scv(gt, 'Fossil-linked sector share (%)') || 30.0;
+        var renew_int   = scv(gt, 'Renewable intensity (MW/1,000)');
+
+        var emp_rate0 = scv(lm, 'Employment rate (%)');
+        if (!emp_rate0) emp_rate0 = scv(window.denmarkTotals && window.denmarkTotals.LabourMarket, 'Employment rate (%)') || 75.5;
+
+        var fossil_share  = fossil_pct / 100;
+        var bau_surplus0  = (ops0 + capex0) * 0.005;
+        var surplus_growth = 0.005;
+        var tax_loss_p1   = (emp_rate0 / 100) * fossil_share * 0.25 * avg_inc0 * (tax_rate / 100);
+
+        var YEARS = [2024,2025,2026,2027,2028,2029,2030,2031,2032,2033,2034];
+        var bau = { debt:[], fiscal_balance:[], avg_income:[], employment_rate:[] };
+        var gt_s = { debt:[], fiscal_balance:[], avg_income:[], employment_rate:[] };
+        var debt_bau = debt0, debt_gt = debt0;
+
+        YEARS.forEach(function(yr, i) {
+          var s_bau = bau_surplus0 * Math.pow(1 + surplus_growth, i);
+          debt_bau -= s_bau;
+          bau.debt.push(Math.round(debt_bau));
+          bau.fiscal_balance.push(Math.round(s_bau));
+          bau.avg_income.push(Math.round(avg_inc0 * Math.pow(1.02, i)));
+          bau.employment_rate.push(Math.round(emp_rate0 * 10) / 10);
+
+          var tax_loss, extra_capex, trans_grant, emp_adj;
+          if (i < 3) {
+            tax_loss = tax_loss_p1; extra_capex = capex0 * 0.15; trans_grant = 3000;
+            emp_adj = emp_rate0 * (1 - fossil_share * 0.25);
+          } else if (i < 7) {
+            var frac = (i - 3) / 4;
+            tax_loss = tax_loss_p1 * (1 - frac); extra_capex = capex0 * 0.08 * (1 - frac);
+            trans_grant = Math.max(0, 3000 - (i - 3) * 750);
+            emp_adj = emp_rate0 * (1 - fossil_share * 0.15 * (1 - frac));
+          } else {
+            var green_prem = avg_inc0 * Math.pow(1.02, i) * (emp_rate0/100) * fossil_share * 0.05 * (tax_rate/100);
+            tax_loss = tax_loss_p1 * 0.10 - green_prem; extra_capex = 0; trans_grant = 0;
+            emp_adj = emp_rate0 * (1 - fossil_share * 0.10);
+          }
+          var s_gt = s_bau + (-tax_loss - extra_capex + trans_grant);
+          debt_gt -= s_gt;
+          gt_s.debt.push(Math.round(debt_gt));
+          gt_s.fiscal_balance.push(Math.round(s_gt));
+          gt_s.avg_income.push(Math.round(avg_inc0 * Math.pow(1.02, i)));
+          gt_s.employment_rate.push(Math.round(emp_adj * 10) / 10);
+        });
+
+        // Build simple TFM rows from live data
+        var t_tax_cap = Math.round((tax_rate/100) * avg_inc0 * (emp_rate0/100));
+        var grants_cap = scv(fin, 'Equalization grants/capita (DKK)');
+        var grants_net_cap = grants_cap != null ? -grants_cap : null;  // negate: DST sign
+        var tfm_rows = [
+          { label: 'Municipal income tax (T_tax)',       gov: t_tax_cap,    hh: -t_tax_cap },
+          { label: 'Equalization transfers (T_grants)',  gov: grants_net_cap, hh: null },
+          { label: 'State block grants (calibrated)',    gov: 'n/a — residual', hh: null },
+          { label: 'Government consumption (G)',         gov: -ops0, hh: ops0 },
+          { label: 'Capital investment (I)',             gov: -capex0, hh: null },
+          { label: 'Net debt issuance (ΔL)',             gov: '≈ 0 (balanced budget)', hh: null },
+        ];
+
+        var cap_stock = scv(sfc, 'Capital_stock_per_capita (DKK)') || Math.round(debt0 + 8 * capex0);
+        var tvi = scv(sfc, 'Transition_vulnerability_index');
+        var avg_inc_num = scv(eco, 'Avg income (DKK)');
+
+        return {
+          id: kid,
+          name: zoneName(kid),
+          region: kd.Region || '',
+          years: YEARS.map(String),
+          scenarios: { bau: bau, green_transition: gt_s },
+          key_indicators: {
+            fossil_linked_sector_share_pct: fossil_pct,
+            renewable_intensity_mw_per_1000: renew_int,
+            baseline_debt_per_capita: debt0,
+            baseline_ops_per_capita: ops0,
+            estimated_tax_revenue_per_capita: t_tax_cap,
+            transition_vulnerability_index: tvi,
+          },
+          transaction_flow_matrix: {
+            rows: tfm_rows, debt_stock: debt0 * (kd.Population || 1), avg_income: avg_inc_num
+          },
+          balance_sheet_matrix: {
+            government: {
+              capital_stock: cap_stock * (kd.Population || 1),
+              long_term_debt_neg: -debt0 * (kd.Population || 1),
+              net_financial_worth: -debt0 * (kd.Population || 1),
+            },
+            households: { financial_wealth_proxy: avg_inc_num ? avg_inc_num * 2.5 * (kd.Population || 1) : null },
+          },
+        };
+      }
+
+      function renderSFCScenario(ids) {
         const container = document.getElementById('sfc-scenario-container');
         if (!container) return;
         container.innerHTML = '';
 
         try {
-        const scen = window.sfcScenario || {};
-        if (!scen.high_exposure) {
-          container.innerHTML = '<div style="padding:2rem 1.5rem;color:#6b7280;font-size:.85rem;">SFC scenario data not loaded — push data.json to deploy first.</div>';
-          return;
+        // Pick the two most contrasting municipalities by TVI from selection
+        const src = currentZoneType === 'region' ? regionData : kommuneData;
+        var scv = function(obj, key) {
+          var v = (obj||{})[key];
+          return typeof v === 'number' ? v : (Array.isArray(v) ? v[0] : null);
+        };
+
+        // Score each selected id by climate exposure (TVI proxy)
+        var scored = (ids || []).map(function(id) {
+          var kd  = src[id] || {};
+          var sfc = kd.SFCAccounts || {};
+          var gt  = kd.GreenTransition || {};
+          var tvi = scv(sfc, 'Transition_vulnerability_index');
+          if (tvi == null) {
+            var f = scv(gt, 'Fossil-linked sector share (%)') || 30;
+            var r = scv(gt, 'Renewable intensity (MW/1,000)') || 0;
+            tvi = (f / 50) + Math.max(0, 1 - r / 5);
+          }
+          return { id: id, tvi: tvi };
+        }).filter(function(x) { return x.tvi != null; });
+
+        scored.sort(function(a,b) { return b.tvi - a.tvi; });
+
+        var hiId, loId;
+        if (scored.length >= 2) {
+          hiId = scored[0].id;
+          loId = scored[scored.length - 1].id;
+        } else if (scored.length === 1) {
+          hiId = scored[0].id;
+          // Compare against Denmark hardcoded low-exposure archetype
+          loId = '0665';
+        } else {
+          // No selection — fall back to hardcoded archetypes
+          hiId = '0165'; loId = '0665';
         }
-        const hi   = scen.high_exposure || {};
-        const lo   = scen.low_exposure  || {};
-        const meth = scen.methodology   || {};
+
+        var hi = computeSFCScenario(hiId);
+        var lo = computeSFCScenario(loId);
+
+        var isUsingFallback = scored.length === 0;
+        var isDifferent     = hiId !== loId;
+
+        const meth = (window.sfcScenario || {}).methodology || {};
 
         const sfcFmtDK = v => v == null ? '–' : Number(Math.round(v)).toLocaleString('da-DK') + ' DKK';
 
+        // Selection info banner
+        const banner = document.createElement('div');
+        const selectionDesc = isUsingFallback
+          ? 'No municipalities selected — showing national archetypes (Albertslund vs Lemvig). Select zones on the map to compare your own municipalities.'
+          : scored.length === 1
+            ? `1 municipality selected — comparing ${hi.name} against the low-exposure national archetype (${lo.name}). Select 2+ zones to compare within your selection.`
+            : `Comparing the highest (${hi.name}, TVI ${scored[0].tvi.toFixed(2)}) and lowest (${lo.name}, TVI ${scored[scored.length-1].tvi.toFixed(2)}) climate-exposure municipalities from your ${scored.length}-zone selection.`;
+        banner.style.cssText = 'margin:.75rem 1.5rem 0;padding:.55rem .85rem;border-radius:6px;font-size:.75rem;background:' + (isUsingFallback ? '#f8fafc' : '#eff6ff') + ';border:1px solid ' + (isUsingFallback ? '#e5e7eb' : '#bfdbfe') + ';color:#374151;';
+        banner.textContent = selectionDesc;
+        container.appendChild(banner);
+
         // Header
         const header = document.createElement('div');
-        header.style.cssText = 'padding:1.5rem 1.5rem .5rem;border-bottom:1px solid #e5e7eb;';
+        header.style.cssText = 'padding:1rem 1.5rem .5rem;border-bottom:1px solid #e5e7eb;';
         const hTitle = document.createElement('div');
         hTitle.style.cssText = 'font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#9ca3af;margin-bottom:.4rem;';
         hTitle.textContent = 'Phase 3 — SFC Framing';
         header.appendChild(hTitle);
         const hH2 = document.createElement('h2');
         hH2.style.cssText = 'margin:0 0 .5rem;font-size:1.05rem;color:#1e3a5f;';
-        hH2.textContent = 'Prototype Two-Sector SFC Scenario';
+        hH2.textContent = 'Two-Sector SFC Scenario: ' + hi.name + ' vs ' + lo.name;
         header.appendChild(hH2);
-        const hP = document.createElement('p');
-        hP.style.cssText = 'margin:0 0 .75rem;font-size:.8rem;color:#6b7280;line-height:1.55;max-width:820px;';
-        hP.textContent = 'A Stock-Flow Consistent model calibrated to two archetype municipalities — one with high climate exposure (high fossil-sector dependency, low renewables) and one with low exposure (dominant renewable capacity). The simulation shows how fiscal stocks and flows diverge under BAU vs a Green Transition shock.';
-        header.appendChild(hP);
         const hBadge = document.createElement('div');
         hBadge.style.cssText = 'display:flex;flex-wrap:wrap;gap:.4rem;font-size:.72rem;color:#6b7280;';
-        hBadge.innerHTML = '<span style="background:#f0fdf4;color:#166534;border:1px solid #bbf7d0;border-radius:4px;padding:.15rem .55rem;font-weight:600;">SFC identity: ΔL(t) = G(t) + I(t) − T(t)</span>';
+        hBadge.innerHTML = '<span style="background:#f0fdf4;color:#166534;border:1px solid #bbf7d0;border-radius:4px;padding:.15rem .55rem;font-weight:600;">SFC identity: ΔL(t) = G(t) + I(t) − T(t)</span><span style="background:#fef9c3;color:#713f12;border:1px solid #fde68a;border-radius:4px;padding:.15rem .55rem;">Calibrated live from municipality data · BAU surplus = 0.5% of spending · Phase 1 shock: fossil employment −25%</span>';
         header.appendChild(hBadge);
         container.appendChild(header);
 
@@ -3550,7 +3703,13 @@
 
           const descDiv = document.createElement('div');
           descDiv.style.cssText = 'margin-top:.75rem;font-size:.68rem;color:#9ca3af;font-style:italic;';
-          descDiv.textContent = d.archetype_description || '';
+          const tvi = ki.transition_vulnerability_index;
+          const fossil = ki.fossil_linked_sector_share_pct;
+          const renew  = ki.renewable_intensity_mw_per_1000;
+          descDiv.textContent = d.archetype_description ||
+            (fossil != null ? fossil.toFixed(1) + '% fossil-linked employment' : '') +
+            (renew  != null ? ' · ' + renew + ' MW/1k renewable' : '') +
+            (tvi    != null ? ' · TVI ' + tvi.toFixed(3) : '');
           card.appendChild(descDiv);
 
           cardGrid.appendChild(card);
