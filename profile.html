@@ -2906,7 +2906,7 @@
           const empRate   = src[z.id]?.LabourMarket?.['Employment rate (%)'];
           const employed  = (empRate != null) ? p * empRate / 100 : 0;
           totals.tax     += (taxRate != null && avgIncome != null) ? taxRate/100 * avgIncome * employed : 0;
-          totals.grants  += (fin(z,'Equalization grants/capita (DKK)') ?? 0) * p;
+          totals.grants  += -(fin(z,'Equalization grants/capita (DKK)') ?? 0) * p; // DST sign: negative=receiver → negate so revenue is positive
           totals.ops     += (fin(z,'Operating expenses/capita (DKK)')  ?? 0) * p;
           totals.health  += (fin(z,'Health care/capita (DKK)')          ?? 0) * p;
           totals.edu     += (fin(z,'Education spending/pupil (DKK)')    ?? 0) * p;
@@ -3022,15 +3022,19 @@
           })();
           const empRate = (() => {
             const v = src[z.id]?.LabourMarket?.['Employment rate (%)'];
-            return typeof v === 'number' ? v : (Array.isArray(v) ? v[0] : null);
+            const r = typeof v === 'number' ? v : (Array.isArray(v) ? v[0] : null);
+            if (r != null) return r;
+            // Fallback: Denmark national average employment rate
+            const dk = window.denmarkTotals?.LabourMarket?.['Employment rate (%)'];
+            return typeof dk === 'number' ? dk : null;
           })();
 
-          const fmt = v => v >= 1e6 ? (v/1e6).toFixed(1)+'B' : v >= 1e3 ? (v/1e3).toFixed(0)+'M' : Math.round(v)+'K';
+          const fmt = v => { const a = Math.abs(v), s = v < 0 ? '−' : ''; return a >= 1e9 ? s+(a/1e9).toFixed(1)+'B' : a >= 1e6 ? s+(a/1e6).toFixed(1)+'M' : a >= 1e3 ? s+(a/1e3).toFixed(0)+'K' : Math.round(v)+''; };
 
           // Absolute totals (DKK) from per-capita × population
           const opEx   = (fin(z, 'Operating expenses/capita (DKK)') ?? 0) * p;
           const capEx  = (fin(z, 'Capital expenditures/capita (DKK)') ?? 0) * p;
-          const grants = (fin(z, 'Equalization grants/capita (DKK)') ?? 0) * p;
+          const grants = -(fin(z, 'Equalization grants/capita (DKK)') ?? 0) * p; // DST sign negated: negative in data = receiver
           const debt   = (fin(z, 'Long-term debt/capita (DKK)') ?? 0) * p;
           const totalEx = opEx + capEx;
 
@@ -3052,8 +3056,8 @@
             <div style="display:grid;grid-template-columns:1fr auto;gap:.3rem .75rem;font-size:.78rem;">
               <span style="color:#6b7280;">Income tax revenue ~T<sub>tax</sub></span>
               <span style="font-weight:600;color:#0891b2;font-family:monospace;">${taxRev != null ? escapeHtml(fmt(taxRev)) : '–'}<span style="font-size:.65rem;color:#9ca3af;"> est.</span></span>
-              <span style="color:#6b7280;">Central gov grants T<sub>grants</sub></span>
-              <span style="font-weight:600;color:#2563eb;font-family:monospace;">${escapeHtml(fmt(grants))}</span>
+              <span style="color:#6b7280;">Equalization grants T<sub>grants</sub></span>
+              <span style="font-weight:600;color:${grants>=0?'#2563eb':'#dc2626'};font-family:monospace;">${grants>=0?'':''}<span style="font-size:.65rem;color:#9ca3af;">${grants<0?'(net payer)':''}</span>${escapeHtml(fmt(grants))}</span>
               <span style="color:#6b7280;font-weight:600;">Total revenue (T)</span>
               <span style="font-weight:700;color:#1e3a5f;font-family:monospace;border-top:1px dashed #e5e7eb;padding-top:.2rem;">${escapeHtml(fmt(totalRev))}</span>
               <span style="color:#6b7280;margin-top:.3rem;">Operating expenditure (G)</span>
@@ -3069,7 +3073,7 @@
               ${taxRate != null ? `<span style="color:#9ca3af;font-size:.72rem;">Tax rate</span><span style="font-family:monospace;font-size:.72rem;color:#9ca3af;">${escapeHtml(String(taxRate))}%</span>` : ''}
             </div>
             <div style="margin-top:.75rem;background:#f8fafc;border-radius:6px;padding:.4rem .6rem;font-size:.68rem;color:#9ca3af;">
-              SFC identity: ΔL ≈ −(T − G − I) &nbsp;·&nbsp; ~T<sub>tax</sub> estimated from tax rate × income base
+              SFC identity: ΔL ≈ −(T − G − I) &nbsp;·&nbsp; ~T<sub>tax</sub> estimated from tax rate × income base &nbsp;·&nbsp; T excludes state block grants (~30% of revenue)
             </div>`;
           grid.appendChild(card);
         });
