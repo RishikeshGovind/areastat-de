@@ -14,3 +14,4 @@ __pycache__/
 .DS_Store.venv/
 areastat-dk-python-api/
 areastat-dk-r-api/
+.DS_Store
